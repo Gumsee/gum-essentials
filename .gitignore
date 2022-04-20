@@ -3,6 +3,8 @@
 /compile_commands.json
 /core
 /ext/*
+/lib/*
+/include/*
 *.so
 *.out
 *.log
