@@ -23,6 +23,7 @@ link_directories(${CMAKE_SOURCE_DIR}/lib/)
 add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples/\")
 
 set(GUMGUI_LIBRARIES 
+    GumEssentials
     GumMaths
     sfml-graphics
     sfml-network
@@ -31,9 +32,6 @@ set(GUMGUI_LIBRARIES
     sfml-system
     GLEW 
     GL
-    freetype
-    xml2
-    lua5.4
     ${CMAKE_THREAD_LIBS_INIT}
 )
 

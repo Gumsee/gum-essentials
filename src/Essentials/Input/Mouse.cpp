@@ -138,8 +138,8 @@ namespace Input
         //Gum::Output::debug("Updating Mouse");
         switch (event.type)
         {
-            case sf::Event::MouseWheelMoved:
-                iMouseWheelState = event.mouseWheel.delta;
+            case sf::Event::MouseWheelScrolled:
+                iMouseWheelState = event.mouseWheelScroll.delta;
                 break;
 
             case sf::Event::MouseMoved:
@@ -157,7 +157,6 @@ namespace Input
                 break;*/
 
             case sf::Event::MouseButtonPressed:
-            case sf::Event::MouseWheelScrolled:
             case sf::Event::MouseEntered:
             case sf::Event::MouseLeft:
             default:

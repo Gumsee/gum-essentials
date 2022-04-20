@@ -1,10 +1,15 @@
 #!/bin/bash
-
 ROOTDIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
+#Building libs
+cd "$ROOTDIR/external/SFML/"
+mkdir build/
+cd build/
+cmake ..
+make
+
+
 CONFIGS="release"
-
-
 for CONFIG in $CONFIGS; do
 
     BUILDDIR=$ROOTDIR/build/$CONFIG

@@ -13,3 +13,7 @@ add_definitions(-DDEBUG)
 set(GUMMATH_DIRECTORY "/home/gumse/Projects/gumball/gum-maths/")
 
 add_subdirectory(./src/)
+add_subdirectory(./examples/)
+include_directories(${CMAKE_SOURCE_DIR}/external/SFML/include/)
+include_directories(${CMAKE_SOURCE_DIR}/external/SFML/src/)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/SFML/)

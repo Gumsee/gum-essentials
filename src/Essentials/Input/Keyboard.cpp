@@ -89,19 +89,19 @@ namespace Input
 			case sf::Keyboard::Key::Menu: 		ret = "Menu"; break;
 			case sf::Keyboard::Key::LBracket: 	ret = "LBracket"; break;
 			case sf::Keyboard::Key::RBracket: 	ret = "RBracket"; break;
-			case sf::Keyboard::Key::SemiColon: 	ret = ";"; break;
+			case sf::Keyboard::Key::Semicolon: 	ret = ";"; break;
 			case sf::Keyboard::Key::Comma: 		ret = ","; break;
 			case sf::Keyboard::Key::Period: 	ret = "."; break;
 			case sf::Keyboard::Key::Quote: 		ret = "\'"; break;
 			case sf::Keyboard::Key::Slash: 		ret = "/"; break;
-			case sf::Keyboard::Key::BackSlash: 	ret = "\\"; break;
+			case sf::Keyboard::Key::Backslash: 	ret = "\\"; break;
 			case sf::Keyboard::Key::Tilde: 		ret = "~"; break;
 			case sf::Keyboard::Key::Equal: 		ret = "="; break;
-			case sf::Keyboard::Key::Dash: 		ret = "-"; break;
+			case sf::Keyboard::Key::Hyphen: 		ret = "-"; break;
 
 			case sf::Keyboard::Key::Space: 		ret = "Space"; break;
-			case sf::Keyboard::Key::Return: 	ret = "Return"; break;
-			case sf::Keyboard::Key::BackSpace: 	ret = "Back"; break;
+			case sf::Keyboard::Key::Enter: 		ret = "Return"; break;
+			case sf::Keyboard::Key::Backspace: 	ret = "Back"; break;
 			case sf::Keyboard::Key::Tab: 		ret = "Tab"; break;
 
 			case sf::Keyboard::Key::PageUp: 	ret = "Page Up"; break;
