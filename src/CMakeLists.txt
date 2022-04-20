@@ -15,12 +15,13 @@ message(STATUS "GumEssentials: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 #
 include_directories(${CMAKE_SOURCE_DIR}/external/libxml2/include/)
 include_directories(${CMAKE_SOURCE_DIR}/external/SFML/include/)
+include_directories(${CMAKE_BINARY_DIR}/external/libxml2/)
 include_directories(${GUMMATH_DIRECTORY}/src/)
 
 #
 # Source
 #
-file(GLOB_RECURSE SRC "./*.cpp" "${CMAKE_SOURCE_DIR}/external/SFML/src/*.cpp")
+file(GLOB_RECURSE SRC "./*.cpp")
 
 add_library(GumEssentials STATIC ${SRC})
 
