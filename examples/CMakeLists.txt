@@ -15,6 +15,7 @@ find_package(Threads)
 
 include_directories(${GUMMATH_DIRECTORY})
 include_directories(${CMAKE_SOURCE_DIR}/src/)
+include_directories(${CMAKE_SOURCE_DIR}/src/Essentials)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib/)
 

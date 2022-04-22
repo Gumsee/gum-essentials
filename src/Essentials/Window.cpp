@@ -108,17 +108,11 @@ namespace Gum
 	}
 
 
-	void Window::finishRender()
-	{
-		//SDL_GL_SwapWindow(Gum::Window->handle);
-		//pRenderWindow->display();
-        glfwSwapBuffers(pRenderWindow);
-	}
-
-
 	//Passthrough
 	void Window::close()            { glfwDestroyWindow(pRenderWindow); }
 	void Window::pollEvent()   		{ glfwPollEvents(); }
+	void Window::finishRender() 	{ glfwSwapBuffers(pRenderWindow); }
+	void Window::terminate() 		{ glfwTerminate(); }
 
 	
 	void Window::initOpenGL()
@@ -167,10 +161,4 @@ namespace Gum
 	float Window::getAspectRatioWidthToHeight() const 				{ return this->fAspectRatioWidthToHeight; }
 	bool Window::isFullscreen() const          						{ return this->bIsFullscreen; }
 	bool Window::isOpen() const                						{ return !glfwWindowShouldClose(pRenderWindow); }
-
-	
-	void Window::terminate()
-	{
-    	glfwTerminate();
-	}
 }

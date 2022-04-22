@@ -28,13 +28,14 @@ namespace Gum
 	public:
 		Window(bool fullscreen, std::string title, ivec2 windowsize, bool inpercent);
 
-		void finishRender();
 		void resetViewport();
+		void initOpenGL();
 
 		//Passthrough
 		void close();
 		void pollEvent();
-		static void initOpenGL();
+		void finishRender();
+		static void terminate();
 
 		//Setter
 		void setSize(const ivec2& size);
@@ -56,7 +57,5 @@ namespace Gum
 		float getAspectRatioWidthToHeight() const;
 		bool isFullscreen() const;
 		bool isOpen() const;
-
-		static void terminate();
 	};
 }

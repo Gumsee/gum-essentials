@@ -26,10 +26,16 @@ file(GLOB_RECURSE SRC "./*.cpp")
 add_library(GumEssentials STATIC ${SRC})
 
 
-file(GLOB_RECURSE HEADERS "./Essentials/*.h")
+file(GLOB HEADERS "./Essentials/*.h")
 install(
 	FILES ${HEADERS} 
 	DESTINATION ${GUM_INSTALLDIR}/Essentials/
+)
+
+file(GLOB HEADERS "./Essentials/Input/*.h")
+install(
+	FILES ${HEADERS} 
+	DESTINATION ${GUM_INSTALLDIR}/Essentials/Input/
 )
 
 install(
