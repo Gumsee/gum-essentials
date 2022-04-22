@@ -10,14 +10,18 @@ add_definitions(-DGUM_OS_LINUX)
 add_definitions(-DDEBUG)
 #add_definitions(-DCHECK_GL_ERRORS)
 
-set(GUMMATH_DIRECTORY "/home/gumse/Projects/gumball/gum-maths/")
-
-#include_directories(${CMAKE_SOURCE_DIR}/external/SFML/src/)
-add_subdirectory(${CMAKE_SOURCE_DIR}/external/SFML/)
-
+set(GUM_INSTALLDIR "/usr/include/gumball/")
+set(GUMBALL_INCLUDE_DIR "/usr/include/gumball/")
+set(GUMMATH_DIRECTORY ${GUMBALL_INCLUDE_DIR})
 
 
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+#
+# Building external libs
+#
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/glfw/)
+
+
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(LIBXML2_WITH_C14N "Add the Canonicalization support" OFF)
 option(LIBXML2_WITH_CATALOG "Add the Catalog support" OFF)
 option(LIBXML2_WITH_DEBUG "Add the debugging module" OFF)

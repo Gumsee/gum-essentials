@@ -1,7 +1,9 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <SFML/Window/Event.hpp>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <gum-maths.h>
+#include "Input/Mouse.h"
+#include "Input/Keyboard.h"
 
 namespace Gum
 {
@@ -11,44 +13,50 @@ namespace Gum
 		//extern SDL_Window *handle;
 		//extern SDL_GLContext maincontext;
 		//extern SDL_Event event;
-		sf::RenderWindow *pRenderWindow;
+		GLFWwindow *pRenderWindow;
 		ivec2 v2RenderQuadSize;
 		ivec2 v2RenderQuadPos;
 		ivec2 v2VisibleAreaSize;
-		ivec2 v2Size;
+		ivec2 v2Size, v2Pos;
 		mat4 m4ScreenMatrix;
 		float fAspectRatio, fAspectRatioWidthToHeight;
 		bool bIsFullscreen = false;
 
+		Input::InputKeyboardClass* pKeyboard;
+		Input::InputMouseClass* pMouse;
+
 	public:
 		Window(bool fullscreen, std::string title, ivec2 windowsize, bool inpercent);
-
-		void resize(const ivec2& size);
-		void handleEvents(sf::Event& event);
 
 		void finishRender();
 		void resetViewport();
 
 		//Passthrough
 		void close();
-		bool pollEvent(sf::Event& event) const;
+		void pollEvent();
 		static void initOpenGL();
 
 		//Setter
 		void setSize(const ivec2& size);
 		void setPosition(const ivec2& pos);
+		void setKeyboard(Input::InputKeyboardClass* keyboard);
+		void setMouse(Input::InputMouseClass* mouse);
+		void setClearColor(vec4 color);
 
 		//Getter
-		sf::RenderWindow* getRenderWindow() const;
+		GLFWwindow* getRenderWindow() const;
 		ivec2 getSize() const;
 		ivec2 getPosition() const;
-		ivec2 getScreenSize() const;
 		ivec2 getRenderQuadSize() const;
 		ivec2 getRenderQuadPos() const;
 		mat4 getScreenMatrix() const;
+		Input::InputKeyboardClass* getKeyboard();
+		Input::InputMouseClass* getMouse();
 		float getAspectRatio() const;
 		float getAspectRatioWidthToHeight() const;
 		bool isFullscreen() const;
 		bool isOpen() const;
+
+		static void terminate();
 	};
 }

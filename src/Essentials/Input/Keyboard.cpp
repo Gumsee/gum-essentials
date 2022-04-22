@@ -1,136 +1,13 @@
 #include "Keyboard.h"
 #include "../Window.h"
-
-#include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 
 namespace Gum {
 namespace Input
 {
-	std::string InputKeyboardClass::key2string(const sf::Keyboard::Key& key) const
+	InputKeyboardClass::InputKeyboardClass(Gum::Window* context)
 	{
-		std::string ret = "";
-		switch(key)
-		{
-			case sf::Keyboard::Key::A: ret = "A"; break;
-			case sf::Keyboard::Key::B: ret = "B"; break;
-			case sf::Keyboard::Key::C: ret = "C"; break;
-			case sf::Keyboard::Key::D: ret = "D"; break;
-			case sf::Keyboard::Key::E: ret = "E"; break;
-			case sf::Keyboard::Key::F: ret = "F"; break;
-			case sf::Keyboard::Key::G: ret = "G"; break;
-			case sf::Keyboard::Key::H: ret = "H"; break;
-			case sf::Keyboard::Key::I: ret = "I"; break;
-			case sf::Keyboard::Key::J: ret = "J"; break;
-			case sf::Keyboard::Key::K: ret = "K"; break;
-			case sf::Keyboard::Key::L: ret = "L"; break;
-			case sf::Keyboard::Key::M: ret = "M"; break;
-			case sf::Keyboard::Key::N: ret = "N"; break;
-			case sf::Keyboard::Key::O: ret = "O"; break;
-			case sf::Keyboard::Key::P: ret = "P"; break;
-			case sf::Keyboard::Key::Q: ret = "Q"; break;
-			case sf::Keyboard::Key::R: ret = "R"; break;
-			case sf::Keyboard::Key::S: ret = "S"; break;
-			case sf::Keyboard::Key::T: ret = "T"; break;
-			case sf::Keyboard::Key::U: ret = "U"; break;
-			case sf::Keyboard::Key::V: ret = "V"; break;
-			case sf::Keyboard::Key::W: ret = "W"; break;
-			case sf::Keyboard::Key::X: ret = "X"; break;
-			case sf::Keyboard::Key::Y: ret = "Y"; break;
-			case sf::Keyboard::Key::Z: ret = "Z"; break;
-
-			case sf::Keyboard::Key::Num0: ret = "0"; break;
-			case sf::Keyboard::Key::Num1: ret = "1"; break;
-			case sf::Keyboard::Key::Num2: ret = "2"; break;
-			case sf::Keyboard::Key::Num3: ret = "3"; break;
-			case sf::Keyboard::Key::Num4: ret = "4"; break;
-			case sf::Keyboard::Key::Num5: ret = "5"; break;
-			case sf::Keyboard::Key::Num6: ret = "6"; break;
-			case sf::Keyboard::Key::Num7: ret = "7"; break;
-			case sf::Keyboard::Key::Num8: ret = "8"; break;
-			case sf::Keyboard::Key::Num9: ret = "9"; break;
-
-			case sf::Keyboard::Key::Numpad0: ret = "Numpad0"; break;
-			case sf::Keyboard::Key::Numpad1: ret = "Numpad1"; break;
-			case sf::Keyboard::Key::Numpad2: ret = "Numpad2"; break;
-			case sf::Keyboard::Key::Numpad3: ret = "Numpad3"; break;
-			case sf::Keyboard::Key::Numpad4: ret = "Numpad4"; break;
-			case sf::Keyboard::Key::Numpad5: ret = "Numpad5"; break;
-			case sf::Keyboard::Key::Numpad6: ret = "Numpad6"; break;
-			case sf::Keyboard::Key::Numpad7: ret = "Numpad7"; break;
-			case sf::Keyboard::Key::Numpad8: ret = "Numpad8"; break;
-			case sf::Keyboard::Key::Numpad9: ret = "Numpad9"; break;
-
-			case sf::Keyboard::Key::F1: 		ret = "F1"; break;
-			case sf::Keyboard::Key::F2: 		ret = "F2"; break;
-			case sf::Keyboard::Key::F3: 		ret = "F3"; break;
-			case sf::Keyboard::Key::F4: 		ret = "F4"; break;
-			case sf::Keyboard::Key::F5: 		ret = "F5"; break;
-			case sf::Keyboard::Key::F6: 		ret = "F6"; break;
-			case sf::Keyboard::Key::F7: 		ret = "F7"; break;
-			case sf::Keyboard::Key::F8: 		ret = "F8"; break;
-			case sf::Keyboard::Key::F9: 		ret = "F9"; break;
-			case sf::Keyboard::Key::F10: 		ret = "F10"; break;
-			case sf::Keyboard::Key::F11: 		ret = "F11"; break;
-			case sf::Keyboard::Key::F12: 		ret = "F12"; break;
-			case sf::Keyboard::Key::F13: 		ret = "F13"; break;
-			case sf::Keyboard::Key::F14: 		ret = "F14"; break;
-			case sf::Keyboard::Key::F15: 		ret = "F15"; break;
-
-			case sf::Keyboard::Key::Escape: 	ret = "Escape"; break;
-			case sf::Keyboard::Key::LControl: 	ret = "LControl"; break;
-			case sf::Keyboard::Key::LShift: 	ret = "LShift"; break;
-			case sf::Keyboard::Key::LAlt: 		ret = "LAlt"; break;
-			case sf::Keyboard::Key::LSystem: 	ret = "LSystem"; break;
-			case sf::Keyboard::Key::RControl: 	ret = "RControl"; break;
-			case sf::Keyboard::Key::RShift: 	ret = "RShift"; break;
-			case sf::Keyboard::Key::RAlt: 		ret = "RAlt"; break;
-			case sf::Keyboard::Key::RSystem: 	ret = "RSystem"; break;
-			case sf::Keyboard::Key::Menu: 		ret = "Menu"; break;
-			case sf::Keyboard::Key::LBracket: 	ret = "LBracket"; break;
-			case sf::Keyboard::Key::RBracket: 	ret = "RBracket"; break;
-			case sf::Keyboard::Key::Semicolon: 	ret = ";"; break;
-			case sf::Keyboard::Key::Comma: 		ret = ","; break;
-			case sf::Keyboard::Key::Period: 	ret = "."; break;
-			case sf::Keyboard::Key::Quote: 		ret = "\'"; break;
-			case sf::Keyboard::Key::Slash: 		ret = "/"; break;
-			case sf::Keyboard::Key::Backslash: 	ret = "\\"; break;
-			case sf::Keyboard::Key::Tilde: 		ret = "~"; break;
-			case sf::Keyboard::Key::Equal: 		ret = "="; break;
-			case sf::Keyboard::Key::Hyphen: 		ret = "-"; break;
-
-			case sf::Keyboard::Key::Space: 		ret = "Space"; break;
-			case sf::Keyboard::Key::Enter: 		ret = "Return"; break;
-			case sf::Keyboard::Key::Backspace: 	ret = "Back"; break;
-			case sf::Keyboard::Key::Tab: 		ret = "Tab"; break;
-
-			case sf::Keyboard::Key::PageUp: 	ret = "Page Up"; break;
-			case sf::Keyboard::Key::PageDown: 	ret = "Page Down"; break;
-			case sf::Keyboard::Key::End: 		ret = "End"; break;
-			case sf::Keyboard::Key::Home: 		ret = "Home"; break;
-			case sf::Keyboard::Key::Insert: 	ret = "Insert"; break;
-			case sf::Keyboard::Key::Delete: 	ret = "Delete"; break;
-			case sf::Keyboard::Key::Pause: 		ret = "Paues"; break;
-
-			case sf::Keyboard::Key::Add: 		ret = "+"; break;
-			case sf::Keyboard::Key::Subtract: 	ret = "-"; break;
-			case sf::Keyboard::Key::Multiply: 	ret = "*"; break;
-			case sf::Keyboard::Key::Divide: 	ret = "/"; break;
-
-			case sf::Keyboard::Key::Left: 		ret = "Left"; break;
-			case sf::Keyboard::Key::Right: 		ret = "Right"; break;
-			case sf::Keyboard::Key::Up: 		ret = "UP"; break;
-			case sf::Keyboard::Key::Down: 		ret = "Down"; break;
-
-			default: ret = ""; break;
-		}
-
-		return ret;
-	}
-
-	void InputKeyboardClass::handleEvents(const sf::Event& event)
-	{
-		switch(event.type)
+		/*switch(event.type)
 		{
 			case sf::Event::KeyPressed:
 				escape = event.key.code == sf::Keyboard::Escape;
@@ -150,35 +27,153 @@ namespace Input
 			case sf::Event::TextEntered:
 			default:
 				break;
+		}*/
+	}
+
+
+	std::string InputKeyboardClass::key2string(const int& key) const
+	{
+		std::string ret = "";
+		switch(key)
+		{
+			case GUM_KEY_A: ret = "A"; break;
+			case GUM_KEY_B: ret = "B"; break;
+			case GUM_KEY_C: ret = "C"; break;
+			case GUM_KEY_D: ret = "D"; break;
+			case GUM_KEY_E: ret = "E"; break;
+			case GUM_KEY_F: ret = "F"; break;
+			case GUM_KEY_G: ret = "G"; break;
+			case GUM_KEY_H: ret = "H"; break;
+			case GUM_KEY_I: ret = "I"; break;
+			case GUM_KEY_J: ret = "J"; break;
+			case GUM_KEY_K: ret = "K"; break;
+			case GUM_KEY_L: ret = "L"; break;
+			case GUM_KEY_M: ret = "M"; break;
+			case GUM_KEY_N: ret = "N"; break;
+			case GUM_KEY_O: ret = "O"; break;
+			case GUM_KEY_P: ret = "P"; break;
+			case GUM_KEY_Q: ret = "Q"; break;
+			case GUM_KEY_R: ret = "R"; break;
+			case GUM_KEY_S: ret = "S"; break;
+			case GUM_KEY_T: ret = "T"; break;
+			case GUM_KEY_U: ret = "U"; break;
+			case GUM_KEY_V: ret = "V"; break;
+			case GUM_KEY_W: ret = "W"; break;
+			case GUM_KEY_X: ret = "X"; break;
+			case GUM_KEY_Y: ret = "Y"; break;
+			case GUM_KEY_Z: ret = "Z"; break;
+
+			case GUM_KEY_0: ret = "0"; break;
+			case GUM_KEY_1: ret = "1"; break;
+			case GUM_KEY_2: ret = "2"; break;
+			case GUM_KEY_3: ret = "3"; break;
+			case GUM_KEY_4: ret = "4"; break;
+			case GUM_KEY_5: ret = "5"; break;
+			case GUM_KEY_6: ret = "6"; break;
+			case GUM_KEY_7: ret = "7"; break;
+			case GUM_KEY_8: ret = "8"; break;
+			case GUM_KEY_9: ret = "9"; break;
+
+			case GUM_KEY_NUMPAD_0: ret = "Numpad0"; break;
+			case GUM_KEY_NUMPAD_1: ret = "Numpad1"; break;
+			case GUM_KEY_NUMPAD_2: ret = "Numpad2"; break;
+			case GUM_KEY_NUMPAD_3: ret = "Numpad3"; break;
+			case GUM_KEY_NUMPAD_4: ret = "Numpad4"; break;
+			case GUM_KEY_NUMPAD_5: ret = "Numpad5"; break;
+			case GUM_KEY_NUMPAD_6: ret = "Numpad6"; break;
+			case GUM_KEY_NUMPAD_7: ret = "Numpad7"; break;
+			case GUM_KEY_NUMPAD_8: ret = "Numpad8"; break;
+			case GUM_KEY_NUMPAD_9: ret = "Numpad9"; break;
+
+			case GUM_KEY_F1: 		ret = "F1"; break;
+			case GUM_KEY_F2: 		ret = "F2"; break;
+			case GUM_KEY_F3: 		ret = "F3"; break;
+			case GUM_KEY_F4: 		ret = "F4"; break;
+			case GUM_KEY_F5: 		ret = "F5"; break;
+			case GUM_KEY_F6: 		ret = "F6"; break;
+			case GUM_KEY_F7: 		ret = "F7"; break;
+			case GUM_KEY_F8: 		ret = "F8"; break;
+			case GUM_KEY_F9: 		ret = "F9"; break;
+			case GUM_KEY_F10: 		ret = "F10"; break;
+			case GUM_KEY_F11: 		ret = "F11"; break;
+			case GUM_KEY_F12: 		ret = "F12"; break;
+			case GUM_KEY_F13: 		ret = "F13"; break;
+			case GUM_KEY_F14: 		ret = "F14"; break;
+			case GUM_KEY_F15: 		ret = "F15"; break;
+			case GUM_KEY_F16: 		ret = "F16"; break;
+			case GUM_KEY_F17: 		ret = "F17"; break;
+			case GUM_KEY_F18: 		ret = "F18"; break;
+			case GUM_KEY_F19: 		ret = "F19"; break;
+			case GUM_KEY_F20: 		ret = "F20"; break;
+			case GUM_KEY_F21: 		ret = "F21"; break;
+			case GUM_KEY_F22: 		ret = "F22"; break;
+			case GUM_KEY_F23: 		ret = "F23"; break;
+			case GUM_KEY_F24: 		ret = "F24"; break;
+			case GUM_KEY_F25: 		ret = "F25"; break;
+
+			case GUM_KEY_ESCAPE: 		ret = "Escape"; break;
+			case GUM_KEY_LEFT_CONTROL: 	ret = "LControl"; break;
+			case GUM_KEY_LEFT_SHIFT: 	ret = "LShift"; break;
+			case GUM_KEY_LEFT_ALT: 		ret = "LAlt"; break;
+			case GUM_KEY_LEFT_SUPER: 	ret = "LSystem"; break;
+			case GUM_KEY_RIGHT_CONTROL: ret = "RControl"; break;
+			case GUM_KEY_RIGHT_SHIFT: 	ret = "RShift"; break;
+			case GUM_KEY_RIGHT_ALT: 	ret = "RAlt"; break;
+			case GUM_KEY_RIGHT_SUPER: 	ret = "RSystem"; break;
+			case GUM_KEY_MENU: 			ret = "Menu"; break;
+			case GUM_KEY_LEFT_BRACKET: 	ret = "LBracket"; break;
+			case GUM_KEY_RIGHT_BRACKET: ret = "RBracket"; break;
+			case GUM_KEY_SEMICOLON: 	ret = ";"; break;
+			case GUM_KEY_COMMA: 		ret = ","; break;
+			case GUM_KEY_PERIOD: 		ret = "."; break;
+			case GLFW_KEY_APOSTROPHE: 	ret = "\'"; break;
+			case GUM_KEY_SLASH: 		ret = "/"; break;
+			case GUM_KEY_BACKSLASH: 	ret = "\\"; break;
+			//case GUM_KEY_Tilde: 		ret = "~"; break;
+			case GUM_KEY_EQUAL: 		ret = "="; break;
+			case GUM_KEY_MINUS: 		ret = "-"; break;
+
+			case GUM_KEY_SPACE: 		ret = "Space"; break;
+			case GUM_KEY_ENTER: 		ret = "Return"; break;
+			case GUM_KEY_BACKSPACE: 	ret = "Back"; break;
+			case GUM_KEY_TAB: 			ret = "Tab"; break;
+
+			case GUM_KEY_PAGE_UP: 		ret = "Page Up"; break;
+			case GUM_KEY_PAGE_DOWN: 	ret = "Page Down"; break;
+			case GUM_KEY_END: 			ret = "End"; break;
+			case GUM_KEY_HOME: 			ret = "Home"; break;
+			case GUM_KEY_INSERT: 		ret = "Insert"; break;
+			case GUM_KEY_DELETE: 		ret = "Delete"; break;
+			case GUM_KEY_PAUSE: 		ret = "Paues"; break;
+
+			case GUM_KEY_NUMPAD_ADD: 		ret = "+"; break;
+			case GUM_KEY_NUMPAD_SUBTRACT: 	ret = "-"; break;
+			case GUM_KEY_NUMPAD_MULTIPLY: 	ret = "*"; break;
+			case GUM_KEY_NUMPAD_DIVIDE: 	ret = "/"; break;
+
+			case GUM_KEY_LEFT: 		ret = "Left"; break;
+			case GUM_KEY_RIGHT: 		ret = "Right"; break;
+			case GUM_KEY_UP: 		ret = "UP"; break;
+			case GUM_KEY_DOWN: 		ret = "Down"; break;
+
+			default: ret = ""; break;
 		}
+
+		return ret;
 	}
 
-	bool InputKeyboardClass::checkKey(const int& key) const
+	bool InputKeyboardClass::checkKeyPressed(const int& key) const
 	{ 
-		return sf::Keyboard::isKeyPressed((sf::Keyboard::Key)key); 
+		return glfwGetKey(pContextWindow->getRenderWindow(), key) == GLFW_PRESS; 
 	}
 
-	bool InputKeyboardClass::checkKey(const std::string& key) const
+	bool InputKeyboardClass::checkKeyReleased(const int& key) const
 	{ 
-		return key == currentKey;
-	}
-
-	bool InputKeyboardClass::checkKeySinglepress(const std::string& key) const
-	{
-		return key == releasedChar;
-	}
-
-	void InputKeyboardClass::reset()
-	{
-		releasedChar = "";
+		return glfwGetKey(pContextWindow->getRenderWindow(), key) == GLFW_RELEASE; 
 	}
 
 	void InputKeyboardClass::setBusiness(const bool& val)  { busy = val; }
 
 
-	std::string InputKeyboardClass::getPressedKey() const  { return currentKey; }
-	std::string InputKeyboardClass::getReleasedKey() const { return releasedChar; }
 	bool InputKeyboardClass::isBusy() const                { return busy; }
-
-	InputKeyboardClass* Keyboard = nullptr;
 }}

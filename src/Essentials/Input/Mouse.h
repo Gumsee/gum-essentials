@@ -1,7 +1,4 @@
 #pragma once
-#include "../Window.h"
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/Mouse.hpp>
 #include <string>
 #include <gum-maths.h>
 
@@ -10,6 +7,8 @@
 #define CURSORTYPE_ARROW_LEFT_RIGHT 2
 
 namespace Gum {
+class Window;
+
 namespace Input
 {
 	class InputMouseClass
@@ -40,19 +39,14 @@ namespace Input
         InputMouseClass(InputMouseClass& other) = delete;
         InputMouseClass& operator=(InputMouseClass& other) = delete;
 
-		bool LeftClick = false;
+		bool LeftClickOnce = false;
 		bool LeftDoubleClick = false;
-		bool RightClick = false;
+		bool RightClickOnce = false;
 		bool RightDoubleClick = false;
-		bool MiddleClick = false;
-		bool LeftRelease = false;
-		bool RightRelease = false;
-		bool MiddleRelease = false;
 		std::string DragAndDropInfo;
 
 		void calcRay();
 		void update();
-		void handleEvents(const sf::Event& event);
 		void freeze(const bool& state);
 
 		//Setter
@@ -81,6 +75,4 @@ namespace Input
 		bool isHidden() const;
 		bool isInArea(const vec2& pos, const vec2& size) const;
 	};
-
-	extern InputMouseClass* Mouse;
 }}

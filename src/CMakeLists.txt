@@ -16,7 +16,7 @@ message(STATUS "GumEssentials: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 include_directories(${CMAKE_SOURCE_DIR}/external/libxml2/include/)
 include_directories(${CMAKE_SOURCE_DIR}/external/SFML/include/)
 include_directories(${CMAKE_BINARY_DIR}/external/libxml2/)
-include_directories(${GUMMATH_DIRECTORY}/src/)
+include_directories(${GUMMATH_DIRECTORY})
 
 #
 # Source
@@ -25,13 +25,18 @@ file(GLOB_RECURSE SRC "./*.cpp")
 
 add_library(GumEssentials STATIC ${SRC})
 
-#
-# Libs
-#
-#find_package(OpenGL REQUIRED)
 
+file(GLOB_RECURSE HEADERS "./Essentials/*.h")
+install(
+	FILES ${HEADERS} 
+	DESTINATION ${GUM_INSTALLDIR}/Essentials/
+)
 
-target_link_libraries(GumEssentials
-	${CMAKE_THREAD_LIBS_INIT}
-	)
+install(
+	FILES "./gum-essentials.h"
+	DESTINATION ${GUM_INSTALLDIR}/
+)
 
+install(TARGETS ${CMAKE_PROJECT_NAME} EXPORT
+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

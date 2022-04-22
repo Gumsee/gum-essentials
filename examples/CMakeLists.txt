@@ -13,11 +13,9 @@ message(STATUS "Examples: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 find_package(PkgConfig REQUIRED)
 find_package(Threads)
 
-include_directories(${CMAKE_SOURCE_DIR}/include/)
-include_directories(${CMAKE_SOURCE_DIR}/include/freetype2/)
-include_directories(${GUMESSENTIALS_DIRECTORY}/src/)
-include_directories(${GUMMATH_DIRECTORY}/src/)
+include_directories(${GUMMATH_DIRECTORY})
 include_directories(${CMAKE_SOURCE_DIR}/src/)
+
 link_directories(${CMAKE_SOURCE_DIR}/lib/)
 
 add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples/\")
@@ -25,11 +23,7 @@ add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples/\")
 set(GUMGUI_LIBRARIES 
     GumEssentials
     GumMaths
-    sfml-graphics
-    sfml-network
-    sfml-audio
-    sfml-window
-    sfml-system
+    glfw
     GLEW 
     GL
     ${CMAKE_THREAD_LIBS_INIT}

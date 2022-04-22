@@ -1,17 +1,54 @@
 #include "Window.h"
-#include <SFML/Window/VideoMode.hpp>
-#include <SFML/Window/WindowStyle.hpp>
-#include <iostream>
 #include "Output.h"
-#include <GL/glew.h>
+#include "Display.h"
 
 namespace Gum
 {
 	Window::Window(bool fullscreen, std::string title, ivec2 windowsize, bool inpercent)
 	{
-		bIsFullscreen = fullscreen;
+		this->bIsFullscreen = fullscreen;
+		this->v2Size = windowsize;
 
-		sf::ContextSettings settings;
+
+    	glfwSetErrorCallback([](int error, const char* description) {
+    		Gum::Output::error("GLFW Error("+std::to_string(error)+"): " + description);
+		});
+
+		if (!glfwInit())
+		{
+    		Gum::Output::error("GLFW: Failed to initialize");
+        	return;
+		}
+
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
+
+		if(v2Size == ivec2(0,0))
+		{
+			v2Size = ivec2(75,75);
+			inpercent = true;
+		}
+
+		if(fullscreen)
+		{
+			v2Size = ivec2(100, 100);
+			inpercent = true;
+		}
+
+		if(inpercent)
+		{
+			v2Size.x = Display::getScreenSize().x * ((float)v2Size.x / 100.0f);
+			v2Size.y = Display::getScreenSize().y * ((float)v2Size.y / 100.0f);
+		}
+		pRenderWindow = glfwCreateWindow(v2Size.x, v2Size.y, title.c_str(), NULL, NULL);
+
+		glfwMakeContextCurrent(pRenderWindow);
+		glfwSwapInterval(1); // Enable vsync
+
+		//LEARN HOWTO USE GLFW AND SET UP AN OPENGL CONTEXT
+
+		/*sf::ContextSettings settings;
 		settings.depthBits = 24;
 		settings.stencilBits = 8;
 		settings.antialiasingLevel = 4;
@@ -19,44 +56,32 @@ namespace Gum
 		settings.minorVersion = 2;
 
 		int style = sf::Style::Default;
-		if(windowsize == ivec2(0,0))
-		{
-			windowsize = ivec2(75,75);
-			inpercent = true;
-		}
-
-		if(fullscreen)
-		{
-			windowsize = ivec2(100, 100);
-			style = sf::Style::None;
-			inpercent = true;
-		}
-
-		sf::VideoMode videoMode(windowsize.x, windowsize.y);
-		if(inpercent)
-		{
-			videoMode.width  = sf::VideoMode::getDesktopMode().width * ((float)windowsize.x / 100.0f);
-			videoMode.height = sf::VideoMode::getDesktopMode().height * ((float)windowsize.y / 100.0f);
-		}
 
 		pRenderWindow = new sf::RenderWindow(videoMode, title, style,	settings);
-		pRenderWindow->setVerticalSyncEnabled(false);
 		pRenderWindow->setMouseCursorVisible(false);
 		//pRenderWindow->setMouseCursorGrabbed(true);
 		//pRenderWindow->resetGLStates();
-
-		v2Size = ivec2(pRenderWindow->getSize().x, pRenderWindow->getSize().y);
-
-		if(v2RenderQuadSize != ivec2(0,0))
-			v2RenderQuadSize = v2Size * v2RenderQuadSize;
-		else
-			v2RenderQuadSize = v2Size;
 		
 		v2RenderQuadPos = ivec2(0,0);
 		fAspectRatio = (float)v2Size.y / (float)v2Size.x;
-		fAspectRatioWidthToHeight = (float)v2Size.x / (float)v2Size.y;
+		fAspectRatioWidthToHeight = (float)v2Size.x / (float)v2Size.y;*/
 
-		resize(v2Size);
+		glfwSetWindowUserPointer(pRenderWindow, this);
+		glfwSetWindowSizeCallback(pRenderWindow, [](GLFWwindow* window, int width, int height) {
+				Window* context = (Window*)glfwGetWindowUserPointer(window);
+				context->v2Size = ivec2(width, height);
+				context->v2RenderQuadSize = context->v2Size;
+				context->fAspectRatio = (float)context->v2Size.y / (float)context->v2Size.x;
+				context->fAspectRatioWidthToHeight = (float)context->v2Size.x / (float)context->v2Size.y;
+				context->m4ScreenMatrix = Gum::Maths::ortho((float)context->v2Size.y, (float)context->v2Size.x, 0.0f, 0.0f, -100.0f, 100.0f);
+			}
+		); //Maybe causes a scope violation
+
+		glfwSetWindowPosCallback(pRenderWindow, [](GLFWwindow* window, int x, int y) {
+				Window* context = (Window*)glfwGetWindowUserPointer(window);
+				context->v2Pos = ivec2(x, y);
+			}
+		); //Maybe causes a scope violation);
 
 		#ifdef DEBUG
 			int minor, major;
@@ -75,24 +100,6 @@ namespace Gum
 		#endif
 	}
 
-	void Window::handleEvents(sf::Event& event)
-	{
-		switch(event.type)
-		{
-			case sf::Event::Resized:
-				resize(ivec2(event.size.width, event.size.height));
-				break;
-
-			case sf::Event::Closed:
-				close();
-				break;
-			case sf::Event::LostFocus:
-			case sf::Event::GainedFocus:
-			default:
-				break;
-		}
-	}
-
 
 	void Window::resetViewport()
 	{
@@ -100,26 +107,18 @@ namespace Gum
 		glScissor(0.0f, 0.0f, getSize().x, getSize().y);
 	}
 
-	void Window::resize(const ivec2& size)
-	{
-		v2RenderQuadSize = size;
-		fAspectRatio = (float)size.y / (float)size.x;
-		fAspectRatioWidthToHeight = (float)size.x / (float)size.y;
-		v2Size = size;
-		m4ScreenMatrix = Gum::Maths::ortho((float)v2Size.y, (float)v2Size.x, 0.0f, 0.0f, -100.0f, 100.0f);
-	}
-
 
 	void Window::finishRender()
 	{
 		//SDL_GL_SwapWindow(Gum::Window->handle);
-		pRenderWindow->display();
+		//pRenderWindow->display();
+        glfwSwapBuffers(pRenderWindow);
 	}
 
 
 	//Passthrough
-	void Window::close()                            { pRenderWindow->close(); }
-	bool Window::pollEvent(sf::Event& event) const  { return pRenderWindow->pollEvent(event); }
+	void Window::close()            { glfwDestroyWindow(pRenderWindow); }
+	void Window::pollEvent()   		{ glfwPollEvents(); }
 
 	
 	void Window::initOpenGL()
@@ -148,20 +147,30 @@ namespace Gum
 
 
 	//Setter
-	void Window::setSize(const ivec2& size)    { pRenderWindow->setSize(sf::Vector2u(size.x, size.y)); resize(size); }
-	void Window::setPosition(const ivec2& pos) { pRenderWindow->setPosition(sf::Vector2i(pos.x, pos.y)); }
+	void Window::setSize(const ivec2& size)    						{ glfwSetWindowSize(pRenderWindow, size.x, size.y); }
+	void Window::setPosition(const ivec2& pos) 						{ glfwSetWindowPos(pRenderWindow, pos.x, pos.y); }
+	void Window::setKeyboard(Input::InputKeyboardClass* keyboard) 	{ this->pKeyboard = keyboard; }
+	void Window::setMouse(Input::InputMouseClass* mouse)		  	{ this->pMouse = mouse; }
+	void Window::setClearColor(vec4 color)							{ glClearColor(color.r, color.g, color.b, color.a); }
 
 
 	//Getter
-	sf::RenderWindow* Window::getRenderWindow() const 	{ return this->pRenderWindow; }
-	ivec2 Window::getSize() const              			{ return this->v2Size; }
-	ivec2 Window::getPosition() const          			{ return ivec2(pRenderWindow->getPosition().x, pRenderWindow->getPosition().y); }
-	ivec2 Window::getScreenSize() const        			{ return ivec2(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height); }
-	ivec2 Window::getRenderQuadSize() const    			{ return this->v2RenderQuadSize; }
-	ivec2 Window::getRenderQuadPos() const     			{ return this->v2RenderQuadPos; }
-	mat4 Window::getScreenMatrix() const				{ return this->m4ScreenMatrix; }
-	float Window::getAspectRatio() const        		{ return this->fAspectRatio; }
-	float Window::getAspectRatioWidthToHeight() const 	{ return this->fAspectRatioWidthToHeight; }
-	bool Window::isFullscreen() const          			{ return this->bIsFullscreen; }
-	bool Window::isOpen() const                			{ return pRenderWindow->isOpen(); }
+	GLFWwindow* Window::getRenderWindow() const 					{ return this->pRenderWindow; }
+	ivec2 Window::getSize() const              						{ return this->v2Size; }
+	ivec2 Window::getPosition() const          						{ return this->v2Pos; }
+	ivec2 Window::getRenderQuadSize() const    						{ return this->v2RenderQuadSize; }
+	ivec2 Window::getRenderQuadPos() const     						{ return this->v2RenderQuadPos; }
+	mat4 Window::getScreenMatrix() const							{ return this->m4ScreenMatrix; }
+	Input::InputKeyboardClass* Window::getKeyboard()				{ return this->pKeyboard; }
+	Input::InputMouseClass* Window::getMouse()						{ return this->pMouse; }
+	float Window::getAspectRatio() const        					{ return this->fAspectRatio; }
+	float Window::getAspectRatioWidthToHeight() const 				{ return this->fAspectRatioWidthToHeight; }
+	bool Window::isFullscreen() const          						{ return this->bIsFullscreen; }
+	bool Window::isOpen() const                						{ return !glfwWindowShouldClose(pRenderWindow); }
+
+	
+	void Window::terminate()
+	{
+    	glfwTerminate();
+	}
 }

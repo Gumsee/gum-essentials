@@ -1,6 +1,6 @@
 #pragma once
 #include <map>
-#include <SFML/Window/Keyboard.hpp>
+#include "Keyboard.h"
 #include <string>
 
 namespace Gum {
@@ -10,20 +10,19 @@ namespace Input
 	{
 	private:
 		int iCurrentKey;
-		std::map<std::string, sf::Keyboard::Key> mControls;
+		InputKeyboardClass* pKeyboard;
+		std::map<std::string, int> mControls;
 
 	public:
-		InputControlsClass();
+		InputControlsClass(InputKeyboardClass* keyboard);
 
 		bool checkControl(const char* ControlName);
 
 		//Setter
 		void setCurrentKey(const int& character);
-		void setControl(const std::string& ControlName, const sf::Keyboard::Key& key);
+		void setControl(const std::string& ControlName, const int& key);
 		
 		//Getter
 		char getCurrentKey() const;
 	};
-
-	extern InputControlsClass* Controls;
 }}

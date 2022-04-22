@@ -1,15 +1,15 @@
 #pragma once
-#ifdef GUM_OS_LINUX
-    #include <X11/Xlib.h>
-#endif
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <gum-maths.h>
 
 namespace Gum {
 namespace Display
 {
-    #ifdef GUM_OS_LINUX
-        extern ::Display* pXDisplay;
-    #endif
-
-    extern void init();
-    extern void destroy();
+    extern std::vector<GLFWmonitor*> getMonitors();
+    extern GLFWmonitor* getPrimaryMonitor();
+    extern ivec2 getScreenSize(GLFWmonitor* screen = nullptr);
+    extern int getScreenRefreshrate(GLFWmonitor* screen = nullptr);
+    extern ivec3 getScreenPixelDepth(GLFWmonitor* screen = nullptr);
+    extern void printInfo();
 }}

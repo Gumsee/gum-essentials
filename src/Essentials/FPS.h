@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include <chrono>
 
 namespace FPS
 {
@@ -8,5 +8,5 @@ namespace FPS
 	extern float get();
 
 	extern float Current;
-	extern sf::Clock *pClock;
+	extern std::chrono::system_clock::time_point clock;
 }

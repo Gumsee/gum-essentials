@@ -4,18 +4,13 @@
 namespace FPS
 {
 	float Current = 0;
-	sf::Clock *pClock;
-
-	void init()
-	{
-		pClock = new sf::Clock();
-	}
+	std::chrono::system_clock::time_point clock = std::chrono::high_resolution_clock::now();
 
 	void update()
 	{
-		//Gum::Output::debug("Updating FPS");
-		Current = pClock->getElapsedTime().asSeconds();
-		pClock->restart();
+		auto elapsed = std::chrono::high_resolution_clock::now() - clock;
+		Current = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+		clock = std::chrono::high_resolution_clock::now();
 	}
 
 	float get() { return Current; }
