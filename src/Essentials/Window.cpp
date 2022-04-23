@@ -9,11 +9,12 @@ namespace Gum
 	{
 		this->bIsFullscreen = fullscreen;
 		this->v2Size = windowsize;
+		this->sTitle = title;
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 		glfwWindowHint(GLFW_DECORATED, (int)!borderless);
-		glfwWindowHint(GLFW_FLOATING, (int)(parentWindow != nullptr));
+		//glfwWindowHint(GLFW_FLOATING, (int)(parentWindow != nullptr));
 
 
 		if(v2Size == ivec2(0,0))
@@ -153,6 +154,7 @@ namespace Gum
 	ivec2 Window::getSize() const              						{ return this->v2Size; }
 	ivec2 Window::getPosition() const          						{ return this->v2Pos; }
 	mat4 Window::getScreenMatrix() const							{ return this->m4ScreenMatrix; }
+	std::string Window::getTitle() const							{ return this->sTitle; }
 	Input::InputKeyboardClass* Window::getKeyboard()				{ return this->pKeyboard; }
 	Input::InputMouseClass* Window::getMouse()						{ return this->pMouse; }
 	float Window::getAspectRatio() const        					{ return this->fAspectRatio; }

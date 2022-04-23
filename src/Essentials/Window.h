@@ -16,6 +16,7 @@ namespace Gum
 		mat4 m4ScreenMatrix;
 		float fAspectRatio, fAspectRatioWidthToHeight;
 		bool bIsFullscreen = false;
+		std::string sTitle;
 
 		Input::InputKeyboardClass* pKeyboard;
 		Input::InputMouseClass* pMouse;
@@ -45,6 +46,7 @@ namespace Gum
 		ivec2 getSize() const;
 		ivec2 getPosition() const;
 		mat4 getScreenMatrix() const;
+		std::string getTitle() const;
 		Input::InputKeyboardClass* getKeyboard();
 		Input::InputMouseClass* getMouse();
 		float getAspectRatio() const;
