@@ -147,7 +147,14 @@ namespace Gum
 	void Window::setMouse(Input::InputMouseClass* mouse)		  	{ this->pMouse = mouse; }
 	void Window::setClearColor(vec4 color)							{ glClearColor(color.r, color.g, color.b, color.a); }
 	void Window::setVerticalSync(bool vsync)						{ glfwSwapInterval((int)vsync); }
-
+	void Window::hide(bool hiddenstat)                         				
+	{ 
+		bHidden = hiddenstat;
+		if(bHidden)
+			glfwHideWindow(pRenderWindow);
+		else
+			glfwShowWindow(pRenderWindow);
+	}
 
 	//Getter
 	GLFWwindow* Window::getRenderWindow() const 					{ return this->pRenderWindow; }

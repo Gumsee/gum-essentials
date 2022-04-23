@@ -16,6 +16,7 @@ namespace Gum
 		mat4 m4ScreenMatrix;
 		float fAspectRatio, fAspectRatioWidthToHeight;
 		bool bIsFullscreen = false;
+		bool bHidden = false;
 		std::string sTitle;
 
 		Input::InputKeyboardClass* pKeyboard;
@@ -40,6 +41,7 @@ namespace Gum
 		void setMouse(Input::InputMouseClass* mouse);
 		void setClearColor(vec4 color);
 		void setVerticalSync(bool vsync);
+		void hide(bool hiddenstat);
 
 		//Getter
 		GLFWwindow* getRenderWindow() const;
