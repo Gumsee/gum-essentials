@@ -1,10 +1,34 @@
 #include "Display.h"
 #include "Output.h"
+#include <GLFW/glfw3.h>
 #include <string>
 
 namespace Gum {
 namespace Display
 {
+    void init()
+	{
+    	glfwSetErrorCallback([](int error, const char* description) {
+    		Gum::Output::error("GLFW Error("+std::to_string(error)+"): " + description);
+		});
+
+		if (!glfwInit())
+		{
+    		Gum::Output::error("GLFW: Failed to initialize");
+        	return;
+		}
+	}
+
+    void terminate()
+	{
+		glfwTerminate();
+	}
+
+	void pollEvents() 
+	{ 
+		glfwPollEvents();
+	}
+
 	std::vector<GLFWmonitor*> getMonitors()
 	{
 		int count;

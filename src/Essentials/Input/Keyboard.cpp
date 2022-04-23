@@ -28,6 +28,8 @@ namespace Input
 			default:
 				break;
 		}*/
+
+		pContextWindow = context;
 	}
 
 

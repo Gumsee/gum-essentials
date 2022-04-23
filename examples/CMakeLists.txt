@@ -13,9 +13,8 @@ message(STATUS "Examples: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 find_package(PkgConfig REQUIRED)
 find_package(Threads)
 
-include_directories(${GUMMATH_DIRECTORY})
 include_directories(${CMAKE_SOURCE_DIR}/src/)
-include_directories(${CMAKE_SOURCE_DIR}/src/Essentials)
+include_directories(${GUMMATH_DIRECTORY})
 
 link_directories(${CMAKE_SOURCE_DIR}/lib/)
 

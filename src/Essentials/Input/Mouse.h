@@ -26,6 +26,13 @@ namespace Input
 		float lastClickTimeLeft = 0.0f;
 		float lastClickTimeRight = 0.0f;
 
+		bool LeftClickOnce = false;
+		bool RightClickOnce = false;
+		bool LeftReleased = false;
+		bool RightReleased = false;
+		bool LeftDoubleClick = false;
+		bool RightDoubleClick = false;
+
 		bool defaulHideState;
 		bool defaulTrapState;
 		bool updateonclick;
@@ -39,14 +46,10 @@ namespace Input
         InputMouseClass(InputMouseClass& other) = delete;
         InputMouseClass& operator=(InputMouseClass& other) = delete;
 
-		bool LeftClickOnce = false;
-		bool LeftDoubleClick = false;
-		bool RightClickOnce = false;
-		bool RightDoubleClick = false;
 		std::string DragAndDropInfo;
 
 		void calcRay();
-		void update();
+		void reset();
 		void freeze(const bool& state);
 
 		//Setter
@@ -74,5 +77,13 @@ namespace Input
 		bool isBusy() const;
 		bool isHidden() const;
 		bool isInArea(const vec2& pos, const vec2& size) const;
+		bool hasLeftClick();
+		bool hasRightClick();
+		bool hasLeftDoubleClick();
+		bool hasRightDoubleClick();
+		bool hasLeftRelease();
+		bool hasRightRelease();
+		bool hasMiddleClick();
+		bool hasMiddleRelease();
 	};
 }}

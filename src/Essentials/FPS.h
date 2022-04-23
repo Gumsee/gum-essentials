@@ -3,7 +3,6 @@
 
 namespace FPS
 {
-	extern void init();
 	extern void update();
 	extern float get();
 

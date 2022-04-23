@@ -1,27 +1,19 @@
 #include "Window.h"
 #include "Output.h"
 #include "Display.h"
+#include <GLFW/glfw3.h>
 
 namespace Gum
 {
-	Window::Window(bool fullscreen, std::string title, ivec2 windowsize, bool inpercent)
+	Window::Window(bool fullscreen, std::string title, ivec2 windowsize, bool inpercent, bool borderless, Window* parentWindow)
 	{
 		this->bIsFullscreen = fullscreen;
 		this->v2Size = windowsize;
 
-
-    	glfwSetErrorCallback([](int error, const char* description) {
-    		Gum::Output::error("GLFW Error("+std::to_string(error)+"): " + description);
-		});
-
-		if (!glfwInit())
-		{
-    		Gum::Output::error("GLFW: Failed to initialize");
-        	return;
-		}
-
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+		glfwWindowHint(GLFW_DECORATED, (int)!borderless);
+		glfwWindowHint(GLFW_FLOATING, (int)(parentWindow != nullptr));
 
 
 		if(v2Size == ivec2(0,0))
@@ -41,10 +33,13 @@ namespace Gum
 			v2Size.x = Display::getScreenSize().x * ((float)v2Size.x / 100.0f);
 			v2Size.y = Display::getScreenSize().y * ((float)v2Size.y / 100.0f);
 		}
-		pRenderWindow = glfwCreateWindow(v2Size.x, v2Size.y, title.c_str(), NULL, NULL);
+		GLFWwindow* parentGLFWWindow = nullptr;
+		if(parentWindow != nullptr)
+			parentGLFWWindow = parentWindow->getRenderWindow();
+		pRenderWindow = glfwCreateWindow(v2Size.x, v2Size.y, title.c_str(), NULL, parentGLFWWindow);
 
-		glfwMakeContextCurrent(pRenderWindow);
-		glfwSwapInterval(1); // Enable vsync
+		bind();
+		setVerticalSync(false); // Enable vsync
 
 		//LEARN HOWTO USE GLFW AND SET UP AN OPENGL CONTEXT
 
@@ -70,18 +65,29 @@ namespace Gum
 		glfwSetWindowSizeCallback(pRenderWindow, [](GLFWwindow* window, int width, int height) {
 				Window* context = (Window*)glfwGetWindowUserPointer(window);
 				context->v2Size = ivec2(width, height);
-				context->v2RenderQuadSize = context->v2Size;
 				context->fAspectRatio = (float)context->v2Size.y / (float)context->v2Size.x;
 				context->fAspectRatioWidthToHeight = (float)context->v2Size.x / (float)context->v2Size.y;
 				context->m4ScreenMatrix = Gum::Maths::ortho((float)context->v2Size.y, (float)context->v2Size.x, 0.0f, 0.0f, -100.0f, 100.0f);
 			}
 		); //Maybe causes a scope violation
+		fAspectRatio = (float)v2Size.y / (float)v2Size.x;
+		fAspectRatioWidthToHeight = (float)v2Size.x / (float)v2Size.y;
+		m4ScreenMatrix = Gum::Maths::ortho((float)v2Size.y, (float)v2Size.x, 0.0f, 0.0f, -100.0f, 100.0f);
 
 		glfwSetWindowPosCallback(pRenderWindow, [](GLFWwindow* window, int x, int y) {
 				Window* context = (Window*)glfwGetWindowUserPointer(window);
 				context->v2Pos = ivec2(x, y);
 			}
 		); //Maybe causes a scope violation);
+
+		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glDepthFunc(GL_LEQUAL);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		#ifdef DEBUG
 			int minor, major;
@@ -109,10 +115,10 @@ namespace Gum
 
 
 	//Passthrough
-	void Window::close()            { glfwDestroyWindow(pRenderWindow); }
-	void Window::pollEvent()   		{ glfwPollEvents(); }
-	void Window::finishRender() 	{ glfwSwapBuffers(pRenderWindow); }
-	void Window::terminate() 		{ glfwTerminate(); }
+	void Window::close()            	{ glfwDestroyWindow(pRenderWindow); }
+	void Window::finishRender() 		{ glfwSwapBuffers(pRenderWindow); }
+	void Window::bind()					{ glfwMakeContextCurrent(pRenderWindow); }
+	void Window::clear(int clearbits) 	{ glClear(clearbits); }
 
 	
 	void Window::initOpenGL()
@@ -124,13 +130,6 @@ namespace Gum
 
 		if(err != GLEW_OK)
 			Gum::Output::error("GLEW ERROR: " + std::string(reinterpret_cast<const char*>(glewGetErrorString(err))));
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glDepthFunc(GL_LEQUAL);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		//glEnable(GL_STENCIL_TEST);
 		//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -146,14 +145,13 @@ namespace Gum
 	void Window::setKeyboard(Input::InputKeyboardClass* keyboard) 	{ this->pKeyboard = keyboard; }
 	void Window::setMouse(Input::InputMouseClass* mouse)		  	{ this->pMouse = mouse; }
 	void Window::setClearColor(vec4 color)							{ glClearColor(color.r, color.g, color.b, color.a); }
+	void Window::setVerticalSync(bool vsync)						{ glfwSwapInterval((int)vsync); }
 
 
 	//Getter
 	GLFWwindow* Window::getRenderWindow() const 					{ return this->pRenderWindow; }
 	ivec2 Window::getSize() const              						{ return this->v2Size; }
 	ivec2 Window::getPosition() const          						{ return this->v2Pos; }
-	ivec2 Window::getRenderQuadSize() const    						{ return this->v2RenderQuadSize; }
-	ivec2 Window::getRenderQuadPos() const     						{ return this->v2RenderQuadPos; }
 	mat4 Window::getScreenMatrix() const							{ return this->m4ScreenMatrix; }
 	Input::InputKeyboardClass* Window::getKeyboard()				{ return this->pKeyboard; }
 	Input::InputMouseClass* Window::getMouse()						{ return this->pMouse; }

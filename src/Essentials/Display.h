@@ -6,6 +6,9 @@
 namespace Gum {
 namespace Display
 {
+    extern void init();
+    extern void terminate();
+    extern void pollEvents();
     extern std::vector<GLFWmonitor*> getMonitors();
     extern GLFWmonitor* getPrimaryMonitor();
     extern ivec2 getScreenSize(GLFWmonitor* screen = nullptr);

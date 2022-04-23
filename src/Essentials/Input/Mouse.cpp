@@ -2,6 +2,7 @@
 #include "../Output.h"
 #include "../Window.h"
 #include "../FPS.h"
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 namespace Gum {
@@ -28,10 +29,12 @@ namespace Input
         DragAndDropInfo = "";
         mouseOnID = -1;
         
+        //glfwSetInputMode(pContextWindow->getRenderWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(pContextWindow->getRenderWindow(), GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         glfwSetCursorPosCallback(pContextWindow->getRenderWindow(), [](GLFWwindow* window, double x, double y) {
 				InputMouseClass* mouseptr = ((Window*)glfwGetWindowUserPointer(window))->getMouse();
-                mouseptr->v2PositionDelta = ivec2(0,0);
                 mouseptr->v2PreviousPosition = mouseptr->v2Position;
                 mouseptr->v2Position.x = x;
                 mouseptr->v2Position.y = y;
@@ -77,35 +80,21 @@ namespace Input
                         else
                             mouseptr->lastClickTimeRight = 0;
                     }
+
                 }
+
+                if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+                    mouseptr->LeftReleased = true; 
+                else if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+                    mouseptr->RightReleased = true; 
             }
         );
-        
-        /*switch (event.type)
-        {
-            case sf::Event::MouseWheelScrolled:
-                iMouseWheelState = event.mouseWheelScroll.delta;
-                break;
 
-            case sf::Event::MouseMoved:
-                break;
-
-            /*case sf::Event::MouseButtonReleased:
-                switch(event.mouseButton.button)
-                {
-                    case sf::Mouse::Right:  RightRelease  = true; break;
-                    case sf::Mouse::Left:   LeftRelease   = true; break;
-                    case sf::Mouse::Middle: MiddleRelease = true; break;
-                    default:                                      break;
-                }
-                break;*/
-
-            /*case sf::Event::MouseButtonPressed:
-            case sf::Event::MouseEntered:
-            case sf::Event::MouseLeft:
-            default:
-                break;
-        }*/
+        glfwSetScrollCallback(pContextWindow->getRenderWindow(), [](GLFWwindow* window, double xoffset, double yoffset) {
+                InputMouseClass* mouseptr = ((Window*)glfwGetWindowUserPointer(window))->getMouse();
+                mouseptr->iMouseWheelState = yoffset;
+            }
+        );
     }
 
 
@@ -143,10 +132,13 @@ namespace Input
         rayDir = vec3::normalize(rayDir);*/
 	}
 
-    void InputMouseClass::update()
+    void InputMouseClass::reset()
     {
+        v2PositionDelta = ivec2(0,0);
         lastClickTimeLeft += FPS::get();
         lastClickTimeRight += FPS::get();
+		LeftReleased = false;
+		RightReleased = false;
 
 		iMouseWheelState = 0;
         CursorType = 0;
@@ -207,4 +199,13 @@ namespace Input
     unsigned int InputMouseClass::getInstanceIDUnderMouse() const           { return this->mouseOnID; }
 	bool InputMouseClass::isBusy() const 						            { return this->bIsBusy; }
     bool InputMouseClass::isHidden() const                                  { return this->bIsHidden; }
+    
+    bool InputMouseClass::hasLeftClick()        { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS; }
+    bool InputMouseClass::hasRightClick()       { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS; }
+    bool InputMouseClass::hasLeftDoubleClick()  { return LeftDoubleClick; }
+    bool InputMouseClass::hasRightDoubleClick() { return RightDoubleClick; }
+    bool InputMouseClass::hasLeftRelease()      { return LeftReleased; }
+    bool InputMouseClass::hasRightRelease()     { return RightReleased; }
+    bool InputMouseClass::hasMiddleClick()      { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS; }
+    bool InputMouseClass::hasMiddleRelease()    { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE; }
 }}

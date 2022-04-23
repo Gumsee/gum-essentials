@@ -9,7 +9,7 @@ namespace FPS
 	void update()
 	{
 		auto elapsed = std::chrono::high_resolution_clock::now() - clock;
-		Current = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+		Current = std::chrono::duration<double>(elapsed).count();
 		clock = std::chrono::high_resolution_clock::now();
 	}
 
