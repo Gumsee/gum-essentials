@@ -34,6 +34,25 @@ namespace Tools
     extern std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces = true);
     extern bool strContains(std::string str, std::string contain);
     extern bool isInList(const int& item, const std::vector<int>& list);
+
     extern std::string strExtractNumbers(std::string str);
     extern std::string toUpperCase(std::string str);
+
+    template<typename T>
+    static bool checkBoxIntersection(tvec<T, 2> pos1, tvec<T, 2> size1, tvec<T, 2> pos2, tvec<T, 2> size2)
+    {
+        return  pos1.x           <= pos2.x + size2.x &&
+                pos1.x + size1.x >= pos2.x           && 
+                pos1.y           <= pos2.y + size2.y && 
+                pos1.y + size1.y >= pos2.y;
+    }
+
+    template<typename T>
+    static bool checkPointInBox(tvec<T, 2> point, tvec<T, 2> boxpos, tvec<T, 2> boxsize)
+    {
+            return  point.x <= boxpos.x + boxsize.x &&
+                    point.x >= boxpos.x && 
+                    point.y <= boxpos.y + boxsize.y && 
+                    point.y >= boxpos.y;
+    }
 }

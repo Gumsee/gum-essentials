@@ -1,13 +1,26 @@
 #include "Window.h"
 #include "Output.h"
 #include "Display.h"
+#include <GL/glx.h>
 #include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_EXPOSE_NATIVE_GLX
+#include <GLFW/glfw3native.h>
 
 namespace Gum
 {
+	Window* Window::MainWindow = nullptr;
+	Window* Window::CurrentlyBoundWindow = nullptr;
+	bool Window::WINDOW_IS_ACTIVE_SCALING = false;
+	Window* Window::WINDOW_IS_ACTIVE_MOVING = nullptr;
+
 	Window::Window(bool fullscreen, std::string title, ivec2 windowsize, bool inpercent, bool borderless, Window* parentWindow)
 	{
+		this->bIsResizable = false;
+		this->bHidden = false;
+		this->bScalingSnapped = false;
 		this->bIsFullscreen = fullscreen;
+		this->bHasBorder = !borderless;
 		this->v2Size = windowsize;
 		this->sTitle = title;
 
@@ -34,11 +47,15 @@ namespace Gum
 			v2Size.x = Display::getScreenSize().x * ((float)v2Size.x / 100.0f);
 			v2Size.y = Display::getScreenSize().y * ((float)v2Size.y / 100.0f);
 		}
-		GLFWwindow* parentGLFWWindow = nullptr;
+		GLFWwindow* parentGLFWWindow = NULL;
 		if(parentWindow != nullptr)
 			parentGLFWWindow = parentWindow->getRenderWindow();
 		pRenderWindow = glfwCreateWindow(v2Size.x, v2Size.y, title.c_str(), NULL, parentGLFWWindow);
 
+		glfwMakeContextCurrent(pRenderWindow);
+		if(Window::MainWindow == nullptr)
+			Window::MainWindow = this;
+		
 		bind();
 		setVerticalSync(false); // Enable vsync
 
@@ -69,6 +86,9 @@ namespace Gum
 				context->fAspectRatio = (float)context->v2Size.y / (float)context->v2Size.x;
 				context->fAspectRatioWidthToHeight = (float)context->v2Size.x / (float)context->v2Size.y;
 				context->m4ScreenMatrix = Gum::Maths::ortho((float)context->v2Size.y, (float)context->v2Size.x, 0.0f, 0.0f, -100.0f, 100.0f);
+
+				for(size_t i = 0; i < context->vResizeFunctions.size(); i++)
+					context->vResizeFunctions[i](width, height);
 			}
 		); //Maybe causes a scope violation
 		fAspectRatio = (float)v2Size.y / (float)v2Size.x;
@@ -80,31 +100,12 @@ namespace Gum
 				context->v2Pos = ivec2(x, y);
 			}
 		); //Maybe causes a scope violation);
+	}
 
-		
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glDepthFunc(GL_LEQUAL);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		#ifdef DEBUG
-			int minor, major;
-			const GLubyte* glrenderer = glGetString(GL_RENDERER); // get renderer string
-			const GLubyte* version = glGetString(GL_VERSION); // version as a string
-			//const GLubyte* Extensions = glGetString(GL_EXTENSIONS);
-			const GLubyte* vendor = glGetString(GL_VENDOR);
-			const GLubyte* shaderversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-			glGetIntegerv(GL_MAJOR_VERSION, &major);
-			glGetIntegerv(GL_MINOR_VERSION, &minor);	
-			Gum::Output::info("Renderer: "                + std::string(reinterpret_cast<const char*>(glrenderer)));
-			Gum::Output::info("OpenGL version supported " + std::string(reinterpret_cast<const char*>(version)));
-			Gum::Output::info("GLSL version supported "   + std::string(reinterpret_cast<const char*>(shaderversion)));
-			Gum::Output::info("OpenGL Version "           + std::to_string(major) + "." + std::to_string(minor));
-			Gum::Output::info("OpenGL Graphics Vendor: "  + std::string(reinterpret_cast<const char*>(vendor)));
-		#endif
+	Window::~Window()
+	{
+    	close();
+		delete pRenderWindow;
 	}
 
 
@@ -114,12 +115,69 @@ namespace Gum
 		glScissor(0.0f, 0.0f, getSize().x, getSize().y);
 	}
 
+	void Window::update()
+	{
+		if(bIsResizable && !bHasBorder && this->pMouse != nullptr)
+		{
+			if (pMouse->isInArea(getSize() - ivec2(20, 20), getSize()))
+			{
+				pMouse->setCursorType(CURSORTYPE_SCALE);
+				if(pMouse->hasLeftClick() && !pMouse->isBusy())
+				{
+					if(!Gum::Window::WINDOW_IS_ACTIVE_SCALING)
+					{
+						Gum::Window::WINDOW_IS_ACTIVE_SCALING = true;
+						bScalingSnapped = true;
+						pMouse->setBusiness(true);
+					}
+				}
+			}
+
+			if(bScalingSnapped)
+			{
+				pMouse->setCursorType(CURSORTYPE_SCALE);
+				setSize(getSize() + pMouse->getDelta());
+
+				if(getSize().x < 100)
+				{
+					setSize(vec2(100, v2Size.y));
+				}
+				if(getSize().y < 100)
+				{
+					setSize(vec2(v2Size.x, 100));
+				}
+
+				if(!pMouse->hasLeftClick())
+				{
+					Gum::Window::WINDOW_IS_ACTIVE_SCALING = false;
+					bScalingSnapped = false;
+					pMouse->setBusiness(false);
+				}
+			}
+		}
+	}
+
 
 	//Passthrough
 	void Window::close()            	{ glfwDestroyWindow(pRenderWindow); }
 	void Window::finishRender() 		{ glfwSwapBuffers(pRenderWindow); }
-	void Window::bind()					{ glfwMakeContextCurrent(pRenderWindow); }
 	void Window::clear(int clearbits) 	{ glClear(clearbits); }
+	void Window::bind()					
+	{ 
+		GLXContext context = glfwGetGLXContext(Window::MainWindow->getRenderWindow());
+		GLXWindow win = glfwGetGLXWindow(pRenderWindow);
+		glXMakeCurrent(glfwGetX11Display(), win, context);
+		Window::CurrentlyBoundWindow = this;
+		glViewport(0.0f, 0.0f, getSize().x, getSize().y);
+	}
+	void Window::unbind()
+	{ 
+		GLXContext context = glfwGetGLXContext(Window::MainWindow->getRenderWindow());
+		GLXWindow win = glfwGetGLXWindow(Window::MainWindow->getRenderWindow());
+		glXMakeCurrent(glfwGetX11Display(), win, context);
+		Window::CurrentlyBoundWindow = Window::MainWindow;
+		glViewport(0.0f, 0.0f, Window::MainWindow->getSize().x, Window::MainWindow->getSize().y);
+	}
 
 	
 	void Window::initOpenGL()
@@ -135,8 +193,39 @@ namespace Gum
 		//glEnable(GL_STENCIL_TEST);
 		//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glDepthFunc(GL_LEQUAL);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		#ifdef DEBUG
+			int minor, major;
+			const GLubyte* glrenderer = glGetString(GL_RENDERER); // get renderer string
+			const GLubyte* version = glGetString(GL_VERSION); // version as a string
+			//const GLubyte* Extensions = glGetString(GL_EXTENSIONS);
+			const GLubyte* vendor = glGetString(GL_VENDOR);
+			const GLubyte* shaderversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+			glGetIntegerv(GL_MAJOR_VERSION, &major);
+			glGetIntegerv(GL_MINOR_VERSION, &minor);
+			Gum::Output::info("");
+			Gum::Output::info("Context Info:");
+			Gum::Output::info("Renderer: "                + std::string(reinterpret_cast<const char*>(glrenderer)));
+			Gum::Output::info("OpenGL version supported " + std::string(reinterpret_cast<const char*>(version)));
+			Gum::Output::info("GLSL version supported "   + std::string(reinterpret_cast<const char*>(shaderversion)));
+			Gum::Output::info("OpenGL Version "           + std::to_string(major) + "." + std::to_string(minor));
+			Gum::Output::info("OpenGL Graphics Vendor: "  + std::string(reinterpret_cast<const char*>(vendor)));
+		#endif
 
 		Gum::Output::info("Successfully initialized OpenGL Variables!");
+	}
+
+	
+	void Window::onResize(std::function<void(int x, int y)> resize)
+	{
+		vResizeFunctions.push_back(resize);
 	}
 
 
@@ -147,6 +236,8 @@ namespace Gum
 	void Window::setMouse(Input::InputMouseClass* mouse)		  	{ this->pMouse = mouse; }
 	void Window::setClearColor(vec4 color)							{ glClearColor(color.r, color.g, color.b, color.a); }
 	void Window::setVerticalSync(bool vsync)						{ glfwSwapInterval((int)vsync); }
+	void Window::setTitle(const std::string& title)					{ glfwSetWindowTitle(pRenderWindow, title.c_str()); this->sTitle = title; }
+	void Window::setResizable(const bool& resizable)				{ this->bIsResizable = resizable; }
 	void Window::hide(bool hiddenstat)                         				
 	{ 
 		bHidden = hiddenstat;
@@ -168,4 +259,7 @@ namespace Gum
 	float Window::getAspectRatioWidthToHeight() const 				{ return this->fAspectRatioWidthToHeight; }
 	bool Window::isFullscreen() const          						{ return this->bIsFullscreen; }
 	bool Window::isOpen() const                						{ return !glfwWindowShouldClose(pRenderWindow); }
+
+	
+	Window* MainWindow = nullptr;
 }

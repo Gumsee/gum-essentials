@@ -1,6 +1,7 @@
 #include "Mouse.h"
 #include "../Output.h"
 #include "../Window.h"
+#include "../Tools.h"
 #include "../FPS.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -150,14 +151,7 @@ namespace Input
 
 	bool InputMouseClass::isInArea(const vec2& pos, const vec2& size) const
 	{
-		if (getPosition().x <= pos.x + size.x &&
-		getPosition().x >= pos.x && 
-		getPosition().y <= pos.y + size.y && 
-		getPosition().y >= pos.y )
-		{
-			return true;
-		}
-		return false;
+        return Tools::checkPointInBox(getPosition(), pos, size);
 	}
 
 	void InputMouseClass::freeze(const bool& state)

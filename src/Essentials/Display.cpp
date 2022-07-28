@@ -2,6 +2,7 @@
 #include "Output.h"
 #include <GLFW/glfw3.h>
 #include <string>
+#include <thread>
 
 namespace Gum {
 namespace Display
@@ -17,6 +18,15 @@ namespace Display
     		Gum::Output::error("GLFW: Failed to initialize");
         	return;
 		}
+
+		/*std::thread eventThread([]() {
+			while(true)
+			{
+				//glfwWaitEvents();
+        		Gum::Display::pollEvents();
+			}
+		});
+		eventThread.detach();*/
 	}
 
     void terminate()
