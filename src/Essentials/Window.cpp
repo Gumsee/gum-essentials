@@ -14,39 +14,34 @@ namespace Gum
 	bool Window::WINDOW_IS_ACTIVE_SCALING = false;
 	Window* Window::WINDOW_IS_ACTIVE_MOVING = nullptr;
 
-	Window::Window(bool fullscreen, std::string title, ivec2 windowsize, bool inpercent, bool borderless, Window* parentWindow)
+	Window::Window(std::string title, ivec2 windowsize, int properties, Window* parentWindow)
 	{
 		this->bIsResizable = false;
 		this->bHidden = false;
 		this->bScalingSnapped = false;
-		this->bIsFullscreen = fullscreen;
-		this->bHasBorder = !borderless;
+		this->bIsFullscreen = properties & Properties::WINDOW_FULLSCREEN;
+		this->bHasBorder = !(bool)(properties & Properties::WINDOW_BORDERLESS);
+		this->bIsFloating = properties & Properties::WINDOW_FLOATING;
 		this->v2Size = windowsize;
 		this->sTitle = title;
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-		glfwWindowHint(GLFW_DECORATED, (int)!borderless);
-		//glfwWindowHint(GLFW_FLOATING, (int)(parentWindow != nullptr));
+		glfwWindowHint(GLFW_DECORATED, (int)bHasBorder);
+		glfwWindowHint(GLFW_FLOATING, (int)bIsFloating);
 
-
-		if(v2Size == ivec2(0,0))
-		{
-			v2Size = ivec2(75,75);
-			inpercent = true;
-		}
-
-		if(fullscreen)
+		if(bIsFullscreen)
 		{
 			v2Size = ivec2(100, 100);
-			inpercent = true;
+			properties |= Properties::WINDOW_SIZE_IN_PERCENT;
 		}
 
-		if(inpercent)
+		if(properties & Properties::WINDOW_SIZE_IN_PERCENT)
 		{
 			v2Size.x = Display::getScreenSize().x * ((float)v2Size.x / 100.0f);
 			v2Size.y = Display::getScreenSize().y * ((float)v2Size.y / 100.0f);
 		}
+		
 		GLFWwindow* parentGLFWWindow = NULL;
 		if(parentWindow != nullptr)
 			parentGLFWWindow = parentWindow->getRenderWindow();

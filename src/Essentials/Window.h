@@ -22,6 +22,7 @@ namespace Gum
 		bool bIsResizable;
 		bool bHasBorder;
 		bool bScalingSnapped;
+		bool bIsFloating;
 		std::string sTitle;
 
 		std::vector<std::function<void(int x, int y)> > vResizeFunctions;
@@ -30,13 +31,22 @@ namespace Gum
 		Input::InputMouseClass* pMouse;
 
 	public:
-		Window(bool fullscreen, std::string title, ivec2 windowsize, bool inpercent, bool borderless, Window* parentWindow = nullptr);
+		Window(std::string title, ivec2 windowsize, int properties, Window* parentWindow = nullptr);
 		~Window();
 
 		static Window* MainWindow;
 		static Window* CurrentlyBoundWindow;
 		static bool WINDOW_IS_ACTIVE_SCALING;
 		static Window* WINDOW_IS_ACTIVE_MOVING;
+
+		enum Properties
+		{
+			WINDOW_DEFAULTS        = 0b0000,
+			WINDOW_FULLSCREEN      = 0b0001,
+			WINDOW_FLOATING        = 0b0010,
+			WINDOW_BORDERLESS      = 0b0100,
+			WINDOW_SIZE_IN_PERCENT = 0b1000,
+		};
 
 		void resetViewport();
 		void initOpenGL();
