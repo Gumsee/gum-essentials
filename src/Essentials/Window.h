@@ -46,7 +46,7 @@ namespace Gum
 		void close();
 		void finishRender();
 		void bind();
-		void unbind();
+		static void unbind();
 		void clear(int clearbits = GL_COLOR_BUFFER_BIT);
 
 		//Events
