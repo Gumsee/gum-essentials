@@ -14,8 +14,8 @@ namespace Input
 	class InputMouseClass
 	{
 	private:
-		ivec2 v2Position, v2PreviousPosition, v2PositionDelta;
-		vec2 snapPoint;
+		ivec2 v2Position, v2PreviousPosition;
+		ivec2 snapPoint;
 		int iMouseWheelState;
 		int frameSize;
 		int CursorType;
@@ -26,6 +26,8 @@ namespace Input
 		float lastClickTimeLeft = 0.0f;
 		float lastClickTimeRight = 0.0f;
 
+		bool LeftDown = false;
+		bool RightDown = false;
 		bool LeftClickOnce = false;
 		bool RightClickOnce = false;
 		bool LeftReleased = false;
@@ -48,16 +50,17 @@ namespace Input
 
 		std::string DragAndDropInfo;
 
-		void calcRay();
+		void calcRay();		
 		void reset();
 		void freeze(const bool& state);
 
 		//Setter
+		void setContextWindow(Gum::Window* context);
 		void setPosition(const ivec2& pos);
 		void setGlobalPosition(const ivec2& pos);
 		void setCursorType(const int& type);
 		void setBusiness(const bool& val);
-		void setSnapPoint(const vec2& snappoint);
+		void setSnapPoint(const ivec2& snappoint);
 		void trap(const bool& doTrap);
 		void hide(const bool& doHide);
 		void updateOnClick(const bool& bln);
@@ -65,10 +68,7 @@ namespace Input
 
 		//Getter
 		vec3 getRayDirection() const;
-		vec2 getScreenPosition() const;
-		vec2 getDelta() const;
-		vec2 getPosition() const;
-		float getDeltaDistance() const;
+		ivec2 getPosition() const;
 		float getDeltaDistanceNorm() const;
 		int getMouseWheelState() const;
 		int getCurrentPickedObjectID() const;
@@ -76,7 +76,7 @@ namespace Input
 		unsigned int getInstanceIDUnderMouse() const;
 		bool isBusy() const;
 		bool isHidden() const;
-		bool isInArea(const vec2& pos, const vec2& size) const;
+		bool isInArea(const ivec2& pos, const ivec2& size) const;
 		bool hasLeftClick();
 		bool hasRightClick();
 		bool hasLeftDoubleClick();
@@ -86,4 +86,12 @@ namespace Input
 		bool hasMiddleClick();
 		bool hasMiddleRelease();
 	};
+
+	namespace Mouse 
+	{
+		extern ivec2 v2PositionDelta, v2ScreenPosition, v2PreviousScreenPosition;
+		extern void update(Gum::Window* mainwindow);
+		extern ivec2 getScreenPosition();
+		extern ivec2 getDelta();
+	}
 }}

@@ -24,6 +24,7 @@ set(GUMGUI_LIBRARIES
     GumEssentials
     GumMaths
     glfw
+    X11
     GLEW 
     GL
     ${CMAKE_THREAD_LIBS_INIT}

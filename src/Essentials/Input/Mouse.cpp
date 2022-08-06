@@ -3,7 +3,12 @@
 #include "../Window.h"
 #include "../Tools.h"
 #include "../FPS.h"
+
+#define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_NATIVE_INCLUDE_NONE
+#include "GLFW/glfw3native.h"
 #include <GLFW/glfw3.h>
+#include <X11/Xlib.h>
 #include <iostream>
 
 namespace Gum {
@@ -13,7 +18,6 @@ namespace Input
     {
         v2Position = ivec2(0,0);
         v2PreviousPosition = ivec2(0,0);
-        v2PositionDelta = ivec2(0,0);
         this->pContextWindow = context;
         //vec2 snapPoint;
 
@@ -34,54 +38,64 @@ namespace Input
         
         if (glfwRawMouseMotionSupported())
             glfwSetInputMode(pContextWindow->getRenderWindow(), GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        
         glfwSetCursorPosCallback(pContextWindow->getRenderWindow(), [](GLFWwindow* window, double x, double y) {
 				InputMouseClass* mouseptr = ((Window*)glfwGetWindowUserPointer(window))->getMouse();
                 mouseptr->v2PreviousPosition = mouseptr->v2Position;
                 mouseptr->v2Position.x = x;
                 mouseptr->v2Position.y = y;
 
-                mouseptr->v2PositionDelta = mouseptr->v2Position - mouseptr->v2PreviousPosition;
-
+                //mouseptr->v2PositionDelta = mouseptr->v2Position - mouseptr->v2PreviousPosition;
                 mouseptr->calcRay();
             }
         );
 
         glfwSetMouseButtonCallback(pContextWindow->getRenderWindow(), [](GLFWwindow* window, int button, int action, int mods) {
 				InputMouseClass* mouseptr = ((Window*)glfwGetWindowUserPointer(window))->getMouse();
-                if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+                if(button == GLFW_MOUSE_BUTTON_LEFT)
                 {
-                    mouseptr->LeftClickOnce = true;
-                }
-                else
-                {
-                    if(mouseptr->LeftClickOnce)
-                    { 
-                        if(mouseptr->lastClickTimeLeft < 0.5f)
-                        {
-                            mouseptr->LeftDoubleClick = true;
-                            mouseptr->lastClickTimeLeft = 0.5f;
-                        }
-                        else
-                            mouseptr->lastClickTimeLeft = 0;
-                    }
-                }
-                if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-                {
-                    mouseptr->RightClickOnce = true;
-                }
-                else
-                {
-                    if(mouseptr->RightClickOnce)
+                    if(action == GLFW_PRESS)
                     {
-                        if(mouseptr->lastClickTimeRight < 0.5f)
-                        {
-                            mouseptr->RightDoubleClick = true;
-                            mouseptr->lastClickTimeRight = 0.5f;
-                        }
-                        else
-                            mouseptr->lastClickTimeRight = 0;
+                        mouseptr->LeftClickOnce = true;
+                        mouseptr->LeftDown = true;
                     }
+                    else
+                    {
+                        if(mouseptr->LeftClickOnce)
+                        { 
+                            if(mouseptr->lastClickTimeLeft < 0.5f)
+                            {
+                                mouseptr->LeftDoubleClick = true;
+                                mouseptr->lastClickTimeLeft = 0.5f;
+                            }
+                            else
+                                mouseptr->lastClickTimeLeft = 0;
+                        }
+                        mouseptr->LeftDown = false;
+                    }
+                }
 
+                if(button == GLFW_MOUSE_BUTTON_RIGHT)
+                {
+                    if(action == GLFW_PRESS)
+                    {
+                        mouseptr->RightClickOnce = true;
+                        mouseptr->RightDown = true;
+                    }
+                    else
+                    {
+                        if(mouseptr->RightClickOnce)
+                        {
+                            if(mouseptr->lastClickTimeRight < 0.5f)
+                            {
+                                mouseptr->RightDoubleClick = true;
+                                mouseptr->lastClickTimeRight = 0.5f;
+                            }
+                            else
+                                mouseptr->lastClickTimeRight = 0;
+                        }
+                        mouseptr->RightDown = false;
+                    }
                 }
 
                 if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
@@ -135,7 +149,6 @@ namespace Input
 
     void InputMouseClass::reset()
     {
-        v2PositionDelta = ivec2(0,0);
         lastClickTimeLeft += FPS::get();
         lastClickTimeRight += FPS::get();
 		LeftReleased = false;
@@ -145,11 +158,14 @@ namespace Input
         CursorType = 0;
         frameSize = 0;
 
+        
+
+
         if(bIsTrapped) { setPosition(pContextWindow->getSize() / 2); }
         if(bIsSnapped) { setPosition(snapPoint); }
     }
 
-	bool InputMouseClass::isInArea(const vec2& pos, const vec2& size) const
+	bool InputMouseClass::isInArea(const ivec2& pos, const ivec2& size) const
 	{
         return Tools::checkPointInBox(getPosition(), pos, size);
 	}
@@ -161,9 +177,10 @@ namespace Input
     }
 
     //Setter
+    void InputMouseClass::setContextWindow(Gum::Window* context)            { this->pContextWindow = context; }
 	void InputMouseClass::setCursorType(const int& type) 		            { this->CursorType = type; }
 	void InputMouseClass::setBusiness(const bool& val) 			            { this->bIsBusy = val; }
-	void InputMouseClass::setSnapPoint(const vec2& snappoint) 	            { this->snapPoint = snappoint; }
+	void InputMouseClass::setSnapPoint(const ivec2& snappoint) 	            { this->snapPoint = snappoint; }
 	void InputMouseClass::updateOnClick(const bool& bln)    	            { this->updateonclick = bln; }
 	void InputMouseClass::trap(const bool& doTrap) 			                { this->bIsTrapped = doTrap; }
 	void InputMouseClass::hide(const bool& doHide) 			                { this->bIsHidden = doHide; }
@@ -184,9 +201,7 @@ namespace Input
 
     //Getter
 	vec3 InputMouseClass::getRayDirection() const 			                { return this->rayDir; }
-	vec2 InputMouseClass::getScreenPosition() const 			            { return this->v2Position + pContextWindow->getPosition(); }
-	vec2 InputMouseClass::getDelta() const 					                { return this->v2PositionDelta; }
-	vec2 InputMouseClass::getPosition() const 				                { return this->v2Position; }
+	ivec2 InputMouseClass::getPosition() const 				                { return this->v2Position; }
 	int InputMouseClass::getCurrentPickedObjectID() const 		            { return this->mouseOnID; }
 	int InputMouseClass::getMouseWheelState() const 			            { return this->iMouseWheelState; }
     int InputMouseClass::getCursorType() const                              { return this->CursorType; }
@@ -194,12 +209,35 @@ namespace Input
 	bool InputMouseClass::isBusy() const 						            { return this->bIsBusy; }
     bool InputMouseClass::isHidden() const                                  { return this->bIsHidden; }
     
-    bool InputMouseClass::hasLeftClick()        { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS; }
-    bool InputMouseClass::hasRightClick()       { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS; }
+    bool InputMouseClass::hasLeftClick()        { return this->LeftDown; /*glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;*/ }
+    bool InputMouseClass::hasRightClick()       { return this->RightDown; /*glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;*/ }
     bool InputMouseClass::hasLeftDoubleClick()  { return LeftDoubleClick; }
     bool InputMouseClass::hasRightDoubleClick() { return RightDoubleClick; }
     bool InputMouseClass::hasLeftRelease()      { return LeftReleased; }
     bool InputMouseClass::hasRightRelease()     { return RightReleased; }
     bool InputMouseClass::hasMiddleClick()      { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS; }
     bool InputMouseClass::hasMiddleRelease()    { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE; }
+    
+
+	namespace Mouse 
+	{
+		ivec2 v2PositionDelta, v2ScreenPosition, v2PreviousScreenPosition;
+		void update(Gum::Window* mainwindow)
+		{
+			v2PreviousScreenPosition = v2ScreenPosition;
+			//double x, y;
+			//glfwGetCursorPos(mainwindow->getRenderWindow(), &x, &y); 
+
+            Display* display = glfwGetX11Display();
+            int x, y, winx, winy;
+            unsigned int mask = 0;
+            unsigned long childWin, rootWin;
+            XQueryPointer(display, XRootWindow(display, XDefaultScreen(display)), &childWin, &rootWin, &x, &y, &winx, &winy, &mask);
+
+			v2ScreenPosition = ivec2(x, y);
+			v2PositionDelta = v2ScreenPosition - v2PreviousScreenPosition;
+		}
+		ivec2 getScreenPosition() 			                    { return v2ScreenPosition; }
+		ivec2 getDelta() 					                    { return v2PositionDelta; }
+	}
 }}

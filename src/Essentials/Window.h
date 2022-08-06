@@ -13,6 +13,7 @@ namespace Gum
 	{
 	private:
 		GLFWwindow *pRenderWindow;
+		Gum::Window *pParentWindow;
 		ivec2 v2VisibleAreaSize;
 		ivec2 v2Size, v2Pos;
 		mat4 m4ScreenMatrix;
@@ -37,7 +38,6 @@ namespace Gum
 		static Window* MainWindow;
 		static Window* CurrentlyBoundWindow;
 		static bool WINDOW_IS_ACTIVE_SCALING;
-		static Window* WINDOW_IS_ACTIVE_MOVING;
 
 		enum Properties
 		{
@@ -60,7 +60,7 @@ namespace Gum
 		void clear(int clearbits = GL_COLOR_BUFFER_BIT);
 
 		//Events
-		void onResize(std::function<void(int x, int y)> resize);
+		void onResize(const std::function<void(int x, int y)>& resize);
 
 		//Setter
 		void setSize(const ivec2& size);
@@ -83,6 +83,7 @@ namespace Gum
 		Input::InputMouseClass* getMouse();
 		float getAspectRatio() const;
 		float getAspectRatioWidthToHeight() const;
+		Gum::Window* getParentWindow();
 		bool isFullscreen() const;
 		bool isOpen() const;
 	};

@@ -12,11 +12,11 @@ namespace Gum
 	Window* Window::MainWindow = nullptr;
 	Window* Window::CurrentlyBoundWindow = nullptr;
 	bool Window::WINDOW_IS_ACTIVE_SCALING = false;
-	Window* Window::WINDOW_IS_ACTIVE_MOVING = nullptr;
 
 	Window::Window(std::string title, ivec2 windowsize, int properties, Window* parentWindow)
 	{
 		this->bIsResizable = false;
+		this->pParentWindow = parentWindow;
 		this->bHidden = false;
 		this->bScalingSnapped = false;
 		this->bIsFullscreen = properties & Properties::WINDOW_FULLSCREEN;
@@ -131,7 +131,7 @@ namespace Gum
 			if(bScalingSnapped)
 			{
 				pMouse->setCursorType(CURSORTYPE_SCALE);
-				setSize(getSize() + pMouse->getDelta());
+				setSize(getSize() + Input::Mouse::getDelta());
 
 				if(getSize().x < 100)
 				{
@@ -154,7 +154,14 @@ namespace Gum
 
 
 	//Passthrough
-	void Window::close()            	{ glfwDestroyWindow(pRenderWindow); }
+	void Window::close()            	
+	{ 
+		if(pRenderWindow != nullptr)
+		{
+			glfwDestroyWindow(pRenderWindow); 
+			pRenderWindow = nullptr;
+		}
+	}
 	void Window::finishRender() 		{ glfwSwapBuffers(pRenderWindow); }
 	void Window::clear(int clearbits) 	{ glClear(clearbits); }
 	void Window::bind()					
@@ -218,7 +225,7 @@ namespace Gum
 	}
 
 	
-	void Window::onResize(std::function<void(int x, int y)> resize)
+	void Window::onResize(const std::function<void(int x, int y)>& resize)
 	{
 		vResizeFunctions.push_back(resize);
 	}
@@ -254,7 +261,7 @@ namespace Gum
 	float Window::getAspectRatioWidthToHeight() const 				{ return this->fAspectRatioWidthToHeight; }
 	bool Window::isFullscreen() const          						{ return this->bIsFullscreen; }
 	bool Window::isOpen() const                						{ return !glfwWindowShouldClose(pRenderWindow); }
-
+	Gum::Window* Window::getParentWindow()							{ return this->pParentWindow; }
 	
 	Window* MainWindow = nullptr;
 }
