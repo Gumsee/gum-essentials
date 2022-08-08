@@ -24,9 +24,10 @@ namespace Gum
 		bool bHasBorder;
 		bool bScalingSnapped;
 		bool bIsFloating;
+		bool bIsMaximized;
 		std::string sTitle;
 
-		std::vector<std::function<void(int x, int y)> > vResizeFunctions;
+		std::vector<std::function<void(ivec2 size)> > vResizeFunctions;
 
 		Input::InputKeyboardClass* pKeyboard;
 		Input::InputMouseClass* pMouse;
@@ -54,13 +55,15 @@ namespace Gum
 
 		//Passthrough
 		void close();
+		void minimize();
+		void maximize(bool domaximize);
 		void finishRender();
 		void bind();
 		static void unbind();
 		void clear(int clearbits = GL_COLOR_BUFFER_BIT);
 
 		//Events
-		void onResize(const std::function<void(int x, int y)>& resize);
+		void onResize(const std::function<void(ivec2 size)>& resize);
 
 		//Setter
 		void setSize(const ivec2& size);
@@ -86,5 +89,7 @@ namespace Gum
 		Gum::Window* getParentWindow();
 		bool isFullscreen() const;
 		bool isOpen() const;
+		bool isMaximized() const;
+		bool isResizable() const;
 	};
 }

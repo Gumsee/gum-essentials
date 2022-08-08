@@ -10,6 +10,9 @@ struct tbbox
         this->pos = pos;
         this->size = size;
     }
+
+    tvec<T, S> getPos()  { return pos; }
+    tvec<T, S> getSize() { return size; }
 };
 
 typedef tbbox<float, 2> bbox2;

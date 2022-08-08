@@ -11,6 +11,9 @@
 #include <X11/Xlib.h>
 #include <iostream>
 
+static GLFWcursor *pDefaultCursor, *pIBeamCursor, *pCrosshairCursor, *pHandCursor, *pVResizeCursor, *pHResizeCursor;
+GLFWcursor *pActiveCursor;
+
 namespace Gum {
 namespace Input
 {
@@ -24,7 +27,6 @@ namespace Input
         updateonclick = false;
         bIsHidden = false;
         bIsTrapped = false;
-        bIsBusy = false;
         bIsSnapped = false;
 
         iMouseWheelState = 0;
@@ -153,12 +155,16 @@ namespace Input
         lastClickTimeRight += FPS::get();
 		LeftReleased = false;
 		RightReleased = false;
+        LeftDoubleClick = false;
+        RightDoubleClick = false;
 
 		iMouseWheelState = 0;
         CursorType = 0;
         frameSize = 0;
 
         
+        glfwSetCursor(pContextWindow->getRenderWindow(), pActiveCursor);
+        setCursor(CURSOR_SHAPE::DEFAULT);
 
 
         if(bIsTrapped) { setPosition(pContextWindow->getSize() / 2); }
@@ -179,7 +185,6 @@ namespace Input
     //Setter
     void InputMouseClass::setContextWindow(Gum::Window* context)            { this->pContextWindow = context; }
 	void InputMouseClass::setCursorType(const int& type) 		            { this->CursorType = type; }
-	void InputMouseClass::setBusiness(const bool& val) 			            { this->bIsBusy = val; }
 	void InputMouseClass::setSnapPoint(const ivec2& snappoint) 	            { this->snapPoint = snappoint; }
 	void InputMouseClass::updateOnClick(const bool& bln)    	            { this->updateonclick = bln; }
 	void InputMouseClass::trap(const bool& doTrap) 			                { this->bIsTrapped = doTrap; }
@@ -199,6 +204,21 @@ namespace Input
         v2Position = pos - pContextWindow->getPosition(); 
     }
 
+    void InputMouseClass::setCursor(uint8_t shape)
+    {
+        switch(shape)
+        {
+            case CURSOR_SHAPE::DEFAULT:           if(pDefaultCursor   == nullptr) { pDefaultCursor   = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);     } pActiveCursor = pDefaultCursor;   break;
+            case CURSOR_SHAPE::HORIZONTAL_RESIZE: if(pHResizeCursor   == nullptr) { pHResizeCursor   = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);   } pActiveCursor = pHResizeCursor;   break;
+            case CURSOR_SHAPE::VERTICAL_RESIZE:   if(pVResizeCursor   == nullptr) { pVResizeCursor   = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR);   } pActiveCursor = pVResizeCursor;   break;
+            case CURSOR_SHAPE::CROSSHAIR:         if(pCrosshairCursor == nullptr) { pCrosshairCursor = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR); } pActiveCursor = pCrosshairCursor; break;
+            case CURSOR_SHAPE::HAND:              if(pHandCursor      == nullptr) { pHandCursor      = glfwCreateStandardCursor(GLFW_HAND_CURSOR);      } pActiveCursor = pHandCursor;      break;
+            case CURSOR_SHAPE::IBEAM:             if(pIBeamCursor     == nullptr) { pIBeamCursor     = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);     } pActiveCursor = pIBeamCursor;     break;
+        };
+    }
+
+
+
     //Getter
 	vec3 InputMouseClass::getRayDirection() const 			                { return this->rayDir; }
 	ivec2 InputMouseClass::getPosition() const 				                { return this->v2Position; }
@@ -206,11 +226,12 @@ namespace Input
 	int InputMouseClass::getMouseWheelState() const 			            { return this->iMouseWheelState; }
     int InputMouseClass::getCursorType() const                              { return this->CursorType; }
     unsigned int InputMouseClass::getInstanceIDUnderMouse() const           { return this->mouseOnID; }
-	bool InputMouseClass::isBusy() const 						            { return this->bIsBusy; }
     bool InputMouseClass::isHidden() const                                  { return this->bIsHidden; }
     
-    bool InputMouseClass::hasLeftClick()        { return this->LeftDown; /*glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;*/ }
-    bool InputMouseClass::hasRightClick()       { return this->RightDown; /*glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;*/ }
+    bool InputMouseClass::hasLeftClick()        { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS; }
+    bool InputMouseClass::hasRightClick()       { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS; }
+    bool InputMouseClass::isLeftDown()          { return this->LeftDown; }
+    bool InputMouseClass::isRightDown()         { return this->RightDown; }
     bool InputMouseClass::hasLeftDoubleClick()  { return LeftDoubleClick; }
     bool InputMouseClass::hasRightDoubleClick() { return RightDoubleClick; }
     bool InputMouseClass::hasLeftRelease()      { return LeftReleased; }
@@ -221,7 +242,9 @@ namespace Input
 
 	namespace Mouse 
 	{
+		bool bIsBusy = false;
 		ivec2 v2PositionDelta, v2ScreenPosition, v2PreviousScreenPosition;
+
 		void update(Gum::Window* mainwindow)
 		{
 			v2PreviousScreenPosition = v2ScreenPosition;
@@ -237,7 +260,12 @@ namespace Input
 			v2ScreenPosition = ivec2(x, y);
 			v2PositionDelta = v2ScreenPosition - v2PreviousScreenPosition;
 		}
-		ivec2 getScreenPosition() 			                    { return v2ScreenPosition; }
-		ivec2 getDelta() 					                    { return v2PositionDelta; }
+
+		ivec2 getScreenPosition() 	        { return v2ScreenPosition; }
+		ivec2 getDelta() 			        { return v2PositionDelta; }
+        bool isBusy()                       { return bIsBusy; }
+	    void setBusiness(const bool& val)   { bIsBusy = val; }
+
+
 	}
 }}

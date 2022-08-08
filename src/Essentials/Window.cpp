@@ -3,6 +3,7 @@
 #include "Display.h"
 #include <GL/glx.h>
 #include <GLFW/glfw3.h>
+#include <X11/Xutil.h>
 #define GLFW_EXPOSE_NATIVE_X11
 #define GLFW_EXPOSE_NATIVE_GLX
 #include <GLFW/glfw3native.h>
@@ -24,6 +25,7 @@ namespace Gum
 		this->bIsFloating = properties & Properties::WINDOW_FLOATING;
 		this->v2Size = windowsize;
 		this->sTitle = title;
+		this->bIsMaximized = false;
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
@@ -83,7 +85,7 @@ namespace Gum
 				context->m4ScreenMatrix = Gum::Maths::ortho((float)context->v2Size.y, (float)context->v2Size.x, 0.0f, 0.0f, -100.0f, 100.0f);
 
 				for(size_t i = 0; i < context->vResizeFunctions.size(); i++)
-					context->vResizeFunctions[i](width, height);
+					context->vResizeFunctions[i](context->v2Size);
 			}
 		); //Maybe causes a scope violation
 		fAspectRatio = (float)v2Size.y / (float)v2Size.x;
@@ -117,13 +119,13 @@ namespace Gum
 			if (pMouse->isInArea(getSize() - ivec2(20, 20), getSize()))
 			{
 				pMouse->setCursorType(CURSORTYPE_SCALE);
-				if(pMouse->hasLeftClick() && !pMouse->isBusy())
+				if(pMouse->hasLeftClick() && !Gum::Input::Mouse::isBusy())
 				{
 					if(!Gum::Window::WINDOW_IS_ACTIVE_SCALING)
 					{
 						Gum::Window::WINDOW_IS_ACTIVE_SCALING = true;
 						bScalingSnapped = true;
-						pMouse->setBusiness(true);
+						Gum::Input::Mouse::setBusiness(true);
 					}
 				}
 			}
@@ -146,7 +148,7 @@ namespace Gum
 				{
 					Gum::Window::WINDOW_IS_ACTIVE_SCALING = false;
 					bScalingSnapped = false;
-					pMouse->setBusiness(false);
+					Gum::Input::Mouse::setBusiness(false);
 				}
 			}
 		}
@@ -161,6 +163,18 @@ namespace Gum
 			glfwDestroyWindow(pRenderWindow); 
 			pRenderWindow = nullptr;
 		}
+	}
+	void Window::minimize()
+	{
+		glfwIconifyWindow(pRenderWindow);
+	}
+	void Window::maximize(bool domaximize) 
+	{ 
+		if(domaximize)
+			glfwMaximizeWindow(pRenderWindow); 
+		else 
+			glfwRestoreWindow(pRenderWindow); 
+		bIsMaximized = domaximize;
 	}
 	void Window::finishRender() 		{ glfwSwapBuffers(pRenderWindow); }
 	void Window::clear(int clearbits) 	{ glClear(clearbits); }
@@ -225,7 +239,7 @@ namespace Gum
 	}
 
 	
-	void Window::onResize(const std::function<void(int x, int y)>& resize)
+	void Window::onResize(const std::function<void(ivec2 size)>& resize)
 	{
 		vResizeFunctions.push_back(resize);
 	}
@@ -262,6 +276,8 @@ namespace Gum
 	bool Window::isFullscreen() const          						{ return this->bIsFullscreen; }
 	bool Window::isOpen() const                						{ return !glfwWindowShouldClose(pRenderWindow); }
 	Gum::Window* Window::getParentWindow()							{ return this->pParentWindow; }
+	bool Window::isMaximized() const								{ return this->bIsMaximized; }
+	bool Window::isResizable() const								{ return this->bIsResizable; }
 	
 	Window* MainWindow = nullptr;
 }

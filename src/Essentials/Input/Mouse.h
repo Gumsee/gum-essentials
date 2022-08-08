@@ -38,7 +38,6 @@ namespace Input
 		bool defaulHideState;
 		bool defaulTrapState;
 		bool updateonclick;
-		bool bIsBusy;
 		bool bIsTrapped;
 		bool bIsHidden;
 		bool bIsSnapped;
@@ -47,6 +46,16 @@ namespace Input
         InputMouseClass(Gum::Window* context);
         InputMouseClass(InputMouseClass& other) = delete;
         InputMouseClass& operator=(InputMouseClass& other) = delete;
+		
+		enum CURSOR_SHAPE 
+		{
+			DEFAULT,
+			HORIZONTAL_RESIZE,
+			VERTICAL_RESIZE,
+			HAND,
+			CROSSHAIR,
+			IBEAM,
+		};
 
 		std::string DragAndDropInfo;
 
@@ -59,12 +68,12 @@ namespace Input
 		void setPosition(const ivec2& pos);
 		void setGlobalPosition(const ivec2& pos);
 		void setCursorType(const int& type);
-		void setBusiness(const bool& val);
 		void setSnapPoint(const ivec2& snappoint);
 		void trap(const bool& doTrap);
 		void hide(const bool& doHide);
 		void updateOnClick(const bool& bln);
 		void setInstanceIDUnderMouse(const unsigned int& id);
+		void setCursor(uint8_t shape);
 
 		//Getter
 		vec3 getRayDirection() const;
@@ -74,11 +83,12 @@ namespace Input
 		int getCurrentPickedObjectID() const;
 		int getCursorType() const;
 		unsigned int getInstanceIDUnderMouse() const;
-		bool isBusy() const;
 		bool isHidden() const;
 		bool isInArea(const ivec2& pos, const ivec2& size) const;
 		bool hasLeftClick();
 		bool hasRightClick();
+		bool isLeftDown();
+		bool isRightDown();
 		bool hasLeftDoubleClick();
 		bool hasRightDoubleClick();
 		bool hasLeftRelease();
@@ -89,9 +99,11 @@ namespace Input
 
 	namespace Mouse 
 	{
-		extern ivec2 v2PositionDelta, v2ScreenPosition, v2PreviousScreenPosition;
 		extern void update(Gum::Window* mainwindow);
 		extern ivec2 getScreenPosition();
 		extern ivec2 getDelta();
+		extern bool isBusy();
+		extern void setBusiness(const bool& val);
+		extern void setCursor(Gum::Window* window, uint8_t shape);
 	}
 }}
