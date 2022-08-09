@@ -11,7 +11,7 @@
 #include <X11/Xlib.h>
 #include <iostream>
 
-static GLFWcursor *pDefaultCursor, *pIBeamCursor, *pCrosshairCursor, *pHandCursor, *pVResizeCursor, *pHResizeCursor;
+static GLFWcursor *pDefaultCursor, *pIBeamCursor, *pCrosshairCursor, *pHandCursor, *pVResizeCursor, *pHResizeCursor, *pNWSEResizeCursor, *pNESWResizeCursor, *pAllResizeCursor, *pNotAllowedCursor;
 GLFWcursor *pActiveCursor;
 
 namespace Gum {
@@ -19,9 +19,10 @@ namespace Input
 {
     InputMouseClass::InputMouseClass(Gum::Window* context)
     {
-        v2Position = ivec2(0,0);
-        v2PreviousPosition = ivec2(0,0);
+        this->v2Position = ivec2(0,0);
+        this->v2PreviousPosition = ivec2(0,0);
         this->pContextWindow = context;
+        this->v2LeftClickPosition = ivec2(-1, -1);
         //vec2 snapPoint;
 
         updateonclick = false;
@@ -60,6 +61,7 @@ namespace Input
                     {
                         mouseptr->LeftClickOnce = true;
                         mouseptr->LeftDown = true;
+                        mouseptr->v2LeftClickPosition = mouseptr->getPosition();
                     }
                     else
                     {
@@ -153,6 +155,8 @@ namespace Input
     {
         lastClickTimeLeft += FPS::get();
         lastClickTimeRight += FPS::get();
+        if(!LeftDown)
+            v2LeftClickPosition = ivec2(-1, -1);
 		LeftReleased = false;
 		RightReleased = false;
         LeftDoubleClick = false;
@@ -173,7 +177,7 @@ namespace Input
 
 	bool InputMouseClass::isInArea(const ivec2& pos, const ivec2& size) const
 	{
-        return Tools::checkPointInBox(getPosition(), pos, size);
+        return Tools::checkPointInBox(getPosition(), bbox2i(pos, size));
 	}
 
 	void InputMouseClass::freeze(const bool& state)
@@ -208,12 +212,16 @@ namespace Input
     {
         switch(shape)
         {
-            case CURSOR_SHAPE::DEFAULT:           if(pDefaultCursor   == nullptr) { pDefaultCursor   = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);     } pActiveCursor = pDefaultCursor;   break;
-            case CURSOR_SHAPE::HORIZONTAL_RESIZE: if(pHResizeCursor   == nullptr) { pHResizeCursor   = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);   } pActiveCursor = pHResizeCursor;   break;
-            case CURSOR_SHAPE::VERTICAL_RESIZE:   if(pVResizeCursor   == nullptr) { pVResizeCursor   = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR);   } pActiveCursor = pVResizeCursor;   break;
-            case CURSOR_SHAPE::CROSSHAIR:         if(pCrosshairCursor == nullptr) { pCrosshairCursor = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR); } pActiveCursor = pCrosshairCursor; break;
-            case CURSOR_SHAPE::HAND:              if(pHandCursor      == nullptr) { pHandCursor      = glfwCreateStandardCursor(GLFW_HAND_CURSOR);      } pActiveCursor = pHandCursor;      break;
-            case CURSOR_SHAPE::IBEAM:             if(pIBeamCursor     == nullptr) { pIBeamCursor     = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);     } pActiveCursor = pIBeamCursor;     break;
+            case CURSOR_SHAPE::DEFAULT:           if(pDefaultCursor   == nullptr) { pDefaultCursor   = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);         } pActiveCursor = pDefaultCursor;   break;
+            case CURSOR_SHAPE::HORIZONTAL_RESIZE: if(pHResizeCursor   == nullptr) { pHResizeCursor   = glfwCreateStandardCursor(GLFW_RESIZE_EW_CURSOR);     } pActiveCursor = pHResizeCursor;   break;
+            case CURSOR_SHAPE::VERTICAL_RESIZE:   if(pVResizeCursor   == nullptr) { pVResizeCursor   = glfwCreateStandardCursor(GLFW_RESIZE_NS_CURSOR);     } pActiveCursor = pVResizeCursor;   break;
+            case CURSOR_SHAPE::TOPLEFT_TO_BOTTOMRIGHT_RESIZE: if(pNWSEResizeCursor   == nullptr) { pNWSEResizeCursor   = glfwCreateStandardCursor(GLFW_RESIZE_NWSE_CURSOR);     } pActiveCursor = pNWSEResizeCursor;   break;
+            case CURSOR_SHAPE::TOPRIGHT_TO_BOTTOMLEFT_RESIZE: if(pNESWResizeCursor   == nullptr) { pNESWResizeCursor   = glfwCreateStandardCursor(GLFW_RESIZE_NESW_CURSOR);     } pActiveCursor = pNESWResizeCursor;   break;
+            case CURSOR_SHAPE::ALL_SIDES_RESIZE:  if(pAllResizeCursor == nullptr) { pAllResizeCursor   = glfwCreateStandardCursor(GLFW_RESIZE_ALL_CURSOR);     } pActiveCursor = pAllResizeCursor;   break;
+            case CURSOR_SHAPE::CROSSHAIR:         if(pCrosshairCursor == nullptr) { pCrosshairCursor = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);     } pActiveCursor = pCrosshairCursor; break;
+            case CURSOR_SHAPE::HAND:              if(pHandCursor      == nullptr) { pHandCursor      = glfwCreateStandardCursor(GLFW_POINTING_HAND_CURSOR); } pActiveCursor = pHandCursor;      break;
+            case CURSOR_SHAPE::IBEAM:             if(pIBeamCursor     == nullptr) { pIBeamCursor     = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);         } pActiveCursor = pIBeamCursor;     break;
+            case CURSOR_SHAPE::NOT_ALLOWED:       if(pNotAllowedCursor == nullptr) { pNotAllowedCursor     = glfwCreateStandardCursor(GLFW_NOT_ALLOWED_CURSOR);         } pActiveCursor = pNotAllowedCursor;     break;
         };
     }
 
@@ -222,6 +230,7 @@ namespace Input
     //Getter
 	vec3 InputMouseClass::getRayDirection() const 			                { return this->rayDir; }
 	ivec2 InputMouseClass::getPosition() const 				                { return this->v2Position; }
+    ivec2 InputMouseClass::getLeftClickPosition() const                     { return this->v2LeftClickPosition; }
 	int InputMouseClass::getCurrentPickedObjectID() const 		            { return this->mouseOnID; }
 	int InputMouseClass::getMouseWheelState() const 			            { return this->iMouseWheelState; }
     int InputMouseClass::getCursorType() const                              { return this->CursorType; }
@@ -232,10 +241,10 @@ namespace Input
     bool InputMouseClass::hasRightClick()       { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS; }
     bool InputMouseClass::isLeftDown()          { return this->LeftDown; }
     bool InputMouseClass::isRightDown()         { return this->RightDown; }
-    bool InputMouseClass::hasLeftDoubleClick()  { return LeftDoubleClick; }
-    bool InputMouseClass::hasRightDoubleClick() { return RightDoubleClick; }
-    bool InputMouseClass::hasLeftRelease()      { return LeftReleased; }
-    bool InputMouseClass::hasRightRelease()     { return RightReleased; }
+    bool InputMouseClass::hasLeftDoubleClick()  { return this->LeftDoubleClick; }
+    bool InputMouseClass::hasRightDoubleClick() { return this->RightDoubleClick; }
+    bool InputMouseClass::hasLeftRelease()      { return this->LeftReleased; }
+    bool InputMouseClass::hasRightRelease()     { return this->RightReleased; }
     bool InputMouseClass::hasMiddleClick()      { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS; }
     bool InputMouseClass::hasMiddleRelease()    { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE; }
     

@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Input/Mouse.h"
 #include "Output.h"
 #include "Display.h"
 #include <GL/glx.h>
@@ -56,26 +57,6 @@ namespace Gum
 		bind();
 		setVerticalSync(false); // Enable vsync
 
-		//LEARN HOWTO USE GLFW AND SET UP AN OPENGL CONTEXT
-
-		/*sf::ContextSettings settings;
-		settings.depthBits = 24;
-		settings.stencilBits = 8;
-		settings.antialiasingLevel = 4;
-		settings.majorVersion = 4;
-		settings.minorVersion = 2;
-
-		int style = sf::Style::Default;
-
-		pRenderWindow = new sf::RenderWindow(videoMode, title, style,	settings);
-		pRenderWindow->setMouseCursorVisible(false);
-		//pRenderWindow->setMouseCursorGrabbed(true);
-		//pRenderWindow->resetGLStates();
-		
-		v2RenderQuadPos = ivec2(0,0);
-		fAspectRatio = (float)v2Size.y / (float)v2Size.x;
-		fAspectRatioWidthToHeight = (float)v2Size.x / (float)v2Size.y;*/
-
 		glfwSetWindowUserPointer(pRenderWindow, this);
 		glfwSetWindowSizeCallback(pRenderWindow, [](GLFWwindow* window, int width, int height) {
 				Window* context = (Window*)glfwGetWindowUserPointer(window);
@@ -102,7 +83,6 @@ namespace Gum
 	Window::~Window()
 	{
     	close();
-		delete pRenderWindow;
 	}
 
 
@@ -118,7 +98,7 @@ namespace Gum
 		{
 			if (pMouse->isInArea(getSize() - ivec2(20, 20), getSize()))
 			{
-				pMouse->setCursorType(CURSORTYPE_SCALE);
+				pMouse->setCursor(Gum::Input::InputMouseClass::CURSOR_SHAPE::TOPLEFT_TO_BOTTOMRIGHT_RESIZE);
 				if(pMouse->hasLeftClick() && !Gum::Input::Mouse::isBusy())
 				{
 					if(!Gum::Window::WINDOW_IS_ACTIVE_SCALING)
@@ -132,17 +112,9 @@ namespace Gum
 
 			if(bScalingSnapped)
 			{
-				pMouse->setCursorType(CURSORTYPE_SCALE);
 				setSize(getSize() + Input::Mouse::getDelta());
-
-				if(getSize().x < 100)
-				{
-					setSize(vec2(100, v2Size.y));
-				}
-				if(getSize().y < 100)
-				{
-					setSize(vec2(v2Size.x, 100));
-				}
+				if(getSize().x < 100) { setSize(vec2(100, v2Size.y)); }
+				if(getSize().y < 100) { setSize(vec2(v2Size.x, 100)); }
 
 				if(!pMouse->hasLeftClick())
 				{

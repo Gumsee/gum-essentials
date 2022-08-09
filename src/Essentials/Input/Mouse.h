@@ -14,7 +14,7 @@ namespace Input
 	class InputMouseClass
 	{
 	private:
-		ivec2 v2Position, v2PreviousPosition;
+		ivec2 v2Position, v2PreviousPosition, v2LeftClickPosition;
 		ivec2 snapPoint;
 		int iMouseWheelState;
 		int frameSize;
@@ -55,6 +55,10 @@ namespace Input
 			HAND,
 			CROSSHAIR,
 			IBEAM,
+			TOPLEFT_TO_BOTTOMRIGHT_RESIZE,
+			TOPRIGHT_TO_BOTTOMLEFT_RESIZE,
+			ALL_SIDES_RESIZE,
+			NOT_ALLOWED
 		};
 
 		std::string DragAndDropInfo;
@@ -78,6 +82,7 @@ namespace Input
 		//Getter
 		vec3 getRayDirection() const;
 		ivec2 getPosition() const;
+		ivec2 getLeftClickPosition() const;
 		float getDeltaDistanceNorm() const;
 		int getMouseWheelState() const;
 		int getCurrentPickedObjectID() const;

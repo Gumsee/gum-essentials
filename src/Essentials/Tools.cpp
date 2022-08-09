@@ -26,9 +26,9 @@
 
 namespace Tools
 {
-    int StringToInt(std::string str)        { int ret;    try { ret = std::stoi(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToInt: couldn't convert string, invalid argument!");    } return ret; }
-    float StringToFloat(std::string str)    { float ret;  try { ret = std::stof(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToFloat: couldn't convert string, invalid argument!");  } return ret; }
-    double StringToDouble(std::string str)  { double ret; try { ret = std::stod(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToDouble: couldn't convert string, invalid argument!"); } return ret; }
+    int StringToInt(std::string str)        { int ret = 0;      try { ret = std::stoi(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToInt: couldn't convert string, invalid argument!");    } return ret; }
+    float StringToFloat(std::string str)    { float ret = 0.0f; try { ret = std::stof(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToFloat: couldn't convert string, invalid argument!");  } return ret; }
+    double StringToDouble(std::string str)  { double ret = 0.0; try { ret = std::stod(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToDouble: couldn't convert string, invalid argument!"); } return ret; }
 
     vec2 StringToVec2(std::string str)
     {

@@ -1,4 +1,5 @@
 #pragma once
+#include "Essentials/BoundingBox.h"
 #include <string>
 #include <vector>
 #include <assimp/scene.h>
@@ -39,20 +40,20 @@ namespace Tools
     extern std::string toUpperCase(std::string str);
 
     template<typename T>
-    static bool checkBoxIntersection(tvec<T, 2> pos1, tvec<T, 2> size1, tvec<T, 2> pos2, tvec<T, 2> size2)
+    static bool checkBoxIntersection(tbbox<T, 2> bbox1, tbbox<T, 2> bbox2)
     {
-        return  pos1.x           <= pos2.x + size2.x &&
-                pos1.x + size1.x >= pos2.x           && 
-                pos1.y           <= pos2.y + size2.y && 
-                pos1.y + size1.y >= pos2.y;
+        return  bbox1.getPos().x                     <= bbox2.getPos().x + bbox2.getSize().x &&
+                bbox1.getPos().x + bbox1.getSize().x >= bbox2.getPos().x                     && 
+                bbox1.getPos().y                     <= bbox2.getPos().y + bbox2.getSize().y && 
+                bbox1.getPos().y + bbox1.getSize().y >= bbox2.getPos().y;
     }
 
     template<typename T>
-    static bool checkPointInBox(tvec<T, 2> point, tvec<T, 2> boxpos, tvec<T, 2> boxsize)
+    static bool checkPointInBox(tvec<T, 2> point, tbbox<T, 2> bbox)
     {
-            return  point.x <= boxpos.x + boxsize.x &&
-                    point.x >= boxpos.x && 
-                    point.y <= boxpos.y + boxsize.y && 
-                    point.y >= boxpos.y;
+        return  point.x <= bbox.getPos().x + bbox.getSize().x &&
+                point.x >= bbox.getPos().x && 
+                point.y <= bbox.getPos().y + bbox.getSize().y && 
+                point.y >= bbox.getPos().y;
     }
 }

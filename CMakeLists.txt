@@ -7,7 +7,7 @@ project (GumEssentials)
 #add_definitions(-DGUM_OS_MACOS)
 add_definitions(-DGUM_OS_LINUX)
 
-add_definitions(-DDEBUG)
+#add_definitions(-DDEBUG)
 #add_definitions(-DCHECK_GL_ERRORS)
 
 set(GUM_INSTALLDIR "/usr/include/gumball/")
