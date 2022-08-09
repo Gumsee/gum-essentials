@@ -17,7 +17,7 @@ namespace Gum
 
 	Window::Window(std::string title, ivec2 windowsize, int properties, Window* parentWindow)
 	{
-		this->bIsResizable = false;
+		this->bIsResizable = properties & Properties::WINDOW_RESIZABLE;
 		this->pParentWindow = parentWindow;
 		this->bHidden = false;
 		this->bScalingSnapped = false;
@@ -55,7 +55,7 @@ namespace Gum
 			Window::MainWindow = this;
 		
 		bind();
-		setVerticalSync(false); // Enable vsync
+		setVerticalSync(true); // Enable vsync
 
 		glfwSetWindowUserPointer(pRenderWindow, this);
 		glfwSetWindowSizeCallback(pRenderWindow, [](GLFWwindow* window, int width, int height) {

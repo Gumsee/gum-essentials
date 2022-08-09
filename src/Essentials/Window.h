@@ -42,11 +42,12 @@ namespace Gum
 
 		enum Properties
 		{
-			WINDOW_DEFAULTS        = 0b0000,
-			WINDOW_FULLSCREEN      = 0b0001,
-			WINDOW_FLOATING        = 0b0010,
-			WINDOW_BORDERLESS      = 0b0100,
-			WINDOW_SIZE_IN_PERCENT = 0b1000,
+			WINDOW_DEFAULTS        = 0b00000,
+			WINDOW_RESIZABLE       = 0b00001,
+			WINDOW_FULLSCREEN      = 0b00010,
+			WINDOW_FLOATING        = 0b00100,
+			WINDOW_BORDERLESS      = 0b01000,
+			WINDOW_SIZE_IN_PERCENT = 0b10000,
 		};
 
 		void resetViewport();
