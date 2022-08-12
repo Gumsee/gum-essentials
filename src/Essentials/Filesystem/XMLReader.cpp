@@ -1,5 +1,5 @@
 #include "XMLReader.h"
-#include "Output.h"
+#include "../Output.h"
 #include <functional>
 #include <iostream>
 

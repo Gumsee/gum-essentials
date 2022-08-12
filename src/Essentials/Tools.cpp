@@ -5,25 +5,6 @@
 #include <sstream>
 #include "Output.h"
 
-#if(GUM_OS_WINDOWS)
-    #include <stdlib.h>
-
-#elif(GUM_OS_SOLARIS)
-    #include <stdlib.h>
-    #include <limits.h>
-
-#elif(GUM_OS_LINUX)
-    #include <unistd.h>
-    #include <limits.h>
-
-#elif(GUM_OS_MACOS)
-    #include <mach-o/dyld.h>
-
-#elif (GUM_OS_BSD_FREE)
-    #include <sys/types.h>
-    #include <sys/sysctl.h>
-#endif
-
 namespace Tools
 {
     int StringToInt(std::string str)        { int ret = 0;      try { ret = std::stoi(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToInt: couldn't convert string, invalid argument!");    } return ret; }
@@ -114,72 +95,6 @@ namespace Tools
                         mat[1][0],mat[1][1],mat[1][2],mat[1][3],
                         mat[2][0],mat[2][1],mat[2][2],mat[2][3],
                         mat[3][0],mat[3][1],mat[3][2],mat[3][3]);
-    }
-
-    
-
-
-    std::vector<std::string> readFileContentsLines(std::string filepath)
-    {
-        std::vector<std::string> contents;
-        std::ifstream filestream;
-        filestream.open(filepath, std::ios::app);
-        std::string line = "";
-        while(std::getline(filestream, line))
-        {
-            contents.push_back(line);
-        }
-        return contents;
-    }
-
-
-    std::string getExecutablePath()
-    {
-        #if (GUM_OS_WINDOWS)
-            char *exePath;
-            if (_get_pgmptr(&exePath) != 0)
-                exePath = "";
-        #elif (GUM_OS_SOLARIS)
-            char exePath[PATH_MAX];
-            if (realpath(getexecname(), exePath) == NULL)
-                exePath[0] = '\0';
-        #elif (GUM_OS_LINUX)
-            char exePath[PATH_MAX];
-            ssize_t len = readlink("/proc/self/exe", exePath, sizeof(exePath));
-            if (len == -1 || len == sizeof(exePath))
-                len = 0;
-            exePath[len] = '\0';
-        #elif (GUM_OS_MACOS)
-            char exePath[PATH_MAX];
-            uint32_t len = sizeof(exePath);
-            if (_NSGetExecutablePath(exePath, &len) != 0) {
-                exePath[0] = '\0'; // buffer too small (!)
-            } else {
-                // resolve symlinks, ., .. if possible
-                char *canonicalPath = realpath(exePath, NULL);
-                if (canonicalPath != NULL) {
-                    strncpy(exePath,canonicalPath,len);
-                    free(canonicalPath);
-                }
-            }
-        #elif (GUM_OS_BSD_FREE)
-            char exePath[2048];
-            int mib[4];  mib[0] = CTL_KERN;  mib[1] = KERN_PROC;  mib[2] = KERN_PROC_PATHNAME;  mib[3] = -1;
-            size_t len = sizeof(exePath);
-            if (sysctl(mib, 4, exePath, &len, NULL, 0) != 0)
-                exePath[0] = '\0';
-        #endif
-        std::string exePathStr = std::string(exePath);
-        return exePathStr.substr(0, exePathStr.find_last_of('/'));
-    }
-
-
-    std::string readFileContents(std::string filepath)
-    {
-        std::string contents;
-        for(std::string line : readFileContentsLines(filepath))
-            contents += line + "\n";
-        return contents.substr(0, contents.length() - 1); //Get rid of that extra newline 
     }
 
     std::string decToHex(const int& dec)

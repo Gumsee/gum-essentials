@@ -24,11 +24,6 @@ namespace Tools
 
 
     //Processing
-    extern std::vector<std::string> readFileContentsLines(std::string filepath);
-    extern std::string readFileContents(std::string filepath);
-
-    extern std::string getExecutablePath();
-
     extern std::string decToHex(const int& dec);
     extern std::string typeToString(const std::type_info &type);
     extern std::string to_string(void* var, const std::type_info &type);

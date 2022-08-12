@@ -1,5 +1,5 @@
 #include "XMLWriter.h"
-#include "Output.h"
+#include "../Output.h"
 
 
 XMLWriter::XMLWriter(std::string filename, int compression, std::string encoding)

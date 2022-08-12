@@ -39,6 +39,12 @@ install(
 	DESTINATION ${GUM_INSTALLDIR}/Essentials/Input/
 )
 
+file(GLOB HEADERS "./Essentials/Filesystem/*.h")
+install(
+	FILES ${HEADERS} 
+	DESTINATION ${GUM_INSTALLDIR}/Essentials/Filesystem/
+)
+
 install(
 	FILES "./gum-essentials.h"
 	DESTINATION ${GUM_INSTALLDIR}/
