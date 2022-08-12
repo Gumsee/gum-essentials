@@ -1,24 +1,43 @@
 #include "XMLReader.h"
 #include "Output.h"
+#include <functional>
 #include <iostream>
 
+//Lib XML
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
+
+
+std::string indent(int i)
+{
+    std::string ret = "";
+    for(int j = 0; j < i; j++)
+    {
+        ret += " ";
+    }
+    return ret;
+}
+
+void buildTree(xmlNode *node, XMLNode* parent, XMLReader* reader);
+XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLReader::NODE_TYPES allowedtypes, std::function<void(XMLNode*)> func);
 
 XMLReader::XMLReader(std::string filename)
 {
     this->sFileName = filename;
 
     /*parse the file and get the DOM */
-    pDocument = xmlReadFile(filename.c_str(), nullptr, 0);
+    xmlDoc* pDocument = xmlReadFile(filename.c_str(), nullptr, 0);
     if (pDocument == nullptr)
     {
        Gum::Output::error("XMLReader: could not parse XML file " + filename);
        return;
     }
 
-    pRootElement = xmlDocGetRootElement(pDocument);
-    pRootNode = new XMLNode();
-    pRootNode->name = "Root";
-    buildTree(pRootElement, pRootNode);
+    pRootNode = recurseThroughTree(xmlDocGetRootElement(pDocument), nullptr, NODE_TYPES::ALL, [this](XMLNode* node) {
+        addNode(node);
+    });
 
 
 
@@ -26,43 +45,72 @@ XMLReader::XMLReader(std::string filename)
     xmlCleanupParser();    // Free globals
 }
 
-XMLReader::~XMLReader() {}
-
-void XMLReader::buildTree(xmlNode *node, XMLNode *parent)
+XMLReader::XMLReader(std::string filename, NODE_TYPES allowedtypes, std::function<void(XMLNode* node)> func)
 {
-    if(node == nullptr) return;
-
-    for(xmlNode *currentNode = node; currentNode; currentNode = currentNode->next)
+    /*parse the file and get the DOM */
+    xmlDoc* pDocument = xmlReadFile(filename.c_str(), nullptr, 0);
+    if (pDocument == nullptr)
     {
-        if (currentNode->type == XML_ELEMENT_NODE) 
-        {
-            XMLNode *nodeTreeEntry = new XMLNode();
-            std::string name = (const char*)currentNode->name; //Get name of node
-            std::string content = reinterpret_cast<const char*>(xmlNodeGetContent(currentNode)); //Get content of node
-            nodeTreeEntry->name = name;
-            nodeTreeEntry->content = content;
-            nodeTreeEntry->parent = parent;
-            nodeTreeEntry->type = currentNode->type;
-
-            //Getting attributes:
-            for(xmlAttr* attribute = currentNode->properties; attribute; attribute = attribute->next)
-            {
-                std::string name = reinterpret_cast<const char*>(attribute->name); //Get name of attribute
-                std::string value = reinterpret_cast<const char*>(xmlNodeListGetString(node->doc, attribute->children, 1)); //Get value of attribute
-                nodeTreeEntry->mAttributes[name] = value;
-            }
-            
-            vNodesList.push_back(nodeTreeEntry);
-            buildTree(currentNode->children, nodeTreeEntry);
-            parent->children.push_back(nodeTreeEntry);
-        }
+       Gum::Output::error("XMLReader: could not parse XML file " + filename);
+       return;
     }
+
+    pRootNode = recurseThroughTree(xmlDocGetRootElement(pDocument), nullptr, allowedtypes, func);
+    xmlFreeDoc(pDocument); // free document
+    xmlCleanupParser();    // Free globals
+}
+
+XMLReader::~XMLReader()
+{
+    if(pRootNode != nullptr)
+        delete pRootNode;
+}
+
+XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLReader::NODE_TYPES allowedtypes, std::function<void(XMLNode*)> func)
+{
+    if(node == nullptr)
+        return nullptr;
+
+    XMLNode *retNode = new XMLNode();
+    retNode->name = reinterpret_cast<const char*>(node->name); //Get name of node
+    retNode->content = reinterpret_cast<const char*>(xmlNodeGetContent(node)); //Get content of node
+    retNode->parent = parent;
+    switch (node->type) 
+    { 
+        case XML_ELEMENT_NODE:       retNode->type = XMLReader::NODE_TYPES::ELEMENT;   break;
+        case XML_TEXT_NODE:          retNode->type = XMLReader::NODE_TYPES::TEXT;      break;
+        case XML_COMMENT_NODE:       retNode->type = XMLReader::NODE_TYPES::COMMENT;   break;
+        case XML_ATTRIBUTE_NODE:     retNode->type = XMLReader::NODE_TYPES::ATTRIBUTE; break;
+        case XML_DOCUMENT_TYPE_NODE: retNode->type = XMLReader::NODE_TYPES::DOCUMENT;  break;
+        case XML_ENTITY_NODE:        retNode->type = XMLReader::NODE_TYPES::ENTITY;    break;
+        default:                     retNode->type = XMLReader::NODE_TYPES::UNKNOWN;   break;
+    }
+
+    
+    //Getting attributes:
+    for(xmlAttr* attribute = node->properties; attribute; attribute = attribute->next)
+    {
+        std::string name = reinterpret_cast<const char*>(attribute->name); //Get name of attribute
+        std::string value = reinterpret_cast<const char*>(xmlNodeListGetString(node->doc, attribute->children, 1)); //Get value of attribute
+        retNode->mAttributes[name] = value;
+    }
+
+    if(allowedtypes & retNode->type)
+        func(retNode);
+
+    xmlNode *childNode = node->children;
+    while(childNode != nullptr)
+    {
+        retNode->children.push_back(recurseThroughTree(childNode, retNode, allowedtypes, func));
+        childNode = childNode->next;
+    }
+    return retNode;
 }
 
 std::vector<XMLNode*> XMLReader::getNodeListByName(std::string name)
 {
     std::vector<XMLNode*> ret;
-    for(int i = 0; i < vNodesList.size(); i++)
+    for(size_t i = 0; i < vNodesList.size(); i++)
     {
         if(vNodesList[i]->name == name)
         {
@@ -75,4 +123,9 @@ std::vector<XMLNode*> XMLReader::getNodeListByName(std::string name)
 XMLNode* XMLReader::getRootNode()
 {
     return pRootNode;
+}
+
+void XMLReader::addNode(XMLNode* node)
+{
+    this->vNodesList.push_back(node);
 }

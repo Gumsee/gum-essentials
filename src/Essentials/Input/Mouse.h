@@ -15,7 +15,6 @@ namespace Input
 	{
 	private:
 		ivec2 v2Position, v2PreviousPosition, v2LeftClickPosition;
-		ivec2 snapPoint;
 		int iMouseWheelState;
 		int frameSize;
 		int CursorType;
@@ -39,8 +38,6 @@ namespace Input
 		bool defaulTrapState;
 		bool updateonclick;
 		bool bIsTrapped;
-		bool bIsHidden;
-		bool bIsSnapped;
 
 	public:
         InputMouseClass(Gum::Window* context);
@@ -65,14 +62,12 @@ namespace Input
 
 		void calcRay();		
 		void reset();
-		void freeze(const bool& state);
 
 		//Setter
 		void setContextWindow(Gum::Window* context);
 		void setPosition(const ivec2& pos);
 		void setGlobalPosition(const ivec2& pos);
 		void setCursorType(const int& type);
-		void setSnapPoint(const ivec2& snappoint);
 		void trap(const bool& doTrap);
 		void hide(const bool& doHide);
 		void updateOnClick(const bool& bln);
@@ -88,7 +83,6 @@ namespace Input
 		int getCurrentPickedObjectID() const;
 		int getCursorType() const;
 		unsigned int getInstanceIDUnderMouse() const;
-		bool isHidden() const;
 		bool isInArea(const ivec2& pos, const ivec2& size) const;
 		bool hasLeftClick();
 		bool hasRightClick();
@@ -104,11 +98,15 @@ namespace Input
 
 	namespace Mouse 
 	{
-		extern void update(Gum::Window* mainwindow);
+		extern void update();
+        extern void freeze(const bool& state);
+
+
 		extern ivec2 getScreenPosition();
 		extern ivec2 getDelta();
 		extern bool isBusy();
+
 		extern void setBusiness(const bool& val);
-		extern void setCursor(Gum::Window* window, uint8_t shape);
+		extern void setSnapPoint(const ivec2& snappoint);
 	}
 }}

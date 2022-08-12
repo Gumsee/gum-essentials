@@ -23,12 +23,9 @@ namespace Input
         this->v2PreviousPosition = ivec2(0,0);
         this->pContextWindow = context;
         this->v2LeftClickPosition = ivec2(-1, -1);
-        //vec2 snapPoint;
 
         updateonclick = false;
-        bIsHidden = false;
         bIsTrapped = false;
-        bIsSnapped = false;
 
         iMouseWheelState = 0;
         CursorType = 0;
@@ -172,7 +169,6 @@ namespace Input
 
 
         if(bIsTrapped) { setPosition(pContextWindow->getSize() / 2); }
-        if(bIsSnapped) { setPosition(snapPoint); }
     }
 
 	bool InputMouseClass::isInArea(const ivec2& pos, const ivec2& size) const
@@ -180,19 +176,12 @@ namespace Input
         return Tools::checkPointInBox(getPosition(), bbox2i(pos, size));
 	}
 
-	void InputMouseClass::freeze(const bool& state)
-    {
-        setSnapPoint(v2Position);
-        bIsSnapped = state;
-    }
-
     //Setter
     void InputMouseClass::setContextWindow(Gum::Window* context)            { this->pContextWindow = context; }
 	void InputMouseClass::setCursorType(const int& type) 		            { this->CursorType = type; }
-	void InputMouseClass::setSnapPoint(const ivec2& snappoint) 	            { this->snapPoint = snappoint; }
 	void InputMouseClass::updateOnClick(const bool& bln)    	            { this->updateonclick = bln; }
 	void InputMouseClass::trap(const bool& doTrap) 			                { this->bIsTrapped = doTrap; }
-	void InputMouseClass::hide(const bool& doHide) 			                { this->bIsHidden = doHide; }
+	void InputMouseClass::hide(const bool& doHide) 			                { glfwSetInputMode(pContextWindow->getRenderWindow(), GLFW_CURSOR, doHide ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_NORMAL); }
     void InputMouseClass::setInstanceIDUnderMouse(const unsigned int& id)   { this->mouseOnID = id; }
     void InputMouseClass::setPosition(const ivec2& pos) 
     { 
@@ -235,7 +224,6 @@ namespace Input
 	int InputMouseClass::getMouseWheelState() const 			            { return this->iMouseWheelState; }
     int InputMouseClass::getCursorType() const                              { return this->CursorType; }
     unsigned int InputMouseClass::getInstanceIDUnderMouse() const           { return this->mouseOnID; }
-    bool InputMouseClass::isHidden() const                                  { return this->bIsHidden; }
     
     bool InputMouseClass::hasLeftClick()        { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS; }
     bool InputMouseClass::hasRightClick()       { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS; }
@@ -251,30 +239,42 @@ namespace Input
 
 	namespace Mouse 
 	{
-		bool bIsBusy = false;
-		ivec2 v2PositionDelta, v2ScreenPosition, v2PreviousScreenPosition;
+		bool bIsBusy = false, bIsSnapped = false;
+		ivec2 v2PositionDelta, v2ScreenPosition, v2PreviousScreenPosition, v2SnapPoint;
 
-		void update(Gum::Window* mainwindow)
+		void update()
 		{
-			v2PreviousScreenPosition = v2ScreenPosition;
-			//double x, y;
-			//glfwGetCursorPos(mainwindow->getRenderWindow(), &x, &y); 
 
             Display* display = glfwGetX11Display();
             int x, y, winx, winy;
             unsigned int mask = 0;
             unsigned long childWin, rootWin;
             XQueryPointer(display, XRootWindow(display, XDefaultScreen(display)), &childWin, &rootWin, &x, &y, &winx, &winy, &mask);
-
 			v2ScreenPosition = ivec2(x, y);
 			v2PositionDelta = v2ScreenPosition - v2PreviousScreenPosition;
+			v2PreviousScreenPosition = v2ScreenPosition;
+
+            if(bIsSnapped) 
+            {
+                XWarpPointer(display, None, XRootWindow(display, XDefaultScreen(display)), 0, 0, 0, 0, v2SnapPoint.x, v2SnapPoint.y);
+			    v2PreviousScreenPosition = v2SnapPoint;
+            }
 		}
 
-		ivec2 getScreenPosition() 	        { return v2ScreenPosition; }
-		ivec2 getDelta() 			        { return v2PositionDelta; }
-        bool isBusy()                       { return bIsBusy; }
-	    void setBusiness(const bool& val)   { bIsBusy = val; }
+        void freeze(const bool& state)
+        {
+            if(bIsSnapped != state)
+            {
+                v2SnapPoint = v2ScreenPosition;
+                bIsSnapped = state;
+            }
+        }
 
+		ivec2 getScreenPosition() 	              { return v2ScreenPosition; }
+		ivec2 getDelta() 			              { return v2PositionDelta; }
+        bool isBusy()                             { return bIsBusy; }
 
+	    void setBusiness(const bool& val)         { bIsBusy = val; }
+		void setSnapPoint(const ivec2& snappoint) { v2SnapPoint = snappoint; }
 	}
 }}

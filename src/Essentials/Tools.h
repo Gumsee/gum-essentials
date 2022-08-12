@@ -1,5 +1,5 @@
 #pragma once
-#include "Essentials/BoundingBox.h"
+#include "BoundingBox.h"
 #include <string>
 #include <vector>
 #include <assimp/scene.h>
