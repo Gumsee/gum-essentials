@@ -32,7 +32,7 @@ namespace Filesystem {
     void readFileContents(std::string filepath, std::function<void(std::string line)> func)
     {
         std::ifstream filestream;
-        filestream.open(filepath, std::ios::app);
+        filestream.open(filepath, std::ios::in);
         std::string line = "";
         while(std::getline(filestream, line))
             func(line);
@@ -49,6 +49,21 @@ namespace Filesystem {
         return contents.substr(0, contents.length() - 1); //Get rid of that extra newline 
     }
 
+    void writeToFile(std::string filepath, std::string str)
+    {
+        std::ofstream filestream;
+        filestream.open(filepath, std::ios::out);
+        filestream << str;
+        filestream.close();
+    }
+
+    void appendToFile(std::string filepath, std::string str)
+    {
+        std::ofstream filestream;
+        filestream.open(filepath, std::ios::app);
+        filestream << str;
+        filestream.close();
+    }
 
     std::string getExecutablePath()
     {

@@ -3,9 +3,13 @@
 #include "Keyboard.h"
 
 namespace Gum {
-namespace Input
+namespace Input {
+namespace Controls
 {
-	InputControlsClass::InputControlsClass(InputKeyboardClass* keyboard)
+	int iCurrentKey;
+	std::map<std::string, int> mControls;
+
+	void init()
 	{
 		Gum::Output::log("Setting Default Controls!");
 		setControl("Forward", GUM_KEY_W);
@@ -16,18 +20,17 @@ namespace Input
 		setControl("Up", GUM_KEY_SPACE);
 		setControl("Down", GUM_KEY_LEFT_CONTROL);
 		setControl("Speed", GUM_KEY_F);
-		pKeyboard = keyboard;
 	}
 
-	bool InputControlsClass::checkControl(const char* ControlName)
+	bool checkControl(const char* ControlName, InputKeyboardClass* keyboard)
 	{
-		return pKeyboard->checkKeyPressed(mControls[ControlName]);
+		return keyboard->checkKeyPressed(mControls[ControlName]);
 	}
 
 	//Setter
-	void InputControlsClass::setCurrentKey(const int& character)                        { iCurrentKey = character; }
-	void InputControlsClass::setControl(const std::string& ControlName, const int& key) { mControls[ControlName] = key; }
+	void setCurrentKey(const int& character)                        { iCurrentKey = character; }
+	void setControl(const std::string& ControlName, const int& key) { mControls[ControlName] = key; }
 
 	//Getter
-	char InputControlsClass::getCurrentKey() const                                      { return iCurrentKey; }
-}}
+	char getCurrentKey()		                                    { return iCurrentKey; }
+}}}

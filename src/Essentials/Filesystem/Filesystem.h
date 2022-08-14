@@ -27,6 +27,9 @@ namespace Filesystem {
 
     extern void readFileContents(std::string filepath, std::function<void(std::string line)> func);
     extern std::string readFileContents(std::string filepath);
+
+    extern void writeToFile(std::string filepath, std::string str);
+    extern void appendToFile(std::string filepath, std::string str);
     
     extern void iterateThroughDirectory(std::string directoy, std::function<void(File entry)> func);
 

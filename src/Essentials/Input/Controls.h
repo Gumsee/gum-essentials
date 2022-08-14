@@ -4,25 +4,16 @@
 #include <string>
 
 namespace Gum {
-namespace Input
+namespace Input {
+namespace Controls
 {
-	class InputControlsClass
-	{
-	private:
-		int iCurrentKey;
-		InputKeyboardClass* pKeyboard;
-		std::map<std::string, int> mControls;
+	void init();
+	bool checkControl(const char* ControlName, InputKeyboardClass* keyboard);
 
-	public:
-		InputControlsClass(InputKeyboardClass* keyboard);
-
-		bool checkControl(const char* ControlName);
-
-		//Setter
-		void setCurrentKey(const int& character);
-		void setControl(const std::string& ControlName, const int& key);
-		
-		//Getter
-		char getCurrentKey() const;
-	};
-}}
+	//Setter
+	void setCurrentKey(const int& character);
+	void setControl(const std::string& ControlName, const int& key);
+	
+	//Getter
+	char getCurrentKey();
+}}}
