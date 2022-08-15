@@ -69,8 +69,6 @@ namespace Gum
 		//Setter
 		void setSize(const ivec2& size);
 		void setPosition(const ivec2& pos);
-		void setKeyboard(Input::InputKeyboardClass* keyboard);
-		void setMouse(Input::InputMouseClass* mouse);
 		void setClearColor(vec4 color);
 		void setVerticalSync(bool vsync);
 		void hide(bool hiddenstat);

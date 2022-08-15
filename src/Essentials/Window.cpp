@@ -78,11 +78,16 @@ namespace Gum
 				context->v2Pos = ivec2(x, y);
 			}
 		); //Maybe causes a scope violation);
+
+		pKeyboard = new Gum::Input::InputKeyboardClass(this);
+		pMouse = new Gum::Input::InputMouseClass(this);
 	}
 
 	Window::~Window()
 	{
     	close();
+		delete pKeyboard;
+		delete pMouse;
 	}
 
 
@@ -220,8 +225,6 @@ namespace Gum
 	//Setter
 	void Window::setSize(const ivec2& size)    						{ glfwSetWindowSize(pRenderWindow, size.x, size.y); }
 	void Window::setPosition(const ivec2& pos) 						{ glfwSetWindowPos(pRenderWindow, pos.x, pos.y); }
-	void Window::setKeyboard(Input::InputKeyboardClass* keyboard) 	{ this->pKeyboard = keyboard; }
-	void Window::setMouse(Input::InputMouseClass* mouse)		  	{ this->pMouse = mouse; }
 	void Window::setClearColor(vec4 color)							{ glClearColor(color.r, color.g, color.b, color.a); }
 	void Window::setVerticalSync(bool vsync)						{ glfwSwapInterval((int)vsync); }
 	void Window::setTitle(const std::string& title)					{ glfwSetWindowTitle(pRenderWindow, title.c_str()); this->sTitle = title; }
