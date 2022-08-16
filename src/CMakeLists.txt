@@ -13,6 +13,7 @@ message(STATUS "GumEssentials: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 #
 # Directories
 #
+include_directories(${CMAKE_SOURCE_DIR}/include/)
 include_directories(${CMAKE_SOURCE_DIR}/external/libxml2/include/)
 include_directories(${CMAKE_SOURCE_DIR}/external/SFML/include/)
 include_directories(${CMAKE_SOURCE_DIR}/external/glfw/include/)
