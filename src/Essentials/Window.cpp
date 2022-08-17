@@ -8,6 +8,7 @@
 #define GLFW_EXPOSE_NATIVE_X11
 #define GLFW_EXPOSE_NATIVE_GLX
 #include <GLFW/glfw3native.h>
+#include "MemoryManagement.h"
 
 namespace Gum
 {
@@ -85,9 +86,13 @@ namespace Gum
 
 	Window::~Window()
 	{
-    	close();
-		delete pKeyboard;
-		delete pMouse;
+		if(pRenderWindow != nullptr)
+		{
+			glfwDestroyWindow(pRenderWindow); 
+			pRenderWindow = nullptr;
+		}
+		Gum::_delete(pKeyboard);
+		Gum::_delete(pMouse);
 	}
 
 
@@ -135,11 +140,7 @@ namespace Gum
 	//Passthrough
 	void Window::close()            	
 	{ 
-		if(pRenderWindow != nullptr)
-		{
-			glfwDestroyWindow(pRenderWindow); 
-			pRenderWindow = nullptr;
-		}
+		glfwSetWindowShouldClose(pRenderWindow, true);
 	}
 	void Window::minimize()
 	{

@@ -9,6 +9,8 @@
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
 
+#include "../MemoryManagement.h"
+
 
 std::string indent(int i)
 {
@@ -62,8 +64,7 @@ XMLReader::XMLReader(std::string filename, NODE_TYPES allowedtypes, std::functio
 
 XMLReader::~XMLReader()
 {
-    if(pRootNode != nullptr)
-        delete pRootNode;
+    Gum::_delete(pRootNode);
 }
 
 XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLReader::NODE_TYPES allowedtypes, std::function<void(XMLNode*)> func)
@@ -72,9 +73,12 @@ XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLReader::NODE_TYPE
         return nullptr;
 
     XMLNode *retNode = new XMLNode();
+    xmlChar *content = xmlNodeGetContent(node);
     retNode->name = reinterpret_cast<const char*>(node->name); //Get name of node
-    retNode->content = reinterpret_cast<const char*>(xmlNodeGetContent(node)); //Get content of node
+    retNode->content = reinterpret_cast<const char*>(content); //Get content of node
     retNode->parent = parent;
+    xmlFree(content);
+
     switch (node->type) 
     { 
         case XML_ELEMENT_NODE:       retNode->type = XMLReader::NODE_TYPES::ELEMENT;   break;
@@ -91,7 +95,9 @@ XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLReader::NODE_TYPE
     for(xmlAttr* attribute = node->properties; attribute; attribute = attribute->next)
     {
         std::string name = reinterpret_cast<const char*>(attribute->name); //Get name of attribute
-        std::string value = reinterpret_cast<const char*>(xmlNodeListGetString(node->doc, attribute->children, 1)); //Get value of attribute
+        xmlChar *valuechar = xmlNodeListGetString(node->doc, attribute->children, 1); //Get value of attribute
+        std::string value = reinterpret_cast<const char*>(valuechar); 
+        xmlFree(valuechar);
         retNode->mAttributes[name] = value;
     }
 

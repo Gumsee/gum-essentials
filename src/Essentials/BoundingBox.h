@@ -5,6 +5,12 @@ template<typename T, int S>
 struct tbbox
 {
     tvec<T, S> pos, size;
+    tbbox()
+    {
+        this->pos = tvec<T, S>(0);
+        this->size = tvec<T, S>(0);
+    }
+
     tbbox(tvec<T, S> pos, tvec<T, S> size)
     {
         this->pos = pos;
