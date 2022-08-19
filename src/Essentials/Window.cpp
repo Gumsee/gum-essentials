@@ -45,6 +45,7 @@ namespace Gum
 			v2Size.x = Display::getScreenSize().x * ((float)v2Size.x / 100.0f);
 			v2Size.y = Display::getScreenSize().y * ((float)v2Size.y / 100.0f);
 		}
+		this->v2PixelSize = vec2(1.0f) / (vec2)v2Size;
 		
 		GLFWwindow* parentGLFWWindow = NULL;
 		if(parentWindow != nullptr)
@@ -65,6 +66,7 @@ namespace Gum
 				context->fAspectRatio = (float)context->v2Size.y / (float)context->v2Size.x;
 				context->fAspectRatioWidthToHeight = (float)context->v2Size.x / (float)context->v2Size.y;
 				context->m4ScreenMatrix = Gum::Maths::ortho((float)context->v2Size.y, (float)context->v2Size.x, 0.0f, 0.0f, -100.0f, 100.0f);
+				context->v2PixelSize = vec2(1.0f) / (vec2)context->v2Size;
 
 				for(size_t i = 0; i < context->vResizeFunctions.size(); i++)
 					context->vResizeFunctions[i](context->v2Size);
@@ -242,6 +244,7 @@ namespace Gum
 	//Getter
 	GLFWwindow* Window::getRenderWindow() const 					{ return this->pRenderWindow; }
 	ivec2 Window::getSize() const              						{ return this->v2Size; }
+	vec2 Window::getPixelSize() const          						{ return this->v2PixelSize; }
 	ivec2 Window::getPosition() const          						{ return this->v2Pos; }
 	mat4 Window::getScreenMatrix() const							{ return this->m4ScreenMatrix; }
 	std::string Window::getTitle() const							{ return this->sTitle; }

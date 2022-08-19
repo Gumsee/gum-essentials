@@ -16,6 +16,7 @@ namespace Gum
 		Gum::Window *pParentWindow;
 		ivec2 v2VisibleAreaSize;
 		ivec2 v2Size, v2Pos;
+		vec2 v2PixelSize;
 		mat4 m4ScreenMatrix;
 		float fAspectRatio, fAspectRatioWidthToHeight;
 		bool bIsFullscreen;
@@ -78,6 +79,7 @@ namespace Gum
 		//Getter
 		GLFWwindow* getRenderWindow() const;
 		ivec2 getSize() const;
+		vec2 getPixelSize() const;
 		ivec2 getPosition() const;
 		mat4 getScreenMatrix() const;
 		std::string getTitle() const;
