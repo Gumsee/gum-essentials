@@ -1,5 +1,4 @@
 #pragma once
-#include "BoundingBox.h"
 #include <string>
 #include <vector>
 #include <assimp/scene.h>

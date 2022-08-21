@@ -1,12 +1,12 @@
 #include "TextureLoader.h"
-#include <Essentials/Output.h>
-#include <Essentials/Tools.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
-#include <iostream>
+
+
 #include "../Tools.h"
+#include "../Output.h"
 #include "Filesystem.h"
 
 /*#define TINYEXR_USE_MINIZ 0
