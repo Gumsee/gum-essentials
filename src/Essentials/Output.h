@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <time.h>
+#include <iostream>
 
 namespace Gum {
 namespace Output
@@ -21,10 +22,13 @@ namespace Output
     extern void info(std::string message, bool newline = true, bool brackets = true);
     extern void debug(std::string message);
 
-    extern void print(std::string message);
-    extern void print(float number);
-
     extern std::string getCurrentTime();
 	extern void Failed();
 	extern bool wasSuccessful();
+
+    template<typename T>
+    static void print(T printable)
+    {
+        std::cout << getCurrentTime() << " " << printable << "\n";
+    }
 }}

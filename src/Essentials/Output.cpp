@@ -1,5 +1,4 @@
 #include "Output.h"
-#include <iostream>
 #define DEBUG 1
 
 namespace Gum {
@@ -98,15 +97,6 @@ namespace Output
             logfile << getCurrentTime() << ("[Debug] " + message + "\n").c_str();
             logfile.close();
         #endif
-    }
-
-    void print(std::string message)
-    {
-        std::cout << getCurrentTime() << " " + message + "\n";
-    }
-    void print(float number)
-    {
-        std::cout << getCurrentTime() << " " << number << "\n";
     }
 
     std::string getCurrentTime()

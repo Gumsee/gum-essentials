@@ -147,6 +147,7 @@ namespace Input
 		bool system;
 
 		Gum::Window* pContextWindow;
+		char32_t u32TextInput;
 
 	public:
         InputKeyboardClass(Gum::Window* context);
@@ -164,5 +165,6 @@ namespace Input
 		
 		//Getter
 		bool isBusy() const;
+		char32_t getTextInput() const;
 	};
 }}

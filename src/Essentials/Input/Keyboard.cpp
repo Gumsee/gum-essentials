@@ -1,35 +1,20 @@
 #include "Keyboard.h"
 #include "../Window.h"
-#include <iostream>
+#include "../Output.h"
 
 namespace Gum {
 namespace Input
 {
 	InputKeyboardClass::InputKeyboardClass(Gum::Window* context)
 	{
-		/*switch(event.type)
-		{
-			case sf::Event::KeyPressed:
-				escape = event.key.code == sf::Keyboard::Escape;
-				system = event.key.system;
-				shift = event.key.shift;
-				alt = event.key.alt;
-				control = event.key.control;
-
-				currentKey = key2string(event.key.code);
-				break;
-
-			case sf::Event::KeyReleased:
-				releasedChar = currentKey;
-				currentKey = "";
-				break;
-
-			case sf::Event::TextEntered:
-			default:
-				break;
-		}*/
-
 		pContextWindow = context;
+		u32TextInput = 0;
+
+		glfwSetCharCallback(pContextWindow->getRenderWindow(), [](GLFWwindow* window, unsigned int codepoint) {
+			InputKeyboardClass* keyboard = ((Window*)glfwGetWindowUserPointer(window))->getKeyboard();
+			keyboard->u32TextInput = (char32_t)codepoint;
+		});
+
 	}
 
 
@@ -177,5 +162,6 @@ namespace Input
 	void InputKeyboardClass::setBusiness(const bool& val)  { busy = val; }
 
 
-	bool InputKeyboardClass::isBusy() const                { return busy; }
+	bool InputKeyboardClass::isBusy() const           { return busy; }
+	char32_t InputKeyboardClass::getTextInput() const { return this->u32TextInput; }
 }}
