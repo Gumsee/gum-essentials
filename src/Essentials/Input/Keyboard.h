@@ -147,7 +147,8 @@ namespace Input
 		bool system;
 
 		Gum::Window* pContextWindow;
-		char32_t u32TextInput;
+		std::string u8TextInput;
+		int iLastPressedKey, iLastReleasedKey;
 
 	public:
         InputKeyboardClass(Gum::Window* context);
@@ -155,16 +156,20 @@ namespace Input
         InputKeyboardClass& operator=(InputKeyboardClass& other) = delete;
 
 		std::string key2string(const int& key) const;
+
+		bool checkLastPressedKey(const int& key) const;
+		bool checkLastReleasedKey(const int& key) const;
 		bool checkKeyPressed(const int& key) const;
 		bool checkKeyReleased(const int& key) const;
 
 		void addKeyCallback();
+		void reset();
 
 		//Setter
 		void setBusiness(const bool& val);
 		
 		//Getter
 		bool isBusy() const;
-		char32_t getTextInput() const;
+		std::string getTextInput() const;
 	};
 }}

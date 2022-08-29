@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include "Output.h"
+#include <bitset>
 
 namespace Tools
 {
@@ -102,6 +103,11 @@ namespace Tools
         std::stringstream ss;
         ss << std::uppercase << std::hex << dec;
         return "0x" + ss.str();
+    }
+
+    std::string decToBin(const int& dec)
+    {
+        return "0b" + std::bitset<32>(dec).to_string();
     }
 
     std::string typeToString(const std::type_info &type)

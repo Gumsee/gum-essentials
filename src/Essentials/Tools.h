@@ -24,6 +24,7 @@ namespace Tools
 
     //Processing
     extern std::string decToHex(const int& dec);
+    extern std::string decToBin(const int& dec);
     extern std::string typeToString(const std::type_info &type);
     extern std::string to_string(void* var, const std::type_info &type);
     extern std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces = true);

@@ -1,6 +1,9 @@
 #include "Keyboard.h"
 #include "../Window.h"
 #include "../Output.h"
+#include "GLFW/glfw3.h"
+#include <locale>
+#include <codecvt>
 
 namespace Gum {
 namespace Input
@@ -8,13 +11,30 @@ namespace Input
 	InputKeyboardClass::InputKeyboardClass(Gum::Window* context)
 	{
 		pContextWindow = context;
-		u32TextInput = 0;
+		iLastPressedKey = 0;
+		iLastReleasedKey = 0;
+		u8TextInput = "";
 
 		glfwSetCharCallback(pContextWindow->getRenderWindow(), [](GLFWwindow* window, unsigned int codepoint) {
 			InputKeyboardClass* keyboard = ((Window*)glfwGetWindowUserPointer(window))->getKeyboard();
-			keyboard->u32TextInput = (char32_t)codepoint;
+
+			std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
+			keyboard->u8TextInput = convert.to_bytes(codepoint);
 		});
 
+		glfwSetKeyCallback(pContextWindow->getRenderWindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+			InputKeyboardClass* keyboard = ((Window*)glfwGetWindowUserPointer(window))->getKeyboard();
+			if (action == GLFW_PRESS || action == GLFW_REPEAT)  { keyboard->iLastPressedKey  = key; }
+			if (action == GLFW_RELEASE) 						{ keyboard->iLastReleasedKey = key; }
+		});
+
+	}
+
+	void InputKeyboardClass::reset()
+	{
+		this->u8TextInput = "";
+		this->iLastPressedKey = 0;
+		this->iLastReleasedKey = 0;
 	}
 
 
@@ -149,6 +169,16 @@ namespace Input
 		return ret;
 	}
 
+	bool InputKeyboardClass::checkLastPressedKey(const int& key) const
+	{ 
+		return iLastPressedKey == key; 
+	}
+
+	bool InputKeyboardClass::checkLastReleasedKey(const int& key) const
+	{ 
+		return iLastReleasedKey == key; 
+	}
+
 	bool InputKeyboardClass::checkKeyPressed(const int& key) const
 	{ 
 		return glfwGetKey(pContextWindow->getRenderWindow(), key) == GLFW_PRESS; 
@@ -163,5 +193,5 @@ namespace Input
 
 
 	bool InputKeyboardClass::isBusy() const           { return busy; }
-	char32_t InputKeyboardClass::getTextInput() const { return this->u32TextInput; }
+	std::string InputKeyboardClass::getTextInput() const { return this->u8TextInput; }
 }}
