@@ -27,6 +27,8 @@ namespace Input
 
 		bool LeftDown = false;
 		bool RightDown = false;
+		bool LeftDownStart = false;
+		bool RightDownStart = false;
 		bool LeftClickOnce = false;
 		bool RightClickOnce = false;
 		bool LeftReleased = false;
@@ -86,8 +88,8 @@ namespace Input
 		bool isInArea(const ivec2& pos, const ivec2& size) const;
 		bool hasLeftClick();
 		bool hasRightClick();
-		bool isLeftDown();
-		bool isRightDown();
+		bool hasLeftClickStart();
+		bool hasRightClickStart();
 		bool hasLeftDoubleClick();
 		bool hasRightDoubleClick();
 		bool hasLeftRelease();

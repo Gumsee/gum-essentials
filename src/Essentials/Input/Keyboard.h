@@ -149,6 +149,7 @@ namespace Input
 		Gum::Window* pContextWindow;
 		std::string u8TextInput;
 		int iLastPressedKey, iLastReleasedKey;
+		int iLastPressedModKey, iLastReleasedModKey;
 
 	public:
         InputKeyboardClass(Gum::Window* context);
@@ -157,8 +158,8 @@ namespace Input
 
 		std::string key2string(const int& key) const;
 
-		bool checkLastPressedKey(const int& key) const;
-		bool checkLastReleasedKey(const int& key) const;
+		bool checkLastPressedKey(const int& key, const int& modkey = 0) const;
+		bool checkLastReleasedKey(const int& key, const int& modkey = 0) const;
 		bool checkKeyPressed(const int& key) const;
 		bool checkKeyReleased(const int& key) const;
 

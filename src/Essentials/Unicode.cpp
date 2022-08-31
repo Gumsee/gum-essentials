@@ -1,7 +1,9 @@
 #include "Unicode.h"
 #include "Output.h"
 #include <codecvt>
+#include <cstdint>
 #include <locale>
+#include <string>
 #include "Tools.h"
 
 namespace Gum 
@@ -73,7 +75,30 @@ namespace Gum
 
     void Unicode::append(const Unicode& unicode)
     {
-        for(size_t i = 0; i < unicode.length(); i++)
-            this->vUTF8Chars.push_back(unicode[i]);
+        for(int i = 0; i < unicode.length(); i++)
+        {
+            vUTF8Chars.push_back(unicode[i]);
+        }
     }
+
+    void Unicode::insert(const Unicode& unicode, const unsigned int& index)
+    {
+        vUTF8Chars.insert(vUTF8Chars.begin() + index, unicode.begin(), unicode.end());
+    }
+
+    void Unicode::erase(const unsigned int& index, const unsigned int& n)
+    {
+        this->vUTF8Chars.erase(vUTF8Chars.begin() + index, vUTF8Chars.begin() + index + n);
+    }
+
+    std::vector<std::basic_string<char>>::const_iterator Unicode::begin() const
+    {
+        return this->vUTF8Chars.begin();
+    }
+
+    std::vector<std::basic_string<char>>::const_iterator Unicode::end() const
+    {
+        return this->vUTF8Chars.end();
+    }
+
 }

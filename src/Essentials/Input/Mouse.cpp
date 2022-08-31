@@ -57,6 +57,7 @@ namespace Input
                     if(action == GLFW_PRESS)
                     {
                         mouseptr->LeftClickOnce = true;
+                        mouseptr->LeftDownStart = true;
                         mouseptr->LeftDown = true;
                         mouseptr->v2LeftClickPosition = mouseptr->getPosition();
                     }
@@ -64,14 +65,17 @@ namespace Input
                     {
                         if(mouseptr->LeftClickOnce)
                         { 
-                            if(mouseptr->lastClickTimeLeft < 0.5f)
+                            if(mouseptr->lastClickTimeLeft < 0.2f)
                             {
                                 mouseptr->LeftDoubleClick = true;
-                                mouseptr->lastClickTimeLeft = 0.5f;
+                                mouseptr->lastClickTimeLeft = 0.2f;
                             }
                             else
                                 mouseptr->lastClickTimeLeft = 0;
+
+                            mouseptr->LeftClickOnce = false;
                         }
+                        mouseptr->LeftReleased = true; 
                         mouseptr->LeftDown = false;
                     }
                 }
@@ -81,28 +85,25 @@ namespace Input
                     if(action == GLFW_PRESS)
                     {
                         mouseptr->RightClickOnce = true;
+                        mouseptr->RightDownStart = true;
                         mouseptr->RightDown = true;
                     }
                     else
                     {
                         if(mouseptr->RightClickOnce)
                         {
-                            if(mouseptr->lastClickTimeRight < 0.5f)
+                            if(mouseptr->lastClickTimeRight < 0.2f)
                             {
                                 mouseptr->RightDoubleClick = true;
-                                mouseptr->lastClickTimeRight = 0.5f;
+                                mouseptr->lastClickTimeRight = 0.2f;
                             }
                             else
                                 mouseptr->lastClickTimeRight = 0;
                         }
+                        mouseptr->RightReleased = true; 
                         mouseptr->RightDown = false;
                     }
                 }
-
-                if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-                    mouseptr->LeftReleased = true; 
-                else if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
-                    mouseptr->RightReleased = true; 
             }
         );
 
@@ -152,12 +153,14 @@ namespace Input
     {
         lastClickTimeLeft += FPS::get();
         lastClickTimeRight += FPS::get();
-        if(!LeftDown)
+        if(LeftReleased)
             v2LeftClickPosition = ivec2(-1, -1);
 		LeftReleased = false;
 		RightReleased = false;
         LeftDoubleClick = false;
         RightDoubleClick = false;
+        LeftDownStart = false;
+        RightDownStart = false;
 
 		iMouseWheelState = 0;
         CursorType = 0;
@@ -225,10 +228,10 @@ namespace Input
     int InputMouseClass::getCursorType() const                              { return this->CursorType; }
     unsigned int InputMouseClass::getInstanceIDUnderMouse() const           { return this->mouseOnID; }
     
-    bool InputMouseClass::hasLeftClick()        { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS; }
-    bool InputMouseClass::hasRightClick()       { return glfwGetMouseButton(pContextWindow->getRenderWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS; }
-    bool InputMouseClass::isLeftDown()          { return this->LeftDown; }
-    bool InputMouseClass::isRightDown()         { return this->RightDown; }
+    bool InputMouseClass::hasLeftClick()        { return this->LeftDown; }
+    bool InputMouseClass::hasRightClick()       { return this->RightDown; }
+    bool InputMouseClass::hasLeftClickStart()   { return this->LeftDownStart; }
+    bool InputMouseClass::hasRightClickStart()  { return this->RightDownStart; }
     bool InputMouseClass::hasLeftDoubleClick()  { return this->LeftDoubleClick; }
     bool InputMouseClass::hasRightDoubleClick() { return this->RightDoubleClick; }
     bool InputMouseClass::hasLeftRelease()      { return this->LeftReleased; }

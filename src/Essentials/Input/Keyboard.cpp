@@ -24,8 +24,8 @@ namespace Input
 
 		glfwSetKeyCallback(pContextWindow->getRenderWindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 			InputKeyboardClass* keyboard = ((Window*)glfwGetWindowUserPointer(window))->getKeyboard();
-			if (action == GLFW_PRESS || action == GLFW_REPEAT)  { keyboard->iLastPressedKey  = key; }
-			if (action == GLFW_RELEASE) 						{ keyboard->iLastReleasedKey = key; }
+			if (action == GLFW_PRESS || action == GLFW_REPEAT)  { keyboard->iLastPressedKey  = key; keyboard->iLastPressedModKey = mods; }
+			if (action == GLFW_RELEASE) 						{ keyboard->iLastReleasedKey = key; keyboard->iLastReleasedModKey = mods; }
 		});
 
 	}
@@ -169,14 +169,14 @@ namespace Input
 		return ret;
 	}
 
-	bool InputKeyboardClass::checkLastPressedKey(const int& key) const
+	bool InputKeyboardClass::checkLastPressedKey(const int& key, const int& modkey) const
 	{ 
-		return iLastPressedKey == key; 
+		return iLastPressedKey == key && iLastPressedModKey == modkey; 
 	}
 
-	bool InputKeyboardClass::checkLastReleasedKey(const int& key) const
+	bool InputKeyboardClass::checkLastReleasedKey(const int& key, const int& modkey) const
 	{ 
-		return iLastReleasedKey == key; 
+		return iLastReleasedKey == key && iLastReleasedModKey == modkey; 
 	}
 
 	bool InputKeyboardClass::checkKeyPressed(const int& key) const
