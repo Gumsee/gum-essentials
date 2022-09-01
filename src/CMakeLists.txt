@@ -20,6 +20,15 @@ include_directories(${CMAKE_SOURCE_DIR}/external/glfw/include/)
 include_directories(${CMAKE_BINARY_DIR}/external/libxml2/)
 include_directories(${GUMMATH_DIRECTORY})
 
+if(${GUM_OS_LINUX})
+	find_package(GTK2 2.6 REQUIRED gtk)
+	if(GTK2_FOUND)
+		include_directories(${GTK2_INCLUDE_DIRS})
+		#target_link_libraries(mygui ${GTK2_LIBRARIES})
+	endif()
+endif()
+
+
 #
 # Source
 #

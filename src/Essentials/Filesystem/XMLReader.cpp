@@ -11,19 +11,8 @@
 
 #include "../MemoryManagement.h"
 
-
-std::string indent(int i)
-{
-    std::string ret = "";
-    for(int j = 0; j < i; j++)
-    {
-        ret += " ";
-    }
-    return ret;
-}
-
 void buildTree(xmlNode *node, XMLNode* parent, XMLReader* reader);
-XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLReader::NODE_TYPES allowedtypes, std::function<void(XMLNode*)> func);
+XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLNode::NODE_TYPES allowedtypes, std::function<void(XMLNode*)> func);
 
 XMLReader::XMLReader(std::string filename)
 {
@@ -37,7 +26,7 @@ XMLReader::XMLReader(std::string filename)
        return;
     }
 
-    pRootNode = recurseThroughTree(xmlDocGetRootElement(pDocument), nullptr, NODE_TYPES::ALL, [this](XMLNode* node) {
+    pRootNode = recurseThroughTree(xmlDocGetRootElement(pDocument), nullptr, XMLNode::NODE_TYPES::ALL, [this](XMLNode* node) {
         addNode(node);
     });
 
@@ -47,7 +36,7 @@ XMLReader::XMLReader(std::string filename)
     xmlCleanupParser();    // Free globals
 }
 
-XMLReader::XMLReader(std::string filename, NODE_TYPES allowedtypes, std::function<void(XMLNode* node)> func)
+XMLReader::XMLReader(std::string filename, XMLNode::NODE_TYPES allowedtypes, std::function<void(XMLNode* node)> func)
 {
     /*parse the file and get the DOM */
     xmlDoc* pDocument = xmlReadFile(filename.c_str(), nullptr, 0);
@@ -67,7 +56,7 @@ XMLReader::~XMLReader()
     Gum::_delete(pRootNode);
 }
 
-XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLReader::NODE_TYPES allowedtypes, std::function<void(XMLNode*)> func)
+XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLNode::NODE_TYPES allowedtypes, std::function<void(XMLNode*)> func)
 {
     if(node == nullptr)
         return nullptr;
@@ -81,13 +70,13 @@ XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLReader::NODE_TYPE
 
     switch (node->type) 
     { 
-        case XML_ELEMENT_NODE:       retNode->type = XMLReader::NODE_TYPES::ELEMENT;   break;
-        case XML_TEXT_NODE:          retNode->type = XMLReader::NODE_TYPES::TEXT;      break;
-        case XML_COMMENT_NODE:       retNode->type = XMLReader::NODE_TYPES::COMMENT;   break;
-        case XML_ATTRIBUTE_NODE:     retNode->type = XMLReader::NODE_TYPES::ATTRIBUTE; break;
-        case XML_DOCUMENT_TYPE_NODE: retNode->type = XMLReader::NODE_TYPES::DOCUMENT;  break;
-        case XML_ENTITY_NODE:        retNode->type = XMLReader::NODE_TYPES::ENTITY;    break;
-        default:                     retNode->type = XMLReader::NODE_TYPES::UNKNOWN;   break;
+        case XML_ELEMENT_NODE:       retNode->type = XMLNode::NODE_TYPES::ELEMENT;   break;
+        case XML_TEXT_NODE:          retNode->type = XMLNode::NODE_TYPES::TEXT;      break;
+        case XML_COMMENT_NODE:       retNode->type = XMLNode::NODE_TYPES::COMMENT;   break;
+        case XML_ATTRIBUTE_NODE:     retNode->type = XMLNode::NODE_TYPES::ATTRIBUTE; break;
+        case XML_DOCUMENT_TYPE_NODE: retNode->type = XMLNode::NODE_TYPES::DOCUMENT;  break;
+        case XML_ENTITY_NODE:        retNode->type = XMLNode::NODE_TYPES::ENTITY;    break;
+        default:                     retNode->type = XMLNode::NODE_TYPES::UNKNOWN;   break;
     }
 
     

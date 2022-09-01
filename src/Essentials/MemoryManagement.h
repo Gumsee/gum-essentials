@@ -1,4 +1,5 @@
 #pragma once
+#include <malloc.h>
 
 namespace Gum
 {
@@ -12,5 +13,16 @@ namespace Gum
         if(ptr != nullptr)
             delete ptr;
         ptr = nullptr;
+    }
+
+
+    inline void* _malloc(size_t nbytes)
+    {
+        return malloc(nbytes);
+    }
+
+    inline void _free(void* ptr)
+    {
+        free(ptr);
     }
 };
