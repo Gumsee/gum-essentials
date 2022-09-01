@@ -13,18 +13,15 @@ xmlTextWriterPtr pWriter;
 
 xmlChar* ConvertInput(std::string in, std::string encoding);
 
-XMLWriter::XMLWriter(std::string filename, XMLNode* rootnode, int compression, std::string encoding)
+XMLWriter::XMLWriter(std::string filename, XMLNode* rootnode, bool oneline, int compression, std::string encoding)
 {
-    this->sFileName = filename;
-    this->sEncoding = encoding;
-
     pWriter = xmlNewTextWriterFilename(filename.c_str(), compression);
     if (!pWriter) 
     { 
         Gum::Output::error("XMLWriter: Error creating the xml writer"); 
         return;
     }
-    xmlTextWriterSetIndent(pWriter, 0);
+    xmlTextWriterSetIndent(pWriter, !oneline);
 
     int rc = xmlTextWriterStartDocument(pWriter, "1.0", encoding.c_str(), 0);
     if (rc < 0) 
@@ -61,7 +58,7 @@ void XMLWriter::writeElement(XMLNode* node, std::string encoding)
     }
 
     //Add Attributes
-    node->retrieveAttributes([this, encoding](std::string attr, std::string value) {
+    node->retrieveAttributes([encoding](std::string attr, std::string value) {
         xmlChar *pValStr = ConvertInput(value, encoding);
         xmlChar *pNameStr = ConvertInput(attr, encoding);
         int rc = xmlTextWriterWriteAttribute(pWriter, pNameStr, pValStr);

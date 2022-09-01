@@ -16,7 +16,7 @@ namespace Tools
     {
         vec2 vec;
         std::vector<std::string> numsStr = splitStr(str, ',');
-        for(unsigned int i = 0; i < 2; i++)
+        for(unsigned int i = 0; i < std::min(numsStr.size(), 2UL); i++)
         {
             vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
         }
@@ -26,9 +26,10 @@ namespace Tools
 
     vec3 StringToVec3(std::string str)
     {
+        Gum::Output::print(str);
         vec3 vec;
         std::vector<std::string> numsStr = splitStr(str, ',');
-        for(unsigned int i = 0; i < 3; i++)
+        for(unsigned int i = 0; i < std::min(numsStr.size(), 3UL); i++)
         {
             vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
         }
@@ -40,7 +41,7 @@ namespace Tools
     {
         vec4 vec;
         std::vector<std::string> numsStr = splitStr(str, ',');
-        for(unsigned int i = 0; i < 4; i++)
+        for(unsigned int i = 0; i < std::min(numsStr.size(), 4UL); i++)
         {
             vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
         }

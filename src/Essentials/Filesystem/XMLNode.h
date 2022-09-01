@@ -28,7 +28,7 @@ struct XMLNode
     std::map<std::string, std::string> mAttributes;
 
     XMLNode() {}
-    XMLNode(std::string name, NODE_TYPES type) : name(name), type(type)
+    XMLNode(std::string name, NODE_TYPES type = ELEMENT) : name(name), type(type)
     {
 
     }
@@ -45,6 +45,11 @@ struct XMLNode
     void addAttribute(std::string attrname, std::string value)
     {
         this->mAttributes[attrname] = value;
+    }
+
+    void addChild(XMLNode* child)
+    {
+        children.push_back(child);
     }
 
     void retrieveAttributes(std::function<void(std::string name, std::string value)> func)

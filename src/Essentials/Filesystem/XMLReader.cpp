@@ -87,7 +87,7 @@ XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLNode::NODE_TYPES 
         xmlChar *valuechar = xmlNodeListGetString(node->doc, attribute->children, 1); //Get value of attribute
         std::string value = reinterpret_cast<const char*>(valuechar); 
         xmlFree(valuechar);
-        retNode->mAttributes[name] = value;
+        retNode->addAttribute(name, value);
     }
 
     if(allowedtypes & retNode->type)
@@ -96,7 +96,7 @@ XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLNode::NODE_TYPES 
     xmlNode *childNode = node->children;
     while(childNode != nullptr)
     {
-        retNode->children.push_back(recurseThroughTree(childNode, retNode, allowedtypes, func));
+        retNode->addChild(recurseThroughTree(childNode, retNode, allowedtypes, func));
         childNode = childNode->next;
     }
     return retNode;
