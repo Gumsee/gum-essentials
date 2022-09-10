@@ -21,7 +21,7 @@
 #elif(GUM_OS_MACOS)
     #include <mach-o/dyld.h>
 
-#elif (GUM_OS_BSD_FREE)
+#elif (GUM_OS_BSD)
     #include <sys/types.h>
     #include <sys/sysctl.h>
 #endif
@@ -94,7 +94,7 @@ namespace Filesystem {
                     free(canonicalPath);
                 }
             }
-        #elif (GUM_OS_BSD_FREE)
+        #elif (GUM_OS_BSD)
             char exePath[2048];
             int mib[4];  mib[0] = CTL_KERN;  mib[1] = KERN_PROC;  mib[2] = KERN_PROC_PATHNAME;  mib[3] = -1;
             size_t len = sizeof(exePath);

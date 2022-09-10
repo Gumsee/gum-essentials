@@ -3,40 +3,98 @@ set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS ON)
 set (INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dist/${CMAKE_BUILD_TYPE}/bin/")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g3 -Wall -Wextra -Wno-pedantic")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g3 -Wall -Wextra -Wno-pedantic -Wno-unused-parameter")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0") #Optimization
 
 message(STATUS "Examples: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
-#add_compile_options(-pedantic -Wall -Wextra)
-
-find_package(PkgConfig REQUIRED)
-find_package(Threads)
+list(APPEND GUM_LIBRARIES \"${CMAKE_PROJECT_NAME}\" ${CMAKE_THREAD_LIBS_INIT})
+list(APPEND GUM_LIBRARIES     glfw)
+ 
+if(OPENGL_FOUND)
+    list(APPEND GUM_LIBRARIES "${OPENGL_LIBRARIES}")
+endif()
+              
+if(GLEW_FOUND)
+    list(APPEND GUM_LIBRARIES "${GLEW_LIBRARIES}")
+endif()
+              
+if(GUMMATHS_FOUND)
+    list(APPEND GUM_LIBRARIES "${GUMMATHS_LIBRARIES}")
+endif()
+              
+if(DEFINED GUM_OS_BSD)
+    if(X11_FOUND)
+        list(APPEND GUM_LIBRARIES "${X11_LIBRARIES}")
+    endif()
+endif()
+              
+if(DEFINED GUM_OS_LINUX)
+    if(X11_FOUND)
+        list(APPEND GUM_LIBRARIES "${X11_LIBRARIES}")
+    endif()
+endif()
+              
+if(DEFINED GUM_OS_BSD)
+    if(GTK2_FOUND)
+        list(APPEND GUM_LIBRARIES "${GTK2_LIBRARIES}")
+    endif()
+endif()
+              
+if(DEFINED GUM_OS_LINUX)
+    if(GTK2_FOUND)
+        list(APPEND GUM_LIBRARIES "${GTK2_LIBRARIES}")
+    endif()
+endif()
+             
 
 include_directories(${CMAKE_SOURCE_DIR}/src/)
-include_directories(${GUMMATH_DIRECTORY})
+ 
+if(OPENGL_FOUND)
+    include_directories(${OPENGL_INCLUDE_DIRS})
+endif()
+              
+if(GLEW_FOUND)
+    include_directories(${GLEW_INCLUDE_DIRS})
+endif()
+              
+if(GUMMATHS_FOUND)
+    include_directories(${GUMMATHS_INCLUDE_DIRS})
+endif()
+              
+if(DEFINED GUM_OS_BSD)
+    if(X11_FOUND)
+        include_directories(${X11_INCLUDE_DIRS})
+    endif()
+endif()
+              
+if(DEFINED GUM_OS_LINUX)
+    if(X11_FOUND)
+        include_directories(${X11_INCLUDE_DIRS})
+    endif()
+endif()
+              
+if(DEFINED GUM_OS_BSD)
+    if(GTK2_FOUND)
+        include_directories(${GTK2_INCLUDE_DIRS})
+    endif()
+endif()
+              
+if(DEFINED GUM_OS_LINUX)
+    if(GTK2_FOUND)
+        include_directories(${GTK2_INCLUDE_DIRS})
+    endif()
+endif()
+             
 
-link_directories(${CMAKE_SOURCE_DIR}/lib/)
+link_directories(${CMAKE_BINARY_DIR}/src/)
 
-add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples/\")
+add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples\")
 
-set(GUMGUI_LIBRARIES 
-    GumEssentials
-    GumMaths
-    glfw
-    X11
-    GLEW 
-    GL
-    ${CMAKE_THREAD_LIBS_INIT}
-)
-
-set(EXAMPLE_FILE_LIST 
-    Window
-)
-
+set(EXAMPLE_FILE_LIST Window)
 
 foreach(EXAMPLE ${EXAMPLE_FILE_LIST})
     message(STATUS "Adding target ${EXAMPLE}")
     add_executable(Example_${EXAMPLE} "./${EXAMPLE}.cpp")
-    target_link_libraries(Example_${EXAMPLE} ${GUMGUI_LIBRARIES})
+    target_link_libraries(Example_${EXAMPLE} "${GUM_LIBRARIES}")
 endforeach()

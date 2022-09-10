@@ -7,5 +7,5 @@ namespace FPS
 	extern float get();
 
 	extern float Current;
-	extern std::chrono::system_clock::time_point clock;
+	extern std::chrono::high_resolution_clock::time_point clock; //std::chrono::system_time::time_point
 }

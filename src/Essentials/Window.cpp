@@ -2,7 +2,6 @@
 #include "Input/Mouse.h"
 #include "Output.h"
 #include "Display.h"
-#include <GL/glx.h>
 #include <GLFW/glfw3.h>
 #include <X11/Xutil.h>
 #define GLFW_EXPOSE_NATIVE_X11

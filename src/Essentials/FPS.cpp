@@ -4,7 +4,7 @@
 namespace FPS
 {
 	float Current = 0;
-	std::chrono::system_clock::time_point clock = std::chrono::high_resolution_clock::now();
+	std::chrono::high_resolution_clock::time_point clock = std::chrono::high_resolution_clock::now();
 
 	void update()
 	{

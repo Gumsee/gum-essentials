@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <assimp/scene.h>
 #include <gum-maths.h>
 #include <typeinfo>
 
@@ -15,11 +14,6 @@ namespace Tools
     extern vec3 StringToVec3(std::string str);
     extern vec4 StringToVec4(std::string str);
     extern quat StringToQuat(std::string str);
-
-    extern vec3 aiVector3ToVec3(const aiVector3D &v);
-    extern quat aiQuaternionToQuat(const aiQuaternion &q);
-    extern mat4 aiMatrix4x4ToMat4(aiMatrix4x4 from);
-    extern aiMatrix4x4 Mat4ToAiMatrix4(mat4 mat);
 
 
     //Processing

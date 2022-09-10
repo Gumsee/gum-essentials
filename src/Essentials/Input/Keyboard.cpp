@@ -1,7 +1,6 @@
 #include "Keyboard.h"
 #include "../Window.h"
 #include "../Output.h"
-#include "GLFW/glfw3.h"
 #include <locale>
 #include <codecvt>
 
