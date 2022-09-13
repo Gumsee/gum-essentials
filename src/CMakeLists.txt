@@ -20,7 +20,6 @@ add_library(${CMAKE_PROJECT_NAME} STATIC ${SRC})
 include_directories(${CMAKE_SOURCE_DIR}/external/)
 include_directories(    ${CMAKE_SOURCE_DIR}/external/libxml2/include)
 include_directories(    ${CMAKE_BINARY_DIR}/external/libxml2)
-include_directories(    ${CMAKE_SOURCE_DIR}/external/glfw/include)
 include_directories(    ${CMAKE_SOURCE_DIR}/external/assimp/include)
  
 if(OPENGL_FOUND)
@@ -29,6 +28,10 @@ endif()
               
 if(GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})
+endif()
+              
+if(GUMOS_FOUND)
+    include_directories(${GUMOS_INCLUDE_DIRS})
 endif()
               
 if(GUMMATHS_FOUND)
@@ -71,12 +74,6 @@ file(GLOB_RECURSE HEADERS Essentials//*.h)
 install(
     FILES ${HEADERS}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/Essentials//
-) 
-
-file(GLOB_RECURSE HEADERS Essentials/Input//*.h)
-install(
-    FILES ${HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/Essentials/Input//
 ) 
 
 file(GLOB_RECURSE HEADERS Essentials/Filesystem//*.h)

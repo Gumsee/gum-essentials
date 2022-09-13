@@ -1,15 +1,15 @@
 #include "XMLReader.h"
-#include "../Output.h"
 #include <functional>
 #include <iostream>
+
+#include <System/IO/Output.h>
+#include <System/MemoryManagement.h>
 
 //Lib XML
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
-
-#include "../MemoryManagement.h"
 
 void buildTree(xmlNode *node, XMLNode* parent, XMLReader* reader);
 XMLNode* recurseThroughTree(xmlNode *node, XMLNode* parent, XMLNode::NODE_TYPES allowedtypes, std::function<void(XMLNode*)> func);

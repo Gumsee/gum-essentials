@@ -1,5 +1,5 @@
 #include "Settings.h"
-#include "Output.h"
+#include <System/IO/Output.h>
 
 namespace Settings
 {

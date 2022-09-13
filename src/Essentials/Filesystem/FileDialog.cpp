@@ -1,6 +1,6 @@
 #include "FileDialog.h"
-#include "../Output.h"
-#include "../MemoryManagement.h"
+#include <System/IO/Output.h>
+#include <System/MemoryManagement.h>
 #include <functional>
 #include <gtk/gtk.h>
 

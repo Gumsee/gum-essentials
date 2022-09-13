@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 project(GumEssentials)
+cmake_policy(SET CMP0072 NEW)
+
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
@@ -26,6 +28,8 @@ find_package(OpenGL REQUIRED)
               
 find_package(GLEW REQUIRED)
               
+find_package(GumOS REQUIRED)
+              
 find_package(GumMaths REQUIRED)
               
 if(DEFINED GUM_OS_BSD)
@@ -51,10 +55,6 @@ add_definitions(-DCHECK_GL_ERRORS)
 #
 # Building external libs
 #
-set(GLFW_LIBRARY_TYPE "STATIC" CACHE STRING "")
-add_subdirectory(${CMAKE_SOURCE_DIR}/external/glfw/)
-
-
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(LIBXML2_WITH_C14N "Add the Canonicalization support" OFF)
 option(LIBXML2_WITH_CATALOG "Add the Catalog support" OFF)

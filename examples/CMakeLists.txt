@@ -9,7 +9,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0") #Optimization
 message(STATUS "Examples: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
 list(APPEND GUM_LIBRARIES ${CMAKE_PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} pthread)
-list(APPEND GUM_LIBRARIES     glfw)
+
  
 if(OPENGL_FOUND)
     list(APPEND GUM_LIBRARIES "${OPENGL_LIBRARIES}")
@@ -17,6 +17,10 @@ endif()
               
 if(GLEW_FOUND)
     list(APPEND GUM_LIBRARIES "${GLEW_LIBRARIES}")
+endif()
+              
+if(GUMOS_FOUND)
+    list(APPEND GUM_LIBRARIES "${GUMOS_LIBRARIES}")
 endif()
               
 if(GUMMATHS_FOUND)
@@ -58,6 +62,10 @@ if(GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})
 endif()
               
+if(GUMOS_FOUND)
+    include_directories(${GUMOS_INCLUDE_DIRS})
+endif()
+              
 if(GUMMATHS_FOUND)
     include_directories(${GUMMATHS_INCLUDE_DIRS})
 endif()
@@ -91,7 +99,7 @@ link_directories(${CMAKE_BINARY_DIR}/src/)
 
 add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples\")
 
-set(EXAMPLE_FILE_LIST Window)
+set(EXAMPLE_FILE_LIST )
 
 foreach(EXAMPLE ${EXAMPLE_FILE_LIST})
     message(STATUS "Adding target ${EXAMPLE}")

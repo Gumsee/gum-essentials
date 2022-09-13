@@ -6,8 +6,8 @@
 
 
 #include "../Tools.h"
-#include "../Output.h"
-#include "Filesystem.h"
+#include <System/IO/Output.h>
+#include <System/Filesystem.h>
 
 /*#define TINYEXR_USE_MINIZ 0
 #define TINYEXR_IMPLEMENTATION
