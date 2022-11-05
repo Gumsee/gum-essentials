@@ -1,5 +1,5 @@
 #include "FPS.h"
-#include <System/IO/Output.h>
+#include <System/Output.h>
 
 namespace FPS
 {

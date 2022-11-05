@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
-#include <System/IO/Output.h>
+#include <System/Output.h>
 #include <bitset>
+#include <iomanip>
 
 namespace Tools
 {
@@ -78,10 +79,10 @@ namespace Tools
         return quat;
     }
 
-    std::string decToHex(const int& dec)
+    std::string decToHex(const int& dec, int leadingzeros)
     {
         std::stringstream ss;
-        ss << std::uppercase << std::hex << dec;
+        ss << std::uppercase << std::setfill('0') << std::setw(leadingzeros) << std::right << std::hex << dec;
         return "0x" + ss.str();
     }
 

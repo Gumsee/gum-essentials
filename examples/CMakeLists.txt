@@ -19,8 +19,8 @@ if(GLEW_FOUND)
     list(APPEND GUM_LIBRARIES "${GLEW_LIBRARIES}")
 endif()
               
-if(GUMOS_FOUND)
-    list(APPEND GUM_LIBRARIES "${GUMOS_LIBRARIES}")
+if(GUMSYSTEM_FOUND)
+    list(APPEND GUM_LIBRARIES "${GUMSYSTEM_LIBRARIES}")
 endif()
               
 if(GUMMATHS_FOUND)
@@ -62,8 +62,8 @@ if(GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})
 endif()
               
-if(GUMOS_FOUND)
-    include_directories(${GUMOS_INCLUDE_DIRS})
+if(GUMSYSTEM_FOUND)
+    include_directories(${GUMSYSTEM_INCLUDE_DIRS})
 endif()
               
 if(GUMMATHS_FOUND)
@@ -99,7 +99,7 @@ link_directories(${CMAKE_BINARY_DIR}/src/)
 
 add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples\")
 
-set(EXAMPLE_FILE_LIST )
+set(EXAMPLE_FILE_LIST ImageToHeaderConverter)
 
 foreach(EXAMPLE ${EXAMPLE_FILE_LIST})
     message(STATUS "Adding target ${EXAMPLE}")

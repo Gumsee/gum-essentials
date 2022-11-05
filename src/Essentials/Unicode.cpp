@@ -1,5 +1,5 @@
 #include "Unicode.h"
-#include <System/IO/Output.h>
+#include <System/Output.h>
 #include <codecvt>
 #include <cstdint>
 #include <locale>

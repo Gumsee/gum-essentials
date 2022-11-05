@@ -6,14 +6,16 @@
 
 
 #include "../Tools.h"
-#include <System/IO/Output.h>
+#include <System/Output.h>
 #include <System/Filesystem.h>
 
 /*#define TINYEXR_USE_MINIZ 0
 #define TINYEXR_IMPLEMENTATION
 #include <tinyexr.h>*/
 
-TextureLoader::ImageData<unsigned char> TextureLoader::loadImage(const std::string& fileName)
+std::string staticWriterFileName = "", staticWriterVarName = "";
+
+ImageData<unsigned char> TextureLoader::loadImage(const std::string& fileName)
 {
     ImageData<unsigned char> imagedata;
 	std::string extension = Tools::toUpperCase(fileName.substr(fileName.length() - 3, 3));
@@ -50,7 +52,7 @@ TextureLoader::ImageData<unsigned char> TextureLoader::loadImage(const std::stri
 }
 
 
-TextureLoader::ImageData<unsigned char> TextureLoader::loadImage(const unsigned char* pixels, size_t length)
+ImageData<unsigned char> TextureLoader::loadImage(const unsigned char* pixels, size_t length)
 {
     ImageData<unsigned char> imagedata;
     unsigned char* data = stbi_load_from_memory(pixels, length, &imagedata.width, &imagedata.height, &imagedata.numComps, 0);
@@ -69,7 +71,7 @@ TextureLoader::ImageData<unsigned char> TextureLoader::loadImage(const unsigned 
 }
 
 
-TextureLoader::ImageData<float> TextureLoader::loadHDR(const std::string& fileName)
+ImageData<float> TextureLoader::loadHDR(const std::string& fileName)
 {
     ImageData<float> imagedata;
 	std::string extension = Tools::toUpperCase(fileName.substr(fileName.length() - 3, 3));
@@ -116,8 +118,25 @@ TextureLoader::ImageData<float> TextureLoader::loadHDR(const std::string& fileNa
     return imagedata;
 }
 
-void TextureLoader::writeImage(const std::string& filename, const int& filetype, TextureLoader::ImageData<unsigned char> imagedata)
+void writeHeaderFunc(void *context, void *data, int size)
 {
+    std::string outStr = "unsigned char " + staticWriterVarName + "[] = {\n";
+    int stride = std::sqrt(size / 2);
+    for(int i = 0; i < size; i++)
+    {
+        outStr += Tools::decToHex(((unsigned char*)data)[i]) + ", ";
+        if((i + 1) % stride == 0 && i > 0)
+            outStr += "\n";
+    }
+    outStr += "\n};";
+
+    Gum::Filesystem::writeToFile(staticWriterFileName, outStr);
+}
+
+void TextureLoader::writeImage(const std::string& filename, const int& filetype, ImageData<unsigned char> imagedata, std::string varname)
+{
+    staticWriterFileName = filename;
+    staticWriterVarName = varname;
     switch(filetype)
     {
         case GUM_TEXTURE_FILETYPE_PNG:
@@ -129,19 +148,24 @@ void TextureLoader::writeImage(const std::string& filename, const int& filetype,
             break;
 
         case GUM_TEXTURE_FILETYPE_PNG_HEADER:
-            stbi_write_png_to_func([](void *context, void *data, int size) {
-                std::string outStr = "unsigned char image[] = {\n";
-                int stride = std::sqrt(size);
-                for(int i = 0; i < size; i++)
-                {
-                    outStr += Tools::decToHex(((unsigned char*)data)[i]) + ", ";
-                    if(i % stride == 0)
-                        outStr += "\n";
-                }
-                outStr += "\n};";
+            stbi_write_png_to_func(writeHeaderFunc, nullptr, imagedata.width, imagedata.height, imagedata.numComps, imagedata.data, imagedata.width * imagedata.numComps);
+            break;
 
-                Gum::Filesystem::writeToFile("./image.h", outStr);
-            }, nullptr, imagedata.width, imagedata.height, imagedata.numComps, imagedata.data, imagedata.width * imagedata.numComps);
+        case GUM_TEXTURE_FILETYPE_BMP_HEADER:
+            stbi_write_bmp_to_func(writeHeaderFunc, nullptr, imagedata.width, imagedata.height, imagedata.numComps, imagedata.data);
+            break;
+
+        case GUM_TEXTURE_FILETYPE_TGA_HEADER:
+            stbi_write_tga_to_func(writeHeaderFunc, nullptr, imagedata.width, imagedata.height, imagedata.numComps, imagedata.data);
+            break;
+
+        case GUM_TEXTURE_FILETYPE_JPG_HEADER:
+            stbi_write_jpg_to_func(writeHeaderFunc, nullptr, imagedata.width, imagedata.height, imagedata.numComps, imagedata.data, 100);
+            break;
+
+        case GUM_TEXTURE_FILETYPE_RAW_HEADER:
+            //Data may be in grayscale format
+            writeHeaderFunc(nullptr, imagedata.data, imagedata.height * imagedata.width * imagedata.numComps);
             break;
     }
 }

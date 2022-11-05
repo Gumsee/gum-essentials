@@ -1,5 +1,5 @@
 #include "XMLWriter.h"
-#include <System/IO/Output.h>
+#include <System/Output.h>
 #include "XMLNode.h"
 
 //Lib XML

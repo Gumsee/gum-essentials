@@ -2,7 +2,7 @@
 #include <functional>
 #include <iostream>
 
-#include <System/IO/Output.h>
+#include <System/Output.h>
 #include <System/MemoryManagement.h>
 
 //Lib XML

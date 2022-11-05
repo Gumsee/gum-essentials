@@ -1,5 +1,5 @@
 #include "FileDialog.h"
-#include <System/IO/Output.h>
+#include <System/Output.h>
 #include <System/MemoryManagement.h>
 #include <functional>
 #include <gtk/gtk.h>
