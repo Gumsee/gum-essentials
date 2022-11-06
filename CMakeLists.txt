@@ -46,10 +46,6 @@ set(CMAKE_INSTALL_FULL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 message(STATUS "${CMAKE_PROJECT_NAME}: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
  
-find_package(OpenGL REQUIRED)
-              
-find_package(GLEW REQUIRED)
-              
 find_package(GumSystem REQUIRED)
               
 find_package(GumMaths REQUIRED)
