@@ -7,8 +7,9 @@ check_required_components(@CMAKE_PROJECT_NAME@)
 set(GUMESSENTIALS_INCLUDE_DIRS   "@CMAKE_INSTALL_FULL_INCLUDEDIR@/@CMAKE_PROJECT_NAME@" )
 find_library(GUMESSENTIALS_LIBRARIES NAMES @CMAKE_PROJECT_NAME@
     PATHS
-    /usr/lib
-    /usr/local/lib
+    "/usr/lib"
+    "/usr/local/lib"
+    "@CMAKE_INSTALL_FULL_LIBDIR@"
 )
 
 set(GUMESSENTIALS_FOUND TRUE)
