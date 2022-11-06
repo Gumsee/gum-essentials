@@ -4,7 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/*"
+                "${workspaceFolder}/include/*",
+                "C:/Program Files (x86)/Gumlib/include/GumSystem",
+                "C:/Program Files (x86)/Gumlib/include/GumMaths"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

@@ -1,28 +1,9 @@
 #pragma once
-#include <functional>
+#include "Argument.h"
 #include <vector>
-#include <string>
 
 namespace Gum
 {
-    struct Argument
-    {
-        std::string switchTriggerName, switchFullName, switchNameShort;
-        std::string description;
-        bool expectsSetValue;
-        std::function<bool(std::string value)> func;
-
-        Argument(std::string switchName, std::string switchNameShort, std::string description, std::function<bool(std::string value)> func)
-        {
-            this->switchFullName    = switchName;
-            this->switchTriggerName = switchName.substr(0, switchName.find("="));
-            this->switchNameShort   = switchNameShort;
-            this->description       = description;
-            this->func              = func;
-            this->expectsSetValue   = switchName.find("=") != std::string::npos;
-        };
-    };
-
     class ArgumentParser
     {
     private:

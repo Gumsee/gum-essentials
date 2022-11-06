@@ -83,8 +83,8 @@ namespace Gum
                         }
                     }
 
-                    if(!arg.func(setvalue))
-                        return false;
+                    //if(!arg.func(setvalue))
+                    //    return false;
                 }
             }
 
