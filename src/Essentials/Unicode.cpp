@@ -1,6 +1,7 @@
 #include "Unicode.h"
 #include <System/Output.h>
 #include <codecvt>
+#include <cstddef>
 #include <cstdint>
 #include <locale>
 #include <string>
@@ -75,7 +76,7 @@ namespace Gum
 
     void Unicode::append(const Unicode& unicode)
     {
-        for(int i = 0; i < unicode.length(); i++)
+        for(size_t i = 0; i < unicode.length(); i++)
         {
             vUTF8Chars.push_back(unicode[i]);
         }

@@ -30,7 +30,10 @@ namespace Gum
 
         if(arg != "")
         {
-            addArgument(Argument(arg, argshort, "Print this help menu", [this](std::string) { usage(); return false; }));
+            addArgument(Argument(arg, argshort, "Print this help menu", [this](std::string) { 
+                usage(); 
+                return false; 
+            }));
             usageArg = arg;
         }
     }
