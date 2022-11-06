@@ -16,18 +16,6 @@ message(STATUS "Examples: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 list(APPEND GUM_LIBRARIES ${CMAKE_PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
 
  
-if(OPENGL_FOUND)
-    list(APPEND GUM_LIBRARIES "${OPENGL_LIBRARIES}")
-else()
-    message(FATAL_ERROR Library for OPENGL cannot not found)
-endif()
-              
-if(GLEW_FOUND)
-    list(APPEND GUM_LIBRARIES "${GLEW_LIBRARIES}")
-else()
-    message(FATAL_ERROR Library for GLEW cannot not found)
-endif()
-              
 if(GUMSYSTEM_FOUND)
     list(APPEND GUM_LIBRARIES "${GUMSYSTEM_LIBRARIES}")
 else()
@@ -75,18 +63,6 @@ endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/src/)
  
-if(OPENGL_FOUND)
-    include_directories(${OPENGL_INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR Library for OPENGL cannot not found)
-endif()
-              
-if(GLEW_FOUND)
-    include_directories(${GLEW_INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR Library for GLEW cannot not found)
-endif()
-              
 if(GUMSYSTEM_FOUND)
     include_directories(${GUMSYSTEM_INCLUDE_DIRS})
 else()

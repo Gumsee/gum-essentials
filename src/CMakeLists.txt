@@ -12,18 +12,6 @@ include_directories(    ${CMAKE_SOURCE_DIR}/external/libxml2/include)
 include_directories(    ${CMAKE_BINARY_DIR}/external/libxml2)
 include_directories(    ${CMAKE_SOURCE_DIR}/external/assimp/include)
  
-if(OPENGL_FOUND)
-    include_directories(${OPENGL_INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR Library for OPENGL cannot not found)
-endif()
-              
-if(GLEW_FOUND)
-    include_directories(${GLEW_INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR Library for GLEW cannot not found)
-endif()
-              
 if(GUMSYSTEM_FOUND)
     include_directories(${GUMSYSTEM_INCLUDE_DIRS})
 else()
