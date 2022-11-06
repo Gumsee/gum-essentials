@@ -1,4 +1,4 @@
-#include "ArgumentParser.h"
+/*#include "ArgumentParser.h"
 #include <iostream>
 
 namespace Gum
@@ -51,7 +51,7 @@ namespace Gum
         std::cout << helpStr << std::endl;
     }
 
-    bool ArgumentParser::passArguments(int argc, char** argv, std::function<void(std::string)> defaultAction)
+    bool ArgumentParser::passArguments(int argc, char** argv, std::function<void(const char*)> defaultAction)
     {
         if(argc <= 1) 
             return true;
@@ -101,7 +101,7 @@ namespace Gum
                 }
                 else
                 {
-                    defaultAction(passedArgStr);
+                    defaultAction(passedArgStr.c_str());
                 }
             }
         }
@@ -113,4 +113,4 @@ namespace Gum
     {
         vArguments.push_back(arg);
     }
-}
+}*/

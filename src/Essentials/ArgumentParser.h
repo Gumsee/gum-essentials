@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Argument.h"
 #include <vector>
 
@@ -21,6 +21,6 @@ namespace Gum
         void addArgument(Argument arg);
         void usageSetup(std::string prefix, std::string suffix, std::string arg, std::string argshort, int descriptionOffset = 15);
 
-        bool passArguments(int argc, char** argv, std::function<void(std::string)> defaultAction);
+        bool passArguments(int argc, char** argv, std::function<void(const char*)> defaultAction);
     };
-}
+}*/
