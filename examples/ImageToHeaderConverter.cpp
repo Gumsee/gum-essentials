@@ -18,7 +18,7 @@ int type = GUM_TEXTURE_FILETYPE_RAW_HEADER;
 
 int main(int argc, char** argv)
 {
-    /*Gum::ArgumentParser* pArgumentParser = new Gum::ArgumentParser();
+    Gum::ArgumentParser* pArgumentParser = new Gum::ArgumentParser();
 
     pArgumentParser->usageSetup(usageString, "", "--help", "-h", 20);
 
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
         delete pArgumentParser;
         return 1;
     }
-    delete pArgumentParser;*/
+    delete pArgumentParser;
 
     if(vFiles.size() != 2)
     {

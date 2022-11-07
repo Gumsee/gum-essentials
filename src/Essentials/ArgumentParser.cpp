@@ -1,4 +1,4 @@
-/*#include "ArgumentParser.h"
+#include "ArgumentParser.h"
 #include <iostream>
 
 namespace Gum
@@ -113,4 +113,4 @@ namespace Gum
     {
         vArguments.push_back(arg);
     }
-}*/
+}

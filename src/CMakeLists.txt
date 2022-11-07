@@ -55,9 +55,6 @@ if(DEFINED GUM_OS_LINUX)
         message(FATAL_ERROR Library for GTK2 cannot not found)
     endif()
 endif()
-             
-
- 
 
 install(
     FILES gum-essentials.h
