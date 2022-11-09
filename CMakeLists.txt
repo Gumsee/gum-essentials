@@ -28,7 +28,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 endif()
 
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS ON)
 set (INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dist/${CMAKE_BUILD_TYPE}/bin/")
@@ -47,26 +47,20 @@ set(CMAKE_INSTALL_FULL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 message(STATUS "${CMAKE_PROJECT_NAME}: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
  
-find_package(GumSystem REQUIRED)
-              
-find_package(GumMaths REQUIRED)
-              
-if(DEFINED GUM_OS_BSD)
-	find_package(X11 REQUIRED)
-endif()
-              
-if(DEFINED GUM_OS_LINUX)
-	find_package(X11 REQUIRED)
-endif()
-              
-if(DEFINED GUM_OS_BSD)
-	find_package(GTK2 REQUIRED)
-endif()
-              
-if(DEFINED GUM_OS_LINUX)
-	find_package(GTK2 REQUIRED)
-endif()
-             
+    find_package(GumMaths REQUIRED) 
+    find_package(GumSystem REQUIRED) 
+    if(DEFINED GUM_OS_BSD)
+        find_package(X11 REQUIRED) 
+    endif() 
+    if(DEFINED GUM_OS_LINUX)
+        find_package(X11 REQUIRED) 
+    endif() 
+    if(DEFINED GUM_OS_BSD)
+        find_package(GTK2 REQUIRED) 
+    endif() 
+    if(DEFINED GUM_OS_LINUX)
+        find_package(GTK2 REQUIRED) 
+    endif()
 
 #add_definitions(-DDEBUG)
 add_definitions(-DCHECK_GL_ERRORS)
