@@ -19,38 +19,7 @@ include_directories(${CMAKE_SOURCE_DIR}/external/)
             include_directories(${GUMSYSTEM_INCLUDE_DIRS})
         else()
             message(FATAL_ERROR Library for GUMSYSTEM cannot not found)
-        endif() 
-        if(DEFINED GUM_OS_BSD)
-        if(X11_FOUND)
-            include_directories(${X11_INCLUDE_DIRS})
-        else()
-            message(FATAL_ERROR Library for X11 cannot not found)
-        endif() 
-    endif() 
-        if(DEFINED GUM_OS_LINUX)
-        if(X11_FOUND)
-            include_directories(${X11_INCLUDE_DIRS})
-        else()
-            message(FATAL_ERROR Library for X11 cannot not found)
-        endif() 
-    endif() 
-        if(DEFINED GUM_OS_BSD)
-        if(GTK2_FOUND)
-            include_directories(${GTK2_INCLUDE_DIRS})
-        else()
-            message(FATAL_ERROR Library for GTK2 cannot not found)
-        endif() 
-    endif() 
-        if(DEFINED GUM_OS_LINUX)
-        if(GTK2_FOUND)
-            include_directories(${GTK2_INCLUDE_DIRS})
-        else()
-            message(FATAL_ERROR Library for GTK2 cannot not found)
-        endif() 
-    endif() 
-    include_directories(${CMAKE_SOURCE_DIR}/external/libxml2/include) 
-    include_directories(${CMAKE_BINARY_DIR}/external/libxml2) 
-    include_directories(${CMAKE_SOURCE_DIR}/external/assimp/include)
+        endif()
 
  
 
@@ -63,13 +32,9 @@ file(GLOB_RECURSE HEADERS Essentials//*.h)
 install(
     FILES ${HEADERS}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/Essentials//
-) 
-
-file(GLOB_RECURSE HEADERS Essentials/Filesystem//*.h)
-install(
-    FILES ${HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/Essentials/Filesystem//
 )
+
+
 
 install(TARGETS ${CMAKE_PROJECT_NAME}
     EXPORT ${CMAKE_PROJECT_NAME}Targets

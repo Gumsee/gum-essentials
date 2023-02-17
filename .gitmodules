@@ -1,6 +1,0 @@
-[submodule "external/libxml2"]
-	path = external/libxml2
-	url = https://github.com/GNOME/libxml2
-[submodule "external/assimp"]
-	path = external/assimp
-	url = https://github.com/assimp/assimp
