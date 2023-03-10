@@ -11,6 +11,7 @@ namespace Gum
         std::string usagePrefix, usageSuffix, usageArg;
         int iDescriptionOffset;
         
+        Argument* getArgument(const std::string& arg);
         std::string offsetGen(int strLength);
         void usage();
 

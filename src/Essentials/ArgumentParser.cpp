@@ -51,6 +51,15 @@ namespace Gum
         std::cout << helpStr << std::endl;
     }
 
+    Argument* ArgumentParser::getArgument(const std::string& arg)
+    {
+        for(Argument &argument : vArguments)
+            if(arg == argument.switchTriggerName || arg == argument.switchNameShort)
+                return &argument;
+
+        return nullptr;
+    }
+
     bool ArgumentParser::passArguments(int argc, char** argv, std::function<void(const char*)> defaultAction)
     {
         if(argc <= 1) 
@@ -60,50 +69,44 @@ namespace Gum
         {
             std::string passedArgStr = argv[i];
             std::string trimmedargStr = passedArgStr.substr(0, passedArgStr.find("="));
-            bool hitAny = false;
 
-            for(unsigned int j = 0; j < vArguments.size(); j++)
-            {
-                Argument &arg = vArguments[j];
-                if(trimmedargStr == arg.switchTriggerName || trimmedargStr == arg.switchNameShort)
-                {
-                    hitAny = true;
-                    std::string setvalue = "";
-                    if(arg.expectsSetValue)
-                    {
-                        if(passedArgStr.find("=") != std::string::npos)
-                        {
-                            setvalue = passedArgStr.substr(passedArgStr.find("=") + 1, passedArgStr.length());
-                        }
-                        else
-                        {
-                            if(i == argc - 1)
-                            {
-                                std::cerr << arg.switchTriggerName << " expects another argument" << std::endl;
-                                return false;
-                            }
-                            setvalue = argv[++i];
-                        }
-                    }
-
-                    //if(!arg.func(setvalue))
-                    //    return false;
-                }
-            }
-
-            if(!hitAny)
+            Argument* arg = getArgument(trimmedargStr);
+            if(arg == nullptr)
             {
                 if(passedArgStr[0] == '-')
                 {
                     std::cerr << "Error: unknown argument: '" << trimmedargStr << "'" << std::endl;
                     std::cerr << "Try " + usageArg + " for help." << std::endl;
-                    return false;
+                }
+                else if(defaultAction == nullptr)
+                    usage();
+                else
+                    defaultAction(passedArgStr.c_str());
+                
+                return false;
+            }
+
+            
+            std::string setvalue = "";
+            if(arg->expectsSetValue)
+            {
+                if(passedArgStr.find("=") != std::string::npos)
+                {
+                    setvalue = passedArgStr.substr(passedArgStr.find("=") + 1, passedArgStr.length());
                 }
                 else
                 {
-                    defaultAction(passedArgStr.c_str());
+                    if(i == argc - 1)
+                    {
+                        std::cerr << arg->switchTriggerName << " expects another argument" << std::endl;
+                        return false;
+                    }
+                    setvalue = argv[++i];
                 }
             }
+
+            if(!arg->func(setvalue.c_str()))
+                return false;
         }
 
         return true;

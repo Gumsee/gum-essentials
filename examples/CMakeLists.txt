@@ -32,7 +32,7 @@ link_directories(${CMAKE_BINARY_DIR}/src/)
 
 add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples\")
 
-set(EXAMPLE_FILE_LIST Playground)
+set(EXAMPLE_FILE_LIST Playground ArgumentTest)
 
 foreach(EXAMPLE ${EXAMPLE_FILE_LIST})
     message(STATUS "Adding target ${EXAMPLE}")

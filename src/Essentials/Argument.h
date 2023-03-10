@@ -9,7 +9,7 @@ namespace Gum
     class Argument
     {
     public:
-        std::function<void(const char*)> func;
+        std::function<bool(const char*)> func;
         std::string switchTriggerName, switchFullName, switchNameShort;
         std::string description;
         bool expectsSetValue;
