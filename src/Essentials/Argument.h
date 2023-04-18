@@ -9,12 +9,12 @@ namespace Gum
     class Argument
     {
     public:
-        std::function<bool(const char*)> func;
+        std::function<void(const char*)> func;
         std::string switchTriggerName, switchFullName, switchNameShort;
         std::string description;
         bool expectsSetValue;
 
-        Argument(std::string switchName, std::string switchNameShort, std::string description, std::function<bool(const char*)> func)
+        Argument(std::string switchName, std::string switchNameShort, std::string description, std::function<void(const char*)> func)
         {
             this->switchFullName    = switchName;
             this->switchTriggerName = switchName.substr(0, switchName.find("="));

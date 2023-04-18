@@ -14,4 +14,5 @@ namespace FPS
 	}
 
 	float get() { return Current; }
+	float getFPS() { return 1.0f / Current; }
 }

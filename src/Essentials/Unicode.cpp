@@ -1,5 +1,6 @@
 #include "Unicode.h"
 #include <System/Output.h>
+#include <algorithm>
 #include <codecvt>
 #include <cstddef>
 #include <cstdint>
@@ -48,11 +49,45 @@ namespace Gum
     {
         return vUTF8Chars[index];
     }
+    Unicode Unicode::operator+(const Unicode& other) const
+    {
+        Unicode ret(*this);
+        ret.append(other);
+        return ret;
+    }
+    void Unicode::operator+=(const Unicode& other)
+    {
+        append(other);
+    }
+    bool Unicode::operator==(const Unicode& other) const
+    {
+        if(this->length() != other.length())
+            return false;
+
+        for(size_t i = 0; i < length(); i++)
+        {
+            if(this->operator[](i) != other[i])
+                return false;
+        }
+
+        return true;
+    }
 
     unsigned int Unicode::getCodepoint(const unsigned int& index) const
     {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
         return utf32conv.from_bytes(vUTF8Chars[index])[0];
+    }
+
+
+    bool Unicode::contains(const Gum::Unicode& tofind) const
+    {
+        return std::search(begin(), end(), tofind.begin(), tofind.end()) != end();
+    }
+
+    bool Unicode::isEmpty() const
+    {
+        return vUTF8Chars.empty();
     }
 
     std::string Unicode::toString() const
@@ -74,6 +109,35 @@ namespace Gum
         return Unicode(std::vector<std::basic_string<char>>(vUTF8Chars.begin() + start, vUTF8Chars.begin() + start + n));
     }
 
+    std::vector<Unicode> Unicode::split(char32_t splitchar) const //FIX THIS TODO
+    {
+        std::vector<Unicode> ret;
+        std::string tofind = "";
+
+        for(int i = 0; i < 4; i++)
+        {
+            char part = (char)(splitchar >> i * 8);
+            if(part == '\0') 
+                break;
+            tofind += part;
+        }
+
+        size_t oldi = 0L;
+        for(size_t i = 0L; i < vUTF8Chars.size(); i++)
+        {
+            if(vUTF8Chars[i] == tofind || i == vUTF8Chars.size() - 1)
+            {
+                std::vector<std::basic_string<char>> splice;
+                splice.resize(i - oldi);
+                std::copy(begin() + oldi, begin() + i, splice.begin());
+                ret.push_back(splice);
+                oldi = i + 1;
+            }
+        }
+
+        return ret;
+    }
+
     void Unicode::append(const Unicode& unicode)
     {
         for(size_t i = 0; i < unicode.length(); i++)
@@ -89,7 +153,9 @@ namespace Gum
 
     void Unicode::erase(const unsigned int& index, const unsigned int& n)
     {
-        this->vUTF8Chars.erase(vUTF8Chars.begin() + index, vUTF8Chars.begin() + index + n);
+        int from = Gum::Maths::max(std::vector<unsigned int>{index, 0});
+        int to = Gum::Maths::min(index + n, (unsigned int)vUTF8Chars.size());
+        this->vUTF8Chars.erase(vUTF8Chars.begin() + from, vUTF8Chars.begin() + to);
     }
 
     std::vector<std::basic_string<char>>::const_iterator Unicode::begin() const

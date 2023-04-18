@@ -105,8 +105,8 @@ namespace Gum
                 }
             }
 
-            if(!arg->func(setvalue.c_str()))
-                return false;
+            if(arg->func != nullptr)
+                arg->func(setvalue.c_str());
         }
 
         return true;

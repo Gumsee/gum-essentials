@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <map>
 #include <gum-maths.h>
 #include <typeinfo>
 
@@ -14,19 +15,26 @@ namespace Tools
     extern vec3 StringToVec3(std::string str);
     extern vec4 StringToVec4(std::string str);
     extern quat StringToQuat(std::string str);
-
-
-    //Processing
     extern std::string decToHex(const int& dec, int leadingzeros = 2);
     extern std::string decToBin(const int& dec);
     extern std::string typeToString(const std::type_info &type);
     extern std::string to_string(void* var, const std::type_info &type);
+
+
+    //Processing
     extern std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces = true);
+    extern std::string strExtractNumbers(std::string str);
+    extern std::string toUpperCase(std::string str);
+
+    //Checking
     extern bool strContains(std::string str, std::string contain);
     extern bool isInList(const int& item, const std::vector<int>& list);
 
-    extern std::string strExtractNumbers(std::string str);
-    extern std::string toUpperCase(std::string str);
+    template<typename T, typename TT>
+    static bool mapHasKey(const std::map<T,TT>& map, const T& key)
+    {
+        return map.find(key) != map.end();
+    }
 
     template<typename T>
     static bool checkBoxIntersection(tbbox<T, 2> bbox1, tbbox<T, 2> bbox2)

@@ -5,3 +5,4 @@
 #include "Essentials/Tools.h"
 #include "Essentials/FPS.h"
 #include "Essentials/ArgumentParser.h"
+#include "Essentials/Unicode.h"

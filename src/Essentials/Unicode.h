@@ -18,12 +18,18 @@ namespace Gum
 
         std::basic_string<char>& operator[](const unsigned int& index);
         std::basic_string<char> operator[](const unsigned int& index) const;
+        Unicode operator+(const Unicode& other) const;
+        void operator+=(const Unicode& other);
+        bool operator==(const Unicode& other) const;
         
         unsigned int getCodepoint(const unsigned int& index) const;
 
+        bool contains(const Gum::Unicode& tofind) const;
+        bool isEmpty() const;
         std::string toString() const;
         size_t length() const;
         Unicode substr(const unsigned int& start, const unsigned int& n) const;
+        std::vector<Unicode> split(char32_t splitchar) const;
         void append(const Unicode& unicode);
         void insert(const Unicode& unicode, const unsigned int& index);
         void erase(const unsigned int& index, const unsigned int& n);
