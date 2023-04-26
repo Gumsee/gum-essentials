@@ -154,6 +154,13 @@ namespace Tools
         }
         return retStrs;
     }
+    std::string repeatString(const std::string& str, const unsigned int& n)
+    {
+        std::string retStr = "";
+        for(unsigned int i = 0; i < n; i++)
+            retStr += str;
+        return retStr;
+    }
 
     bool strContains(std::string str, std::string contain)
     {

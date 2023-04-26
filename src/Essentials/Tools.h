@@ -25,6 +25,7 @@ namespace Tools
     extern std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces = true);
     extern std::string strExtractNumbers(std::string str);
     extern std::string toUpperCase(std::string str);
+    extern std::string repeatString(const std::string& str, const unsigned int& n);
 
     //Checking
     extern bool strContains(std::string str, std::string contain);

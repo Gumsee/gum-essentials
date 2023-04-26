@@ -92,7 +92,7 @@ namespace Gum
 
     std::string Unicode::toString() const
     {
-        std::string ret;
+        std::string ret("");
         for(std::string s : vUTF8Chars)
             ret += s;
             

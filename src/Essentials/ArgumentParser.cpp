@@ -77,13 +77,18 @@ namespace Gum
                 {
                     std::cerr << "Error: unknown argument: '" << trimmedargStr << "'" << std::endl;
                     std::cerr << "Try " + usageArg + " for help." << std::endl;
+                    return false;
                 }
                 else if(defaultAction == nullptr)
+                {
                     usage();
+                    return false;
+                }
                 else
+                {
                     defaultAction(passedArgStr.c_str());
-                
-                return false;
+                }
+                continue;
             }
 
             
