@@ -4,7 +4,7 @@
 Clock::Clock()
 {
     func = nullptr;
-    begin = std::chrono::steady_clock::now();
+    begin = intervalBegin = std::chrono::steady_clock::now();
 }
 
 Clock::~Clock()
@@ -21,10 +21,21 @@ void Clock::runEveryNMilliSeconds(std::function<void()> func, const unsigned int
 
 void Clock::update()
 {
-    long passedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count();
-    if(func != nullptr && passedTime > n)
+    lPassedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - begin).count();
+    long intervalTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - intervalBegin).count();
+    if(func != nullptr && intervalTime > n)
     {
         func();
-        begin = std::chrono::steady_clock::now();
+        intervalBegin = std::chrono::steady_clock::now();
     }
+}
+
+void Clock::reset()
+{
+    begin = std::chrono::steady_clock::now();
+}
+
+long Clock::getPassedTime()
+{
+    return lPassedTime;
 }

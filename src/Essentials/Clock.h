@@ -7,7 +7,8 @@ class Clock
 private:
     std::function<void()> func;
     unsigned int n;
-    std::chrono::steady_clock::time_point begin;
+    long lPassedTime;
+    std::chrono::steady_clock::time_point begin, intervalBegin;
 
 public:
     Clock();
@@ -16,4 +17,6 @@ public:
     void runEveryNMilliSeconds(std::function<void()> func, const unsigned int& ms);
 
     void update();
+    void reset();
+    long getPassedTime();
 };

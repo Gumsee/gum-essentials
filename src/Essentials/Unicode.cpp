@@ -12,8 +12,6 @@ namespace Gum
 {
     Unicode::Unicode() { }
     Unicode::Unicode(const char* utf8) : Unicode(std::string(utf8)) { }
-    Unicode::Unicode(std::vector<std::basic_string<char>> vec) { this->vUTF8Chars = vec; }
-
     Unicode::Unicode(std::string utf8)
     {
         int numBytes = 0;
@@ -25,7 +23,7 @@ namespace Gum
             else if ((c & 0xF0) == 0xE0) numBytes = 3; // 3 Octet
             else if ((c & 0xF8) == 0xF0) numBytes = 4; // 4 Octet
             else    Gum::Output::error("UTF-8 Unknown first byte " + Tools::decToHex(c));
-            vUTF8Chars.push_back(utf8.substr(i, numBytes));
+            push_back(utf8.substr(i, numBytes));
 
             i += numBytes;
         }
@@ -35,30 +33,26 @@ namespace Gum
     {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
         for(size_t i = 0; i < str.length(); i++)
-        {
-            vUTF8Chars.push_back(converter.to_bytes(str[i]));
-        }
+            push_back(converter.to_bytes(str[i]));
     }
 
+    Unicode::Unicode(std::vector<std::basic_string<char>>::const_iterator begin, std::vector<std::basic_string<char>>::const_iterator end)
+        : std::vector<std::basic_string<char>>(begin, end)
+    {
+    }
 
-    std::basic_string<char>& Unicode::operator[](const unsigned int& index)
-    {
-        return vUTF8Chars[index];
-    }
-    std::basic_string<char> Unicode::operator[](const unsigned int& index) const
-    {
-        return vUTF8Chars[index];
-    }
     Unicode Unicode::operator+(const Unicode& other) const
     {
         Unicode ret(*this);
         ret.append(other);
         return ret;
     }
+    
     void Unicode::operator+=(const Unicode& other)
     {
         append(other);
     }
+
     bool Unicode::operator==(const Unicode& other) const
     {
         if(this->length() != other.length())
@@ -76,7 +70,7 @@ namespace Gum
     unsigned int Unicode::getCodepoint(const unsigned int& index) const
     {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
-        return utf32conv.from_bytes(vUTF8Chars[index])[0];
+        return utf32conv.from_bytes(at(index))[0];
     }
 
 
@@ -87,13 +81,13 @@ namespace Gum
 
     bool Unicode::isEmpty() const
     {
-        return vUTF8Chars.empty();
+        return empty();
     }
 
     std::string Unicode::toString() const
     {
         std::string ret("");
-        for(std::string s : vUTF8Chars)
+        for(std::string s : *this)
             ret += s;
             
         return ret;
@@ -101,12 +95,21 @@ namespace Gum
 
     size_t Unicode::length() const
     {
-        return vUTF8Chars.size();
+        return size();
     }
 
     Unicode Unicode::substr(const unsigned int& start, const unsigned int& n) const
     {
-        return Unicode(std::vector<std::basic_string<char>>(vUTF8Chars.begin() + start, vUTF8Chars.begin() + start + n));
+        if(start > size() || n > size())
+            return "";
+        return Unicode(begin() + start, begin() + start + n);
+    }
+
+    Unicode Unicode::substr(const unsigned int& start) const
+    {
+        if(start > size())
+            return "";
+        return Unicode(begin() + start, end());
     }
 
     std::vector<Unicode> Unicode::split(char32_t splitchar) const //FIX THIS TODO
@@ -123,11 +126,11 @@ namespace Gum
         }
 
         size_t oldi = 0L;
-        for(size_t i = 0L; i < vUTF8Chars.size(); i++)
+        for(size_t i = 0L; i < size(); i++)
         {
-            if(vUTF8Chars[i] == tofind || i == vUTF8Chars.size() - 1)
+            if(at(i) == tofind || i == size() - 1)
             {
-                std::vector<std::basic_string<char>> splice;
+                Unicode splice;
                 splice.resize(i - oldi);
                 std::copy(begin() + oldi, begin() + i, splice.begin());
                 ret.push_back(splice);
@@ -142,30 +145,58 @@ namespace Gum
     {
         for(size_t i = 0; i < unicode.length(); i++)
         {
-            vUTF8Chars.push_back(unicode[i]);
+            push_back(unicode[i]);
         }
     }
 
     void Unicode::insert(const Unicode& unicode, const unsigned int& index)
     {
-        vUTF8Chars.insert(vUTF8Chars.begin() + index, unicode.begin(), unicode.end());
+        UnicodeVectype::insert(begin() + index, unicode.begin(), unicode.end());
     }
 
     void Unicode::erase(const unsigned int& index, const unsigned int& n)
     {
         int from = Gum::Maths::max(std::vector<unsigned int>{index, 0});
-        int to = Gum::Maths::min(index + n, (unsigned int)vUTF8Chars.size());
-        this->vUTF8Chars.erase(vUTF8Chars.begin() + from, vUTF8Chars.begin() + to);
+        int to = Gum::Maths::min(index + n, (unsigned int)size());
+        UnicodeVectype::erase(begin() + from, begin() + to);
     }
 
-    std::vector<std::basic_string<char>>::const_iterator Unicode::begin() const
+    void Unicode::replace(const std::string& toreplace, const std::string& replacement)
     {
-        return this->vUTF8Chars.begin();
+        for(size_t i = 0; i < size(); i++)
+        {
+            if(at(i) == toreplace)
+                at(i) = replacement;
+        }
     }
 
-    std::vector<std::basic_string<char>>::const_iterator Unicode::end() const
+    size_t Unicode::find(const std::string& tofind)
     {
-        return this->vUTF8Chars.end();
+        size_t ret = max_size();
+        for(size_t i = 0; i < size(); i++)
+        {
+            if(at(i) == tofind)
+            {
+                ret = i;
+                break;
+            }
+        }
+
+        return ret;
     }
 
+    size_t Unicode::rfind(const std::string& tofind)
+    {
+        size_t ret = max_size();
+        for(size_t i = size(); i --> 0;)
+        {
+            if(at(i) == tofind)
+            {
+                ret = i;
+                break;
+            }
+        }
+
+        return ret;
+    }
 }

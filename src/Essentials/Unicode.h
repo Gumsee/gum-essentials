@@ -4,20 +4,19 @@
 
 namespace Gum 
 {
-    class Unicode
+    typedef std::vector<std::basic_string<char>> UnicodeVectype;
+    class Unicode : private UnicodeVectype
     {
-    private:
-        std::vector<std::basic_string<char>> vUTF8Chars;
-
     public:
         Unicode();
-        Unicode(std::vector<std::basic_string<char>> vec);
         Unicode(const char* utf8);
         Unicode(std::string utf8);
         Unicode(std::u32string utf32);
+        Unicode(UnicodeVectype::const_iterator begin, UnicodeVectype::const_iterator end);
 
-        std::basic_string<char>& operator[](const unsigned int& index);
-        std::basic_string<char> operator[](const unsigned int& index) const;
+        using UnicodeVectype::operator[];
+        //using std::vector<std::basic_string<char>>::operator[] const;
+
         Unicode operator+(const Unicode& other) const;
         void operator+=(const Unicode& other);
         bool operator==(const Unicode& other) const;
@@ -29,11 +28,15 @@ namespace Gum
         std::string toString() const;
         size_t length() const;
         Unicode substr(const unsigned int& start, const unsigned int& n) const;
+        Unicode substr(const unsigned int& start) const;
         std::vector<Unicode> split(char32_t splitchar) const;
         void append(const Unicode& unicode);
         void insert(const Unicode& unicode, const unsigned int& index);
         void erase(const unsigned int& index, const unsigned int& n);
-        std::vector<std::basic_string<char>>::const_iterator begin() const;
-        std::vector<std::basic_string<char>>::const_iterator end() const;
+        void replace(const std::string& toreplace, const std::string& replacement);
+        size_t find(const std::string& tofind);
+        size_t rfind(const std::string& tofind);
+        using UnicodeVectype::begin;
+        using UnicodeVectype::end;
     };
 }

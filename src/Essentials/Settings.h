@@ -18,8 +18,6 @@ namespace Settings
 	};
 	extern std::map<int, int> Setting;
 
-
-	extern void init();
 	extern void setSetting(int SettingName, int Value);
 	extern int getSetting(int SettingName);
 }

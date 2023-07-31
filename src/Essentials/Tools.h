@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include <map>
 #include <gum-maths.h>
@@ -35,6 +36,24 @@ namespace Tools
     static bool mapHasKey(const std::map<T,TT>& map, const T& key)
     {
         return map.find(key) != map.end();
+    }
+
+    template<typename T, typename TT>
+    static bool mapHasKey(const std::unordered_map<T,TT>& map, const T& key)
+    {
+        return map.find(key) != map.end();
+    }
+
+    template<typename T, typename TT>
+    static bool mapHasKeyNotNull(const std::map<T,TT>& map, const T& key)
+    {
+        return mapHasKey(map, key) && map.at(key) != nullptr;
+    }
+
+    template<typename T, typename TT>
+    static bool mapHasKeyNotNull(const std::unordered_map<T,TT>& map, const T& key)
+    {
+        return mapHasKey(map, key) && map.at(key) != nullptr;
     }
 
     template<typename T>

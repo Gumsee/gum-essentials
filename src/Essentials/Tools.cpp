@@ -27,7 +27,6 @@ namespace Tools
 
     vec3 StringToVec3(std::string str)
     {
-        Gum::Output::print(str);
         vec3 vec;
         std::vector<std::string> numsStr = splitStr(str, ',');
         for(unsigned int i = 0; i < Gum::Maths::min(numsStr.size(), (size_t)3UL); i++)
