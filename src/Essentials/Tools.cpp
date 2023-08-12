@@ -178,11 +178,17 @@ namespace Tools
     std::string strExtractNumbers(std::string str)
     {
         std::string numStr = "";
+        bool hasDot = false;
         for(unsigned int i = 0; i < str.length(); i++)
         {
             if((str[i] >= '0' && str[i] <= '9') || str[i] == '-')
             {
                 numStr += str[i];
+            }
+            else if((str[i] == ',' || str[i] == '.') && !hasDot)
+            {
+                numStr += '.';
+                hasDot = true;
             }
         }
         return numStr;

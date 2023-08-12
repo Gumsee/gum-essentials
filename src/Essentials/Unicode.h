@@ -33,6 +33,7 @@ namespace Gum
         void append(const Unicode& unicode);
         void insert(const Unicode& unicode, const unsigned int& index);
         void erase(const unsigned int& index, const unsigned int& n);
+        void eraseEveryOccurence(const std::string& toremove);
         void replace(const std::string& toreplace, const std::string& replacement);
         size_t find(const std::string& tofind);
         size_t rfind(const std::string& tofind);

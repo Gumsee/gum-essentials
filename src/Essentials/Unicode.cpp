@@ -161,6 +161,18 @@ namespace Gum
         UnicodeVectype::erase(begin() + from, begin() + to);
     }
 
+    void Unicode::eraseEveryOccurence(const std::string& toremove)
+    {
+        std::vector<int> indices;
+        for(size_t i = 0; i < size(); i++)
+        {
+            if(at(i) == toremove)
+                indices.push_back(i);
+        }
+        for(int i : indices)
+            erase(i, 1);
+    }
+
     void Unicode::replace(const std::string& toreplace, const std::string& replacement)
     {
         for(size_t i = 0; i < size(); i++)
