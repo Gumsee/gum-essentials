@@ -55,8 +55,14 @@ set(CMAKE_INSTALL_FULL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 message(STATUS "${PROJECT_NAME}: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
  
-    find_package(GumMaths REQUIRED) 
-    find_package(GumSystem REQUIRED)
+    
+        if(NOT GUMMATHS_FOUND) 
+            find_package(GumMaths REQUIRED)
+        endif() 
+    
+        if(NOT GUMSYSTEM_FOUND) 
+            find_package(GumSystem REQUIRED)
+        endif()
 
 #add_definitions(-DDEBUG)
 add_definitions(-DCHECK_GL_ERRORS)
