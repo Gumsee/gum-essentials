@@ -19,7 +19,7 @@ namespace Tools
     extern std::string decToHex(const int& dec, int leadingzeros = 2);
     extern std::string decToBin(const int& dec);
     extern std::string typeToString(const std::type_info &type);
-    extern std::string to_string(void* var, const std::type_info &type);
+    extern std::string to_string(void* var, const std::type_info &type = typeid(void));
 
 
     //Processing

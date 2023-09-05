@@ -109,19 +109,24 @@ namespace Tools
     
     std::string to_string(void* var, const std::type_info &type)
     {
-        if(type == typeid(int))    { return std::to_string(*static_cast<int*>(var)); }
-        if(type == typeid(float))  { return std::to_string(*static_cast<float*>(var)); }
-        if(type == typeid(bool))   { return std::to_string(*static_cast<bool*>(var)); }
-        if(type == typeid(double)) { return std::to_string(*static_cast<double*>(var)); }
-        if(type == typeid(long))   { return std::to_string(*static_cast<long*>(var)); }
-        if(type == typeid(char))   { return std::to_string(*static_cast<char*>(var)); }
-        if(type == typeid(mat2))   { return ((mat2*)var)->toString(); }
-        if(type == typeid(mat3))   { return ((mat3*)var)->toString(); }
-        if(type == typeid(mat4))   { return ((mat4*)var)->toString(); }
-        if(type == typeid(vec2))   { return ((vec2*)var)->toString(); }
-        if(type == typeid(vec3))   { return ((vec3*)var)->toString(); }
-        if(type == typeid(vec4))   { return ((vec4*)var)->toString(); }
-        return "";
+        if     (type == typeid(int))    { return std::to_string(*static_cast<int*>(var)); }
+        else if(type == typeid(float))  { return std::to_string(*static_cast<float*>(var)); }
+        else if(type == typeid(bool))   { return std::to_string(*static_cast<bool*>(var)); }
+        else if(type == typeid(double)) { return std::to_string(*static_cast<double*>(var)); }
+        else if(type == typeid(long))   { return std::to_string(*static_cast<long*>(var)); }
+        else if(type == typeid(char))   { return std::to_string(*static_cast<char*>(var)); }
+        else if(type == typeid(mat2))   { return ((mat2*)var)->toString(); }
+        else if(type == typeid(mat3))   { return ((mat3*)var)->toString(); }
+        else if(type == typeid(mat4))   { return ((mat4*)var)->toString(); }
+        else if(type == typeid(vec2))   { return ((vec2*)var)->toString(); }
+        else if(type == typeid(vec3))   { return ((vec3*)var)->toString(); }
+        else if(type == typeid(vec4))   { return ((vec4*)var)->toString(); }
+        else
+        {
+            std::ostringstream address;
+            address << (const void*)var;
+            return address.str();
+        }
     }
 
     std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces)
