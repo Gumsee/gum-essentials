@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -12,6 +13,7 @@ namespace Tools
     extern int StringToInt(std::string str);
     extern float StringToFloat(std::string str);
     extern double StringToDouble(std::string str);
+    extern long StringToLong(std::string str);
     extern vec2 StringToVec2(std::string str);
     extern vec3 StringToVec3(std::string str);
     extern vec4 StringToVec4(std::string str);
@@ -26,7 +28,15 @@ namespace Tools
     extern std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces = true);
     extern std::string strExtractNumbers(std::string str);
     extern std::string toUpperCase(std::string str);
+    extern std::string toLowerCase(std::string str);
+    extern std::string escapeString(std::string str);
     extern std::string repeatString(const std::string& str, const unsigned int& n);
+    
+
+    //Vector Operations
+    extern vec2 lineLineIntersection(vec2 A, vec2 B, vec2 C, vec2 D);
+	extern float barryCentric(vec3 p1, vec3 p2, vec3 p3, vec2 pos);
+
 
     //Checking
     extern bool strContains(std::string str, std::string contain);
@@ -72,5 +82,18 @@ namespace Tools
                 point.x >= bbox.getPos().x && 
                 point.y <= bbox.getPos().y + bbox.getSize().y && 
                 point.y >= bbox.getPos().y;
+    }
+
+
+    //List operations
+    template<typename T>
+    static bool moveEntryToBack(const std::vector<T>& vec, const T& entry)
+    {
+        auto it = std::find(vec.begin(), vec.end(), entry);
+        if(it == vec.end())
+            return false;
+
+        std::rotate(it, it + 1, vec.end());
+        return true;
     }
 }

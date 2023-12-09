@@ -7,6 +7,6 @@ int main(int argc, char** argv)
 {
     Unicode testStr = "testeeeäöü gegeßß";
     std::vector<Unicode> parts = testStr.split(U' ');
-    std::cout << "(" << parts[0].toString() << ") other: (" << parts[1].toString() << ")" << std::endl;
+    Gum::Output::print("(" + parts[0].toString() + ") other: (" + parts[1].toString() + ")");
     return 0;
 }

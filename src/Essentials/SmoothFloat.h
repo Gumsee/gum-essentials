@@ -1,6 +1,8 @@
 #pragma once
 #include "FPS.h"
 
+//TODO Different smoothfloat types: easing examples
+//#error
 class SmoothFloat
 {
 private:
