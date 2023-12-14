@@ -14,6 +14,7 @@ list(APPEND GUM_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
         else()
             message(FATAL_ERROR Library for GUMSYSTEM cannot not found)
         endif()
+    list(APPEND GUM_LIBRARIES dl)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src/)
  
@@ -30,7 +31,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src/)
 
 link_directories(${CMAKE_BINARY_DIR}/src/)
 
-add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples\")
+add_definitions(-DEXAMPLES_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/../examples\")
 
 set(EXAMPLE_FILE_LIST Playground ArgumentTest)
 
