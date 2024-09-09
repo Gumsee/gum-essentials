@@ -5,8 +5,12 @@ using namespace Gum;
 
 int main(int argc, char** argv)
 {
-    Unicode testStr = "testeeeäöü gegeßß";
-    std::vector<Unicode> parts = testStr.split(U' ');
-    Gum::Output::print("(" + parts[0].toString() + ") other: (" + parts[1].toString() + ")");
+    int b = 0;
+
+    int* a = new int(10);
+    std::cout << *a << " " << b << std::endl;
+
+    delete a;
+
     return 0;
 }

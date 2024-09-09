@@ -1,5 +1,6 @@
 #pragma once
-#include "FPS.h"
+#include "Time.h"
+#include <cstdlib>
 
 //TODO Different smoothfloat types: easing examples
 //#error
@@ -23,11 +24,17 @@ public:
 	}
 
 	bool update() {
+        if(target == actual)
+            return false;
+
 		float offset = target - actual;
-		float change = offset * FPS::get() * speed;
+		float change = offset * Time::getFrametime() * speed;
 		actual += change;
 
-        return change > 0.01 || change < -0.01;
+        if(std::abs(change) < 0.001)
+            actual = target;
+        
+        return true;
 	}
 	
 	void setTarget(float target) 			

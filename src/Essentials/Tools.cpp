@@ -1,10 +1,8 @@
 #include "Tools.h"
-#include <string.h>
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
 #include <System/Output.h>
-#include <bitset>
 #include <iomanip>
 
 namespace Tools
@@ -86,11 +84,6 @@ namespace Tools
         return "0x" + ss.str();
     }
 
-    std::string decToBin(const int& dec)
-    {
-        return "0b" + std::bitset<32>(dec).to_string();
-    }
-
     std::string typeToString(const std::type_info &type)
     {
         if(type == typeid(int)) { return "int"; }
@@ -159,12 +152,39 @@ namespace Tools
         }
         return retStrs;
     }
+
+    std::vector<std::string> findLinesContaining(const std::string& tofind, const std::string& str, const char& newlinedelimiter)
+    {
+        std::vector<std::string> ret;
+        for(std::string line : splitStr(str, newlinedelimiter, false))
+        {
+            if(line.find(tofind) != line.npos)
+                ret.push_back(line);
+        }
+
+        return ret;
+    }
+
     std::string repeatString(const std::string& str, const unsigned int& n)
     {
         std::string retStr = "";
         for(unsigned int i = 0; i < n; i++)
             retStr += str;
         return retStr;
+    }
+
+    std::string strReplace(const std::string& str, const char& toreplace, const char& symbol)
+    {
+        std::string retstr = "";
+        for(unsigned int i = 0; i < str.length(); i++)
+        {
+            if(str[i] == toreplace)
+                retstr += symbol;
+            else
+                retstr += str[i];
+        }
+
+        return retstr;
     }
 
     bool strContains(std::string str, std::string contain)

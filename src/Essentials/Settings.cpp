@@ -5,7 +5,7 @@ namespace Settings
 	std::map<int, int> Setting = {
         {Names::RENDERDISTANCE, 5000},
         {Names::MAXIMAL_INSTANCES, 10000},
-        {Names::SHADOW_SIZE, 8096},
+        {Names::SHADOW_SIZE, 4096},
         {Names::MAXIMUMFALLDISTANCE, -1000},
         {Names::WIREFRAMED, 0},
         {Names::WORLD_SIZE, 50000},

@@ -1,12 +1,14 @@
 #pragma once
 #include <chrono>
 
-namespace FPS
+namespace Time
 {
 	extern void update();
-	extern float get();
+	extern float getFrametime();
 	extern float getFPS();
+    extern float getTime();
 
-	extern float Current;
+	extern float fCurrentFrametime;
+	extern float fElapsedTime;
 	extern std::chrono::high_resolution_clock::time_point clock; //std::chrono::system_time::time_point
 }

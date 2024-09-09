@@ -1,11 +1,14 @@
 #pragma once
 #include <algorithm>
+#include <bitset>
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include <map>
 #include <gum-maths.h>
 #include <typeinfo>
+
+#define _str(x) std::to_string(x)
 
 namespace Tools
 {
@@ -19,18 +22,25 @@ namespace Tools
     extern vec4 StringToVec4(std::string str);
     extern quat StringToQuat(std::string str);
     extern std::string decToHex(const int& dec, int leadingzeros = 2);
-    extern std::string decToBin(const int& dec);
+    template<typename T>
+    static std::string decToBin(const T& dec, std::string prefix = "0b")
+    {
+        return prefix + std::bitset<sizeof(T) * 8>(dec).to_string();
+    }
     extern std::string typeToString(const std::type_info &type);
     extern std::string to_string(void* var, const std::type_info &type = typeid(void));
 
 
     //Processing
     extern std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces = true);
+    extern std::vector<std::string> findLinesContaining(const std::string& tofind, const std::string& str, const char& newlinedelimiter = '\n');
+    const auto grep = findLinesContaining;
     extern std::string strExtractNumbers(std::string str);
     extern std::string toUpperCase(std::string str);
     extern std::string toLowerCase(std::string str);
     extern std::string escapeString(std::string str);
     extern std::string repeatString(const std::string& str, const unsigned int& n);
+    extern std::string strReplace(const std::string& str, const char& toreplace, const char& symbol);
     
 
     //Vector Operations
