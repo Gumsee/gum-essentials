@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <bitset>
+#include <functional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -52,11 +53,11 @@ namespace Tools
     extern bool strContains(std::string str, std::string contain);
 
     template<typename T>
-    static bool isInList(const T& item, const std::vector<T>& list)
+    static bool isInList(const T& item, const std::vector<T>& list, std::function<bool(T, T)> comparisonfunc = [](T a, T b){ return a == b; })
     {
-        for(int i : list)
+        for(T i : list)
         {
-            if(i == item) 
+            if(comparisonfunc(i, item)) 
                 return true;
         }
         return false;
