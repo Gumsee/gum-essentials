@@ -53,14 +53,14 @@ namespace Tools
     extern bool strContains(std::string str, std::string contain);
 
     template<typename T>
-    static bool isInList(const T& item, const std::vector<T>& list, std::function<bool(T, T)> comparisonfunc = [](T a, T b){ return a == b; })
+    static long isInList(const T& item, const std::vector<T>& list, std::function<bool(T, T)> comparisonfunc = [](T a, T b){ return a == b; })
     {
-        for(T i : list)
+        for(long i = 0; i < (long)list.size(); i++)
         {
-            if(comparisonfunc(i, item)) 
-                return true;
+            if(comparisonfunc(list[i], item)) 
+                return i;
         }
-        return false;
+        return -1;
     }
 
     template<typename T, typename TT>
