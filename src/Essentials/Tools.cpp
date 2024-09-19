@@ -191,15 +191,6 @@ namespace Tools
     {
         return str.find(contain) != str.npos;
     }
-    bool isInList(const int& item, const std::vector<int>& list)
-    {
-        for(int i : list)
-        {
-            if(i == item) 
-                return true;
-        }
-        return false;
-    }
 
     std::string strExtractNumbers(std::string str)
     {

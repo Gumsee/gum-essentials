@@ -50,7 +50,17 @@ namespace Tools
 
     //Checking
     extern bool strContains(std::string str, std::string contain);
-    extern bool isInList(const int& item, const std::vector<int>& list);
+
+    template<typename T>
+    static bool isInList(const T& item, const std::vector<T>& list)
+    {
+        for(int i : list)
+        {
+            if(i == item) 
+                return true;
+        }
+        return false;
+    }
 
     template<typename T, typename TT>
     static bool mapHasKey(const std::map<T,TT>& map, const T& key)
