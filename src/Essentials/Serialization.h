@@ -1,13 +1,13 @@
 #pragma once
 #include <System/MemoryManagement.h>
-#include <vector>
+#include "Crate.h"
 #include <Maths/vec.h>
 #include "SerializationData.h"
 
 class Serialization
 {
 private:
-    std::vector<void*> vDataToSerialize;
+    crate<void*> vDataToSerialize;
 
 protected:
     template<typename T>

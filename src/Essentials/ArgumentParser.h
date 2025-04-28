@@ -1,13 +1,13 @@
 #pragma once
 #include "Argument.h"
-#include <vector>
+#include "Crate.h"
 
 namespace Gum
 {
     class ArgumentParser
     {
     private:
-        std::vector<Argument> vArguments;
+        crate<Argument> vArguments;
         std::string usagePrefix, usageSuffix, usageArg;
         int iDescriptionOffset;
         

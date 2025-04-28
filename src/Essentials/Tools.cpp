@@ -15,7 +15,7 @@ namespace Tools
     vec2 StringToVec2(std::string str)
     {
         vec2 vec;
-        std::vector<std::string> numsStr = splitStr(str, ',');
+        crate<std::string> numsStr = splitStr(str, ',');
         for(unsigned int i = 0; i < Gum::Maths::min(numsStr.size(), (size_t)2UL); i++)
         {
             vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
@@ -27,7 +27,7 @@ namespace Tools
     vec3 StringToVec3(std::string str)
     {
         vec3 vec;
-        std::vector<std::string> numsStr = splitStr(str, ',');
+        crate<std::string> numsStr = splitStr(str, ',');
         for(unsigned int i = 0; i < Gum::Maths::min(numsStr.size(), (size_t)3UL); i++)
         {
             vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
@@ -39,7 +39,7 @@ namespace Tools
     vec4 StringToVec4(std::string str)
     {
         vec4 vec;
-        std::vector<std::string> numsStr = splitStr(str, ',');
+        crate<std::string> numsStr = splitStr(str, ',');
         for(unsigned int i = 0; i < Gum::Maths::min(numsStr.size(), (size_t)4UL); i++)
         {
             vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
@@ -123,9 +123,9 @@ namespace Tools
         }
     }
 
-    std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces)
+    crate<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces)
     {
-        std::vector<std::string> retStrs;
+        crate<std::string> retStrs;
         std::string foundstr = "";
         for(unsigned int i = 0; i < str.length(); i++)
         {
@@ -153,9 +153,9 @@ namespace Tools
         return retStrs;
     }
 
-    std::vector<std::string> findLinesContaining(const std::string& tofind, const std::string& str, const char& newlinedelimiter)
+    crate<std::string> findLinesContaining(const std::string& tofind, const std::string& str, const char& newlinedelimiter)
     {
-        std::vector<std::string> ret;
+        crate<std::string> ret;
         for(std::string line : splitStr(str, newlinedelimiter, false))
         {
             if(line.find(tofind) != line.npos)

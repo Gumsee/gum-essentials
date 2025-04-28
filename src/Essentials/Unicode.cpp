@@ -36,7 +36,7 @@ namespace Gum
             push_back(converter.to_bytes(str[i]));
     }
 
-    Unicode::Unicode(std::vector<std::basic_string<char>>::const_iterator begin, std::vector<std::basic_string<char>>::const_iterator end)
+    Unicode::Unicode(crate<std::basic_string<char>>::const_iterator begin, crate<std::basic_string<char>>::const_iterator end)
         : std::vector<std::basic_string<char>>(begin, end)
     {
     }
@@ -112,9 +112,9 @@ namespace Gum
         return Unicode(begin() + start, end());
     }
 
-    std::vector<Unicode> Unicode::split(char32_t splitchar) const //FIX THIS TODO
+    crate<Unicode> Unicode::split(char32_t splitchar) const //FIX THIS TODO
     {
-        std::vector<Unicode> ret;
+        crate<Unicode> ret;
         std::string tofind = "";
 
         for(int i = 0; i < 4; i++)
@@ -156,14 +156,14 @@ namespace Gum
 
     void Unicode::erase(const unsigned int& index, const unsigned int& n)
     {
-        int from = Gum::Maths::max(std::vector<unsigned int>{index, 0});
+        int from = Gum::Maths::max(crate<unsigned int>{index, 0});
         int to = Gum::Maths::min(index + n, (unsigned int)size());
         UnicodeVectype::erase(begin() + from, begin() + to);
     }
 
     void Unicode::eraseEveryOccurence(const std::string& toremove)
     {
-        std::vector<int> indices;
+        crate<int> indices;
         for(size_t i = 0; i < size(); i++)
         {
             if(at(i) == toremove)

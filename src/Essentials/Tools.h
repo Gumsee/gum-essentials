@@ -4,7 +4,7 @@
 #include <functional>
 #include <string>
 #include <unordered_map>
-#include <vector>
+#include "Crate.h"
 #include <map>
 #include <gum-maths.h>
 #include <typeinfo>
@@ -33,8 +33,8 @@ namespace Tools
 
 
     //Processing
-    extern std::vector<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces = true);
-    extern std::vector<std::string> findLinesContaining(const std::string& tofind, const std::string& str, const char& newlinedelimiter = '\n');
+    extern crate<std::string> splitStr(std::string str, char delimiter, bool remWhitespaces = true);
+    extern crate<std::string> findLinesContaining(const std::string& tofind, const std::string& str, const char& newlinedelimiter = '\n');
     const auto grep = findLinesContaining;
     extern std::string strExtractNumbers(std::string str);
     extern std::string toUpperCase(std::string str);
@@ -53,7 +53,7 @@ namespace Tools
     extern bool strContains(std::string str, std::string contain);
 
     template<typename T>
-    static long isInList(const T& item, const std::vector<T>& list, std::function<bool(T, T)> comparisonfunc = [](T a, T b){ return a == b; })
+    static long isInList(const T& item, const crate<T>& list, std::function<bool(T, T)> comparisonfunc = [](T a, T b){ return a == b; })
     {
         for(long i = 0; i < (long)list.size(); i++)
         {
@@ -108,7 +108,7 @@ namespace Tools
 
     //List operations
     template<typename T>
-    static bool moveEntryToBack(const std::vector<T>& vec, const T& entry)
+    static bool moveEntryToBack(const crate<T>& vec, const T& entry)
     {
         auto it = std::find(vec.begin(), vec.end(), entry);
         if(it == vec.end())

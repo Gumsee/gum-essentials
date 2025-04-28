@@ -1,6 +1,6 @@
 #pragma once
 #include <System/MemoryManagement.h>
-#include <vector>
+#include "Crate.h"
 #include <queue>
 #include <string>
 #include <Maths/vec.h>
@@ -23,7 +23,7 @@ public:
     void insertGenericData(const T& data)
     {
         bIsSavingData = true;
-        std::vector<unsigned char> cdatav;
+        crate<unsigned char> cdatav;
         unsigned char* cdata = (unsigned char*)&data;
         bool bytesnull = true;
         for(size_t i = 0; i < sizeof(T); i++)
@@ -157,7 +157,7 @@ public:
 
 
     template<typename T>
-    SerializationData& operator&(std::vector<T>& data)
+    SerializationData& operator&(crate<T>& data)
     {
         size_t size = data.size();
         this->operator&(size);

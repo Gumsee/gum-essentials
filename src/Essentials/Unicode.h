@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "Crate.h"
 
 namespace Gum 
 {
@@ -15,7 +16,7 @@ namespace Gum
         Unicode(UnicodeVectype::const_iterator begin, UnicodeVectype::const_iterator end);
 
         using UnicodeVectype::operator[];
-        //using std::vector<std::basic_string<char>>::operator[] const;
+        //using crate<std::basic_string<char>>::operator[] const;
 
         Unicode operator+(const Unicode& other) const;
         void operator+=(const Unicode& other);
@@ -29,7 +30,7 @@ namespace Gum
         size_t length() const;
         Unicode substr(const unsigned int& start, const unsigned int& n) const;
         Unicode substr(const unsigned int& start) const;
-        std::vector<Unicode> split(char32_t splitchar) const;
+        crate<Unicode> split(char32_t splitchar) const;
         void append(const Unicode& unicode);
         void insert(const Unicode& unicode, const unsigned int& index);
         void erase(const unsigned int& index, const unsigned int& n);
