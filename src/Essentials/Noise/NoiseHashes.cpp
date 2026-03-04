@@ -136,7 +136,7 @@ namespace Noise {
     {
         uivec2 q = uivec2(x);
         uint h0 = ihash1D(ihash1D(q.x) + q.y);
-        uint h1 = h0 * 1933247u + ~h0 ^ 230123u;
+        uint h1 = (h0 * 1933247u + ~h0) ^ 230123u;
         return vec2(h0, h1)  * (1.0 / float(0xffffffffu));
     }
 
@@ -164,8 +164,8 @@ namespace Noise {
         uivec4 i = uivec4(coords0.x, coords0.y, coords1.x, coords1.y);
         uivec4 hash = ihash2D(ihash2D(uivec2(i.x, i.z)) + uivec2(i.y, i.w));
         hash = uivec4(hash.x, hash.x, hash.y, hash.y);
-        hash.y = hash.y * 1933247u + ~hash.y ^ 230123u;
-        hash.w = hash.w * 1933247u + ~hash.w ^ 230123u;
+        hash.y = (hash.y * 1933247u + ~hash.y) ^ 230123u;
+        hash.w = (hash.w * 1933247u + ~hash.w) ^ 230123u;
         return vec4(hash) * (1.0 / float(0xffffffffu));
     }
 
@@ -174,10 +174,10 @@ namespace Noise {
     {
         uivec4 hash0 = ihash4D(ihash4D(uivec4(coords0.x, coords0.z, coords1.x, coords1.z)) + uivec4(coords0.y, coords0.w, coords1.y, coords1.w));
         uivec4 hash1;
-        hash1.x = hash0.x * 1933247u + ~hash0.x ^ 230123u;
-        hash1.y = hash0.y * 1933247u + ~hash0.y ^ 230123u;
-        hash1.z = hash0.z * 1933247u + ~hash0.z ^ 230123u;
-        hash1.w = hash0.w * 1933247u + ~hash0.w ^ 230123u;
+        hash1.x = (hash0.x * 1933247u + ~hash0.x) ^ 230123u;
+        hash1.y = (hash0.y * 1933247u + ~hash0.y) ^ 230123u;
+        hash1.z = (hash0.z * 1933247u + ~hash0.z) ^ 230123u;
+        hash1.w = (hash0.w * 1933247u + ~hash0.w) ^ 230123u;
         hashX = vec4(hash0) * (1.0 / float(0xffffffffu));
         hashY = vec4(hash1) * (1.0 / float(0xffffffffu));
     } 

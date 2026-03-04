@@ -85,10 +85,10 @@ public:
 
         unsigned char* cdata = (unsigned char*)&data;
 
-        for(unsigned int i = 0; i < sizeof(T) - size; i++)
+        for(size_t i = 0; i < sizeof(T) - size; i++)
             cdata[i] = 0;
         
-        for(unsigned int i = sizeof(T) - size; i < sizeof(T); i++)
+        for(size_t i = sizeof(T) - size; i < sizeof(T); i++)
         {
             cdata[i] = this->front();
             pop();
@@ -202,7 +202,7 @@ public:
 
     unsigned char* getData(unsigned int& len)
     {
-        len = this->size();
+        len = (unsigned int)this->size();
         unsigned char* data = (unsigned char*)Gum::_malloc(len * sizeof(unsigned char));
 
         for(size_t i = 0; i < len; i++)
