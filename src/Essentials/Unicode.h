@@ -10,6 +10,7 @@ namespace Gum
     {
     public:
         Unicode();
+        Unicode(const char32_t* codepoints);
         Unicode(const char* utf8);
         Unicode(std::string utf8);
         Unicode(std::u32string utf32);

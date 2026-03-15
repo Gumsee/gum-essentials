@@ -21,7 +21,7 @@ namespace Tools
     extern vec2 StringToVec2(std::string str);
     extern vec3 StringToVec3(std::string str);
     extern vec4 StringToVec4(std::string str);
-    extern quat StringToQuat(std::string str);
+    extern fquat StringToQuat(std::string str);
     extern std::string decToHex(const int& dec, int leadingzeros = 2);
     template<typename T>
     static std::string decToBin(const T& dec, std::string prefix = "0b")

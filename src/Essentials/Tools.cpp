@@ -48,9 +48,9 @@ namespace Tools
         return vec;
     }
 
-    quat StringToQuat(std::string str)
+    fquat StringToQuat(std::string str)
     {
-        quat quat;
+        fquat quat;
         std::string currentNumber;
         int index = 0;
 

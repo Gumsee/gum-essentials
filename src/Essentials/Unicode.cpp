@@ -12,6 +12,9 @@ namespace Gum
 {
     Unicode::Unicode() { }
     Unicode::Unicode(const char* utf8) : Unicode(std::string(utf8)) { }
+
+    Unicode::Unicode(const char32_t* codepoints) : Unicode(std::u32string(codepoints)) {}
+
     Unicode::Unicode(std::string utf8)
     {
         int numBytes = 0;
@@ -31,7 +34,10 @@ namespace Gum
 
     Unicode::Unicode(std::u32string str)
     {
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+        #pragma GCC diagnostic pop
         for(size_t i = 0; i < str.length(); i++)
             push_back(converter.to_bytes(str[i]));
     }
@@ -69,7 +75,10 @@ namespace Gum
 
     unsigned int Unicode::getCodepoint(const unsigned int& index) const
     {
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
+        #pragma GCC diagnostic pop
         return utf32conv.from_bytes(at(index))[0];
     }
 
