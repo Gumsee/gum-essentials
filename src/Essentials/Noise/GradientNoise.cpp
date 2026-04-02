@@ -9,12 +9,12 @@ namespace Noise {
     // @param scale Number of tiles, must be  integer for tileable results, range: [2, inf]
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return Value of the noise, range: [-1, 1]
-    float gradientNoise(vec2 pos, vec2 scale, float seed) 
+    float gradientNoise(vec2 pos, vec2 scale, int seed) 
     {
         pos *= scale;
         vec2 i0 = vec2::floor(pos);
         vec4 i = vec4(i0.x, i0.y, i0.x + 1.0f, i0.y + 1.0f);
-        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0, 0.0, 1.0, 1.0);
+        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0f, 0.0f, 1.0f, 1.0f);
         i = vec4::mod(i, vec4(scale.x, scale.y, scale.x, scale.y)) + seed;
 
         vec4 hashX, hashY;
@@ -23,7 +23,7 @@ namespace Noise {
         vec4 gradients = hashX * vec4(f.x, f.z, f.x, f.z) + hashY * vec4(f.y, f.y, f.w, f.w);
         vec2 u = noiseInterpolate(vec2(f.x, f.y));
         vec2 g = vec2::mix(vec2(gradients.x, gradients.z), vec2(gradients.y, gradients.w), u.x);
-        return 1.4142135623730950 * mix(g.x, g.y, u.y);
+        return 1.4142135f * mix(g.x, g.y, u.y);
     }
 
     // 2D Gradient noise with gradients transform (i.e. can be used to rotate the gradients).
@@ -31,12 +31,12 @@ namespace Noise {
     // @param transform Transform matrix for the noise gradients.
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return Value of the noise, range: [-1, 1]
-    float gradientNoiset(vec2 pos, vec2 scale, mat2 transform, float seed) 
+    float gradientNoiset(vec2 pos, vec2 scale, mat2 transform, int seed) 
     {
         pos *= scale;
         vec2 i0 = vec2::floor(pos);
         vec4 i = vec4(i0.x, i0.y, i0.x + 1.0f, i0.y + 1.0f);
-        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0, 0.0, 1.0, 1.0);
+        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0f, 0.0f, 1.0f, 1.0f);
         i = vec4::mod(i, vec4(scale.x, scale.y, scale.x, scale.y)) + seed;
         
         vec4 hashX, hashY;
@@ -64,10 +64,10 @@ namespace Noise {
         vec4 gradients = hashX * vec4(f.x, f.z, f.x, f.z) + hashY * vec4(f.y, f.y, f.w, f.w);
         vec2 u = noiseInterpolate(vec2(f.x, f.y));
         vec2 g = vec2::mix(vec2(gradients.x, gradients.z), vec2(gradients.y, gradients.w), u.x);
-        return 1.4142135623730950 * mix(g.x, g.y, u.y);
+        return 1.4142135f * mix(g.x, g.y, u.y);
     }
 
-    float gradientNoiser(vec2 pos, vec2 scale, float rotation, float seed) 
+    float gradientNoiser(vec2 pos, vec2 scale, float rotation, int seed) 
     {
         vec2 sinCos = vec2(sin(rotation), cos(rotation));
         return gradientNoiset(pos, scale, mat2(sinCos.y, sinCos.x, sinCos.x, sinCos.y), seed);
@@ -77,13 +77,13 @@ namespace Noise {
     // @param scale Number of tiles, must be  integer for tileable results, range: [2, inf]
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return x = value of the noise, yz = derivative of the noise, range: [-1, 1]
-    vec3 gradientNoised(vec2 pos, vec2 scale, float seed) 
+    vec3 gradientNoised(vec2 pos, vec2 scale, int seed) 
     {
         // gradient noise with derivatives based on Inigo Quilez
         pos *= scale;
         vec2 i0 = vec2::floor(pos);
         vec4 i = vec4(i0.x, i0.y, i0.x + 1.0f, i0.y + 1.0f);
-        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0, 0.0, 1.0, 1.0);
+        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0f, 0.0f, 1.0f, 1.0f);
         i = vec4::mod(i, vec4(scale.x, scale.y, scale.x, scale.y)) + seed;
         
         vec4 hashX, hashY;
@@ -101,7 +101,7 @@ namespace Noise {
         
         vec2 dxdy = a + (b - a) * u.x + (c - a) * u.y + (a - b - c + d) * u.x * u.y;
         dxdy += vec2(udu.z, udu.w) * (vec2(u.y, u.x) * (gradients.x - gradients.y - gradients.z + gradients.w) + vec2(gradients.y, gradients.z) - gradients.x);
-        return vec3(mix(g.x, g.y, u.y) * 1.4142135623730950, dxdy.x, dxdy.y);
+        return vec3(mix(g.x, g.y, u.y) * 1.4142135f, dxdy.x, dxdy.y);
     }
 
     // 2D Gradient noise with gradients transform (i.e. can be used to rotate the gradients) and derivatives.
@@ -109,13 +109,13 @@ namespace Noise {
     // @param transform Transform matrix for the noise gradients.
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return x = value of the noise, yz = derivative of the noise, range: [-1, 1]
-    vec3 gradientNoisedt(vec2 pos, vec2 scale, mat2 transform, float seed) 
+    vec3 gradientNoisedt(vec2 pos, vec2 scale, mat2 transform, int seed) 
     {
         // gradient noise with derivatives based on Inigo Quilez
         pos *= scale;
         vec2 i0 = vec2::floor(pos);
         vec4 i = vec4(i0.x, i0.y, i0.x + 1.0f, i0.y + 1.0f);
-        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0, 0.0, 1.0, 1.0);
+        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0f, 0.0f, 1.0f, 1.0f);
         i = vec4::mod(i, vec4(scale.x, scale.y, scale.x, scale.y)) + seed;
         
         vec4 hashX, hashY;
@@ -153,7 +153,7 @@ namespace Noise {
         
         vec2 dxdy = a + (b - a) * u.x + (c - a) * u.y + (a - b - c + d) * u.x * u.y;
         dxdy += vec2(udu.z, udu.w) * (vec2(u.y, u.x) * (gradients.x - gradients.y - gradients.z + gradients.w) + vec2(gradients.y, gradients.z) - gradients.x);
-        return vec3(mix(g.x, g.y, u.y) * 1.4142135623730950, dxdy.x, dxdy.y);
+        return vec3(mix(g.x, g.y, u.y) * 1.4142135f, dxdy.x, dxdy.y);
     }
 
     // 2D Gradient noise with gradients rotation and derivatives.
@@ -161,7 +161,7 @@ namespace Noise {
     // @param rotation Rotation for the noise gradients, useful to animate flow, range: [0, PI]
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return x = value of the noise, yz = derivative of the noise, range: [-1, 1]
-    vec3 gradientNoisedr(vec2 pos, vec2 scale, float rotation, float seed) 
+    vec3 gradientNoisedr(vec2 pos, vec2 scale, float rotation, int seed) 
     {
         vec2 sinCos = vec2(sin(rotation), cos(rotation));
         return gradientNoisedt(pos, scale, mat2(sinCos.y, sinCos.x, sinCos.x, sinCos.y), seed);
@@ -172,22 +172,22 @@ namespace Noise {
     // @param disoder Jitter factor for the noise gradients,, range: [0, 1.0]
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return x = value of the noise, yz = derivative of the noise, range: [-1, 1]
-    float gradientNoiseDisorder(vec2 pos, vec2 scale, float disoder, float seed) 
+    float gradientNoiseDisorder(vec2 pos, vec2 scale, float disoder, int seed) 
     {
         pos *= scale;
         vec2 i0 = vec2::floor(pos);
         vec4 i = vec4(i0.x, i0.y, i0.x + 1.0f, i0.y + 1.0f);
-        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0, 0.0, 1.0, 1.0);
+        vec4 f = (vec4(pos.x, pos.y, pos.x, pos.y) - vec4(i.x, i.y, i.x, i.y)) - vec4(0.0f, 0.0f, 1.0f, 1.0f);
         i = vec4::mod(i, vec4(scale.x, scale.y, scale.x, scale.y)) + seed;
 
         vec4 hashX, hashY;
         multiHash2D(i, hashX, hashY);
-        hashX = (hashX * disoder) * 2.0 - 1.0;
-        hashY = (hashY * disoder) * 2.0 - 1.0;
+        hashX = (hashX * disoder) * 2.0f - 1.0f;
+        hashY = (hashY * disoder) * 2.0f - 1.0f;
 
         vec4 gradients = hashX * vec4(f.x, f.z, f.x, f.z) + hashY * vec4(f.y, f.y, f.w, f.w);
         vec2 u = noiseInterpolate(vec2(f.x, f.y));
         vec2 g = vec2::mix(vec2(gradients.x, gradients.z), vec2(gradients.y, gradients.w), u.x);
-        return 1.4142135623730950 * mix(g.x, g.y, u.y);
+        return 1.4142135f * mix(g.x, g.y, u.y);
     }
 }};

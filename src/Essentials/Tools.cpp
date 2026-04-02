@@ -7,74 +7,10 @@
 
 namespace Tools
 {
-    int StringToInt(std::string str)        { int ret = 0;      try { ret = std::stoi(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToInt: couldn't convert string, invalid argument!");    } return ret; }
-    float StringToFloat(std::string str)    { float ret = 0.0f; try { ret = std::stof(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToFloat: couldn't convert string, invalid argument!");  } return ret; }
-    double StringToDouble(std::string str)  { double ret = 0.0; try { ret = std::stod(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToDouble: couldn't convert string, invalid argument!"); } return ret; }
-    long StringToLong(std::string str)      { long ret = 0L;    try { ret = std::stol(str); } catch(const std::invalid_argument& e) { Gum::Output::error("StringToLong: couldn't convert string, invalid argument!");   } return ret; }
-
-    vec2 StringToVec2(std::string str)
+    fquat StringToQuat(std::string str, fquat def)
     {
-        vec2 vec;
-        crate<std::string> numsStr = splitStr(str, ',');
-        for(unsigned int i = 0; i < Gum::Maths::min(numsStr.size(), (size_t)2UL); i++)
-        {
-            vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
-        }
-
-        return vec;
-    }
-
-    vec3 StringToVec3(std::string str)
-    {
-        vec3 vec;
-        crate<std::string> numsStr = splitStr(str, ',');
-        for(unsigned int i = 0; i < Gum::Maths::min(numsStr.size(), (size_t)3UL); i++)
-        {
-            vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
-        }
-
-        return vec;
-    }
-
-    vec4 StringToVec4(std::string str)
-    {
-        vec4 vec;
-        crate<std::string> numsStr = splitStr(str, ',');
-        for(unsigned int i = 0; i < Gum::Maths::min(numsStr.size(), (size_t)4UL); i++)
-        {
-            vec[i] = StringToFloat(strExtractNumbers(numsStr[i]));
-        }
-
-        return vec;
-    }
-
-    fquat StringToQuat(std::string str)
-    {
-        fquat quat;
-        std::string currentNumber;
-        int index = 0;
-
-        std::string forstr = str + ",";
-
-        for(unsigned int i = 0; i < forstr.length(); i++)
-        {
-            if(forstr[i] == ',')
-            {
-                //index [0..3] = [x,y,z,w]
-                if(index == 0)      { quat.x = StringToFloat(currentNumber); }
-                else if(index == 1) { quat.y = StringToFloat(currentNumber); }
-                else if(index == 2) { quat.z = StringToFloat(currentNumber); }
-                else if(index == 3) { quat.w = StringToFloat(currentNumber); }
-                index++;
-                currentNumber = "";
-            }
-            else
-            {
-                currentNumber += forstr[i];
-            }
-        }
-
-        return quat;
+        vec4 quatdata = StringToVec<float, 4>(str, vec4(def.w, def.x, def.y, def.z));
+        return fquat(quatdata.x, quatdata.y, quatdata.z, quatdata.w); // w is at the back of vec4
     }
 
     std::string decToHex(const int& dec, int leadingzeros)

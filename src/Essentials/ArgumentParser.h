@@ -12,7 +12,7 @@ namespace Gum
         int iDescriptionOffset;
         
         Argument* getArgument(const std::string& arg);
-        std::string offsetGen(int strLength);
+        std::string offsetGen(size_t strLength);
         void usage();
 
     public:

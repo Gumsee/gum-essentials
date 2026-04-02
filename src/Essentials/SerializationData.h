@@ -13,9 +13,9 @@ private:
 
 public:
     SerializationData() {}
-    SerializationData(const unsigned char* data, const unsigned int& len)
+    SerializationData(const unsigned char* data, const size_t& len)
     {
-        for(unsigned int i = 0; i < len; i++)
+        for(size_t i = 0; i < len; i++)
             push(data[i]);
     }
 

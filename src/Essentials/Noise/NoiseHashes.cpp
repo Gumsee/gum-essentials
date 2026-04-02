@@ -32,7 +32,7 @@ namespace Noise {
         // based on: pcg by Mark Jarzynski: http://www.jcgt.org/published/0009/03/02/
         uint state = uint(x * 8192.0) * 747796405u + 2891336453u;
         uint word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-        return float((word >> 22u) ^ word) * (1.0 / float(0xffffffffu));;
+        return float((word >> 22u) ^ word) * (1.0f / float(0xffffffffu));;
     }
 
     float hash1D(vec2 x)
@@ -41,7 +41,7 @@ namespace Noise {
         uivec2 q = uivec2(x * 8192.0);
         q = ((q >> 1u) ^ uivec2(q.y, q.x)) * 1103515245u;
         uint n = 1103515245u * (q.x ^ (q.y >> 3u));
-        return float(n) * (1.0 / float(0xffffffffu));
+        return float(n) * (1.0f / float(0xffffffffu));
     }
 
     float hash1D(vec3 x)
@@ -50,7 +50,7 @@ namespace Noise {
         uivec3 v = uivec3(x * 8192.0) * 1664525u + 1013904223u;
         v += uivec3(v.y, v.z, v.x) * uivec3(v.z, v.x, v.y);
         v ^= v >> 16u;
-        return float(v.x + v.y * v.z) * (1.0 / float(0xffffffffu));
+        return float(v.x + v.y * v.z) * (1.0f / float(0xffffffffu));
     }
 
     vec2 hash2D(vec2 x)
@@ -61,7 +61,7 @@ namespace Noise {
         uivec4 q = uivec4(y.x, y.y, y.y, y.x) + uivec4(z.x, z.x, z.y, z.y);
         q = ((q >> 1u) ^ uivec4(q.y, q.x, q.w, q.z)) * 1103515245u;
         uivec2 n = (uivec2(q.x, q.z) ^ (uivec2(q.y, q.w) >> 3u)) * 1103515245u;
-        return vec2(n) * (1.0 / float(0xffffffffu));
+        return vec2(n) * (1.0f / float(0xffffffffu));
     }
 
     vec3 hash3D(vec2 x) 
@@ -74,7 +74,7 @@ namespace Noise {
         v.x += v.y * v.z;
         v.y += v.z * v.x;
         v.z += v.x * v.y;
-        return vec3(v) * (1.0 / float(0xffffffffu));
+        return vec3(v) * (1.0f / float(0xffffffffu));
     }
 
     vec3 hash3D(vec3 x) 
@@ -87,7 +87,7 @@ namespace Noise {
         v.x += v.y * v.z;
         v.y += v.z * v.x;
         v.z += v.x * v.y;
-        return vec3(v) * (1.0 / float(0xffffffffu));
+        return vec3(v) * (1.0f / float(0xffffffffu));
     }
 
     vec4 hash4D(vec2 x)
@@ -106,7 +106,7 @@ namespace Noise {
         
         v ^= v >> 16u;
 
-        return vec4(v ^ (v >> 16u)) * (1.0 / float(0xffffffffu));
+        return vec4(v ^ (v >> 16u)) * (1.0f / float(0xffffffffu));
     }
 
     vec4 hash4D(vec4 x)
@@ -127,7 +127,7 @@ namespace Noise {
 
         v ^= v >> 16u;
 
-        return vec4(v ^ (v >> 16u)) * (1.0 / float(0xffffffffu));
+        return vec4(v ^ (v >> 16u)) * (1.0f / float(0xffffffffu));
     }
 
 
@@ -137,7 +137,7 @@ namespace Noise {
         uivec2 q = uivec2(x);
         uint h0 = ihash1D(ihash1D(q.x) + q.y);
         uint h1 = (h0 * 1933247u + ~h0) ^ 230123u;
-        return vec2(h0, h1)  * (1.0 / float(0xffffffffu));
+        return vec2(h0, h1)  * (1.0f / float(0xffffffffu));
     }
 
     // generates a random number for each of the 4 cell corners
@@ -145,7 +145,7 @@ namespace Noise {
     {
         uivec4 i = uivec4(cell);
         uivec4 hash = ihash4D(ihash4D(uivec4(i.x, i.z, i.x, i.z)) + uivec4(i.y, i.y, i.w, i.w));
-        return vec4(hash) * (1.0 / float(0xffffffffu));
+        return vec4(hash) * (1.0f / float(0xffffffffu));
     }
 
     // generates 2 random numbers for each of the 4 cell corners
@@ -154,8 +154,8 @@ namespace Noise {
         uivec4 i = uivec4(cell);
         uivec4 hash0 = ihash4D(ihash4D(uivec4(i.x, i.z, i.x, i.z)) + uivec4(i.y, i.y, i.w, i.w));
         uivec4 hash1 = ihash4D(hash0 ^ 1933247u);
-        hashX = vec4(hash0) * (1.0 / float(0xffffffffu));
-        hashY = vec4(hash1) * (1.0 / float(0xffffffffu));
+        hashX = vec4(hash0) * (1.0f / float(0xffffffffu));
+        hashY = vec4(hash1) * (1.0f / float(0xffffffffu));
     }
 
     // generates 2 random numbers for each of the 2D coordinates
@@ -166,7 +166,7 @@ namespace Noise {
         hash = uivec4(hash.x, hash.x, hash.y, hash.y);
         hash.y = (hash.y * 1933247u + ~hash.y) ^ 230123u;
         hash.w = (hash.w * 1933247u + ~hash.w) ^ 230123u;
-        return vec4(hash) * (1.0 / float(0xffffffffu));
+        return vec4(hash) * (1.0f / float(0xffffffffu));
     }
 
     // generates 2 random numbers for each of the four 2D coordinates
@@ -178,8 +178,8 @@ namespace Noise {
         hash1.y = (hash0.y * 1933247u + ~hash0.y) ^ 230123u;
         hash1.z = (hash0.z * 1933247u + ~hash0.z) ^ 230123u;
         hash1.w = (hash0.w * 1933247u + ~hash0.w) ^ 230123u;
-        hashX = vec4(hash0) * (1.0 / float(0xffffffffu));
-        hashY = vec4(hash1) * (1.0 / float(0xffffffffu));
+        hashX = vec4(hash0) * (1.0f / float(0xffffffffu));
+        hashY = vec4(hash1) * (1.0f / float(0xffffffffu));
     } 
 
     // generates a random number for each of the 8 cell corners
@@ -188,14 +188,14 @@ namespace Noise {
         uivec4 cells = uivec4(cell.x, cell.y, cellPlusOne.x, cellPlusOne.y);  
         uivec4 hash = ihash4D(ihash4D(vec4(cells.x, cells.z, cells.x, cells.z)) + vec4(cells.y, cells.y, cells.w, cells.w));
         
-        lowHash = vec4(ihash4D(hash + uint(cell.z))) * (1.0 / float(0xffffffffu));
-        highHash = vec4(ihash4D(hash + uint(cellPlusOne.z))) * (1.0 / float(0xffffffffu));
+        lowHash = vec4(ihash4D(hash + uint(cell.z))) * (1.0f / float(0xffffffffu));
+        highHash = vec4(ihash4D(hash + uint(cellPlusOne.z))) * (1.0f / float(0xffffffffu));
     }
 
     void smultiHash2D(vec4 cell, vec4& hashX, vec4& hashY)
     {
         multiHash2D(cell, hashX, hashY);
-        hashX = hashX * 2.0 - 1.0; 
-        hashY = hashY * 2.0 - 1.0;
+        hashX = hashX * 2.0f - 1.0f; 
+        hashY = hashY * 2.0f - 1.0f;
     }
 }}

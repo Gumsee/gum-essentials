@@ -9,18 +9,18 @@ namespace Noise {
     {
         // based on filtering the checkerboard by Inigo Quilez 
         vec2 numTiles = vec2::floor(scale); 
-        vec2 p = pos * numTiles * 2.0;
-        vec2 tile = vec2::mod(vec2::floor(p), numTiles * 2.0);
+        vec2 p = pos * numTiles * 2.0f;
+        vec2 tile = vec2::mod(vec2::floor(p), numTiles * 2.0f);
         
         vec2 w;
         w.x = max<float>({smoothness.x, 0.00001f});
         w.y = max<float>({smoothness.y, 0.00001f});
 
         // box filter using triangular signal
-        vec2 s1 = vec2::abs(vec2::fract((p - w * 0.5f) / 2.0) - 0.5);
-        vec2 s2 = vec2::abs(vec2::fract((p + w * 0.5f) / 2.0) - 0.5);
-        vec2 i = ((s1 - s2) * 2.0) / w;
-        float d = 0.5 - 0.5 * i.x * i.y; // xor pattern
+        vec2 s1 = vec2::abs(vec2::fract((p - w * 0.5f) / 2.0f) - 0.5f);
+        vec2 s2 = vec2::abs(vec2::fract((p + w * 0.5f) / 2.0f) - 0.5f);
+        vec2 i = ((s1 - s2) * 2.0f) / w;
+        float d = 0.5f - 0.5f * i.x * i.y; // xor pattern
 
         //std::cout << pos.toString() << " " << ((p - w * 0.5f) / 2.0).toString() << " " << s2.toString() << " " << d << std::endl;
         return vec3(d, tile.x, tile.y);
@@ -29,14 +29,14 @@ namespace Noise {
     vec3 checkerboard45(const vec2 pos, const vec2 scale, const vec2 smoothness)
     {
         // based on filtering the checkerboard by Inigo Quilez 
-        const float sqrtOfTwo = 1.41421356237;
+        const float sqrtOfTwo = 1.4142135f;
         
         vec2 numTiles = vec2::floor(scale); 
-        vec2 p = pos * numTiles * 2.0;
+        vec2 p = pos * numTiles * 2.0f;
         
-        mat2 rotate45 = mat2(0.70710678119, 0.70710678119, -0.70710678119, 0.70710678119);
-        p *= 1.0 / sqrtOfTwo;
-        p.x += sqrtOfTwo * 0.5;
+        mat2 rotate45 = mat2(0.7071067f, 0.7071067f, -0.7071067f, 0.7071067f);
+        p *= 1.0f / sqrtOfTwo;
+        p.x += sqrtOfTwo * 0.5f;
         p = rotate45 * p;
 
         vec2 w;
@@ -44,34 +44,32 @@ namespace Noise {
         w.y = max<float>({smoothness.y, 0.001f});
 
         // box filter using triangular signal
-        vec2 s1 = vec2::abs(vec2::fract((p - w * 0.5f) / 2.0) - 0.5);
-        vec2 s2 = vec2::abs(vec2::fract((p + w * 0.5f) / 2.0) - 0.5);
+        vec2 s1 = vec2::abs(vec2::fract((p - w * 0.5f) / 2.0f) - 0.5f);
+        vec2 s2 = vec2::abs(vec2::fract((p + w * 0.5f) / 2.0f) - 0.5f);
         vec2 i = ((s1 - s2) * 2.0f) / w;
-        float d = 0.5 - 0.5 * i.x * i.y; // xor pattern
+        float d = 0.5f - 0.5f * i.x * i.y; // xor pattern
         vec2 tile = vec2::mod(vec2::floor(p), numTiles);
         return vec3(d, tile.x, tile.y);
     }
 
     float triangleWave(float x) 
     {
-        const float pi = 3.141592;
-        float t = x / (pi * 2.0) + pi / 4.0;
-        return std::abs(fract(t) * 2.0 - 1.0) * 2.0 - 1.0;
+        float t = x / (GUM_PI_F * 2.0f) + GUM_PI_F / 4.0f;
+        return (float)std::abs(fract(t) * 2.0f - 1.0f) * 2.0f - 1.0f;
     }
 
     float wavePattern(vec2 pos, vec2 scale, float width, float smoothness, float amplitude, float interpolate)
     {
         scale = vec2::floor(scale);
-        const float pi = 3.141592;
         vec2 p;
-        p.x = pos.x * pi * scale.x;
+        p.x = pos.x * GUM_PI_F * scale.x;
         p.y = pos.y * scale.y;
         
-        float sy = p.y + amplitude * mix(triangleWave(p.x), sin(p.x), interpolate);
-        float t = triangleWave(sy * scale.y * pi * 0.25);
+        float sy = p.y + amplitude * mix(triangleWave(p.x), (float)sin(p.x), interpolate);
+        float t = triangleWave(sy * scale.y * GUM_PI_F * 0.25f);
 
         //std::cout << t << " " << sy << " " << 1.0 - smoothstep(max<float>({width - smoothness, 0.0f}), width, t * 0.5 + 0.5) << std::endl;
-        return 1.0 - smoothstep(max<float>({width - smoothness, 0.0f}), width, t * 0.5 + 0.5);
+        return 1.0f - smoothstep(max<float>({width - smoothness, 0.0f}), width, t * 0.5f + 0.5f);
     }
 
     float crossPattern(vec2 pos, vec2 scale, vec2 smoothness)
@@ -79,7 +77,7 @@ namespace Noise {
         scale = vec2::floor(scale);
         vec2 p = pos * scale;
         
-        const float N = 3.0;
+        const float N = 3.0f;
         vec2 w;
         w.x = max<float>({smoothness.x, 0.001f});
         w.y = max<float>({smoothness.y, 0.001f});
@@ -89,7 +87,7 @@ namespace Noise {
         
         vec2 x = vec2::floor(a) + vec2::min(vec2::fract(a) * N, vec2(1.0f)) - vec2::floor(b) - vec2::min(vec2::fract(b) * N, vec2(1.0));
         vec2 i = x / (w * N);
-        return 1.0 - i.x - i.y + 2.0 * i.x * i.y;
+        return 1.0f - i.x - i.y + 2.0f * i.x * i.y;
     }
 
     float stairsPattern(vec2 pos, vec2 scale, float width, float smoothness, float distance)   
@@ -97,11 +95,11 @@ namespace Noise {
         vec2 p = pos * scale;
         vec2 f = vec2::fract(p);
         
-        vec2 m = vec2::floor(vec2::mod(p, vec2(2.0)));
+        vec2 m = vec2::floor(vec2::mod(p, vec2(2.0f)));
         float d = mix(f.x, f.y, std::abs(m.x - m.y));
-        d = mix(d, std::abs(d * 2.0 - 1.0), distance);
+        d = mix(d, std::abs(d * 2.0f - 1.0f), distance);
         
-        return 1.0 - smoothstep(max<float>({width - smoothness, 0.0f}), width, d);        
+        return 1.0f - smoothstep(max<float>({width - smoothness, 0.0f}), width, d);        
     }
 
     /*float sdfLens(vec2 p, float width, float height)

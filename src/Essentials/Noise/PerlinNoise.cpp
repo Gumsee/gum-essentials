@@ -9,7 +9,7 @@ namespace Noise {
     // @param scale Number of tiles, must be  integer for tileable results, range: [2, inf]
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return Value of the noise, range: [-1, 1]
-    float perlinNoise(vec2 pos, vec2 scale, float seed)
+    float perlinNoise(vec2 pos, vec2 scale, int seed)
     {
         // based on Modifications to Classic Perlin Noise by Brian Sharpe: https://archive.is/cJtlS
         pos *= scale;
@@ -27,7 +27,7 @@ namespace Noise {
         // perlin surflet
         vec4 gradients = vec4::inversesqrt(gradientX * gradientX + gradientY * gradientY) * (gradientX * vec4(f.x, f.z, f.x, f.z) + gradientY * vec4(f.y, f.y, f.w, f.w));
         // normalize: 1.0 / 0.75^3
-        gradients *= 2.3703703703703703703703703703704;
+        gradients *= 2.3703703f;
         vec4 lengthSq = f * f;
         lengthSq = vec4(lengthSq.x, lengthSq.z, lengthSq.x, lengthSq.z) + vec4(lengthSq.y, lengthSq.y, lengthSq.w, lengthSq.w);
         vec4 xSq = vec4(1.0) - vec4::min(vec4(1.0), lengthSq); 
@@ -39,7 +39,7 @@ namespace Noise {
     // @param scale Number of tiles, must be  integer for tileable results, range: [2, inf]
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return x = value of the noise, yz = derivative of the noise, range: [-1, 1]
-    vec3 perlinNoised(vec2 pos, vec2 scale, float seed)
+    vec3 perlinNoised(vec2 pos, vec2 scale, int seed)
     {
         // based on Modifications to Classic Perlin Noise by Brian Sharpe: https://archive.is/cJtlS
         pos *= scale;
@@ -51,8 +51,8 @@ namespace Noise {
         // grid gradients
         vec4 gradientX, gradientY;
         multiHash2D(i, gradientX, gradientY);
-        gradientX -= 0.49999;
-        gradientY -= 0.49999;
+        gradientX -= 0.49999f;
+        gradientY -= 0.49999f;
 
         // perlin surflet
         vec4 gradients = vec4::inversesqrt(gradientX * gradientX + gradientY * gradientY) * (gradientX * vec4(f.x, f.z, f.x, f.z) + gradientY * vec4(f.y, f.y, f.w, f.w));
@@ -62,10 +62,10 @@ namespace Noise {
         vec4 m2 = m * m;
         vec4 m3 = m * m2;
         // compute the derivatives
-        vec4 m2Gradients = m2 * -6.0 * gradients;
+        vec4 m2Gradients = m2 * -6.0f * gradients;
         vec2 grad = vec2(vec4::dot(m2Gradients, vec4(f.x, f.z, f.x, f.z)), vec4::dot(m2Gradients, vec4(f.y, f.y, f.w, f.w))) + vec2(vec4::dot(m3, gradientX), vec4::dot(m3, gradientY));
         // sum the surflets and normalize: 1.0 / 0.75^3
-        return vec3(vec4::dot(m3, gradients), grad.x, grad.y) * 2.3703703703703703703703703703704;
+        return vec3(vec4::dot(m3, gradients), grad.x, grad.y) * 2.3703703f;
     }
 
     // 2D Variant of Perlin noise that produces and organic-like noise.
@@ -77,14 +77,14 @@ namespace Noise {
     // @param shift Shifts the angle of the highlights, range: [0, 1], default: 0.5
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return Value of the noise, range: [0, 1]
-    float organicNoise(vec2 pos, vec2 scale, float density, vec2 phase, float contrast, float highlights, float shift, float seed)
+    float organicNoise(vec2 pos, vec2 scale, float density, vec2 phase, float contrast, float highlights, float shift, int seed)
     {
-        vec2 s = vec2::mix(vec2(1.0), scale - 1.0, density);
+        vec2 s = vec2::mix(vec2(1.0), scale - 1.0f, density);
         float nx = perlinNoise(pos + phase, scale, seed);
         float ny = perlinNoise(pos, s, seed);
 
-        float n = (vec2(nx, ny) * vec2::mix(vec2(2.0, 0.0), vec2(0.0, 2.0), shift)).length();
-        n = pow(n, 1.0 + 8.0 * contrast) + (0.15 * highlights) / n;
-        return n * 0.5;
+        float n = (vec2(nx, ny) * vec2::mix(vec2(2.0f, 0.0f), vec2(0.0f, 2.0f), shift)).length();
+        n = (float)pow(n, 1.0 + 8.0 * contrast) + (0.15f * highlights) / n;
+        return n * 0.5f;
     }
 }};

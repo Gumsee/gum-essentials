@@ -23,18 +23,19 @@ public:
 		this->speed = speed;
 	}
 
-	bool update() {
-        if(target == actual)
-            return false;
+	bool update() 
+  {
+    if(target == actual)
+      return false;
 
 		float offset = target - actual;
 		float change = offset * Time::getFrametime() * speed;
 		actual += change;
 
-        if(std::abs(change) < 0.001)
-            actual = target;
-        
-        return true;
+    if(std::abs(change) < 0.001)
+      actual = target;
+    
+    return true;
 	}
 	
 	void setTarget(float target) 			

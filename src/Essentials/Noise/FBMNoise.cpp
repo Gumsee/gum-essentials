@@ -15,19 +15,19 @@ namespace Noise {
     // @param octaveFactor The octave intensity factor, the lower the more pronounced the lower octaves will be, range: [-1, 1], default: 0.0
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return value of the noise, range: [0, inf]
-    float fbm(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float octaveFactor, float seed) 
+    float fbm(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float octaveFactor, int seed) 
     {
         float amplitude = gain;
         float time = timeShift;
         vec2 frequency = scale;
-        vec2 offset = vec2(shift, 0.0);
+        vec2 offset = vec2(shift, 0.0f);
         vec2 p = pos * frequency;
-        octaveFactor = 1.0 + octaveFactor * 0.12;
+        octaveFactor = 1.0f + octaveFactor * 0.12f;
         
         vec2 sinCos = vec2(sin(shift), cos(shift));
         mat2 rotate = mat2(sinCos.y, sinCos.x, sinCos.x, sinCos.y);
 
-        float value = 0.0;
+        float value = 0.0f;
         for (int i = 0; i < octaves; i++) 
         {
             float n = noisep(p / frequency, frequency, time, seed);
@@ -35,11 +35,11 @@ namespace Noise {
             
             p = p * lacunarity + offset * float(1 + i);
             frequency *= lacunarity;
-            amplitude = pow(amplitude * gain, octaveFactor);
+            amplitude = (float)pow(amplitude * gain, octaveFactor);
             time += timeShift;
             offset = rotate * offset;
         }
-        return value * 0.5 + 0.5;
+        return value * 0.5f + 0.5f;
     }
 
     // FBM implementation using Value noise with derivatives.
@@ -52,46 +52,46 @@ namespace Noise {
     // @param octaveFactor The octave intensity factor, the lower the more pronounced the lower octaves will be, range: [-1, 1], default: 0.0
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return x = value of the noise, range: [0, inf], yz = derivative of the noise, range: [-1, 1]
-    vec3 fbmd(vec2 pos, vec2 scale, int octaves, vec2 shift, float timeShift, float gain, vec2 lacunarity, float slopeness, float octaveFactor, float seed) 
+    vec3 fbmd(vec2 pos, vec2 scale, int octaves, vec2 shift, float timeShift, float gain, vec2 lacunarity, float slopeness, float octaveFactor, int seed) 
     {
         // fbm implementation based on Inigo Quilez
         float amplitude = gain;
         float time = timeShift;
         vec2 frequency = scale;
         vec2 p = pos * frequency;
-        octaveFactor = 1.0 + octaveFactor * 0.12;
+        octaveFactor = 1.0f + octaveFactor * 0.12f;
         
-        vec2 sinCos = vec2(sin(shift.x), cos(shift.y));
+        vec2 sinCos = vec2((float)sin(shift.x), (float)cos(shift.y));
         mat2 rotate = mat2(sinCos.y, sinCos.x, sinCos.x, sinCos.y);
 
-        vec3 value = vec3(0.0);
-        vec2 derivative = vec2(0.0);
+        vec3 value = vec3(0.0f);
+        vec2 derivative = vec2(0.0f);
         for (int i = 0; i < octaves; i++) 
         {
             vec3 n = noisepd(p / frequency, frequency, time, seed);
             derivative += vec2(n.y, n.z);
 
             n *= amplitude;
-            n.x /= (1.0 + mix(0.0, vec2::dot(derivative, derivative), slopeness));
+            n.x /= (1.0f + mix(0.0f, vec2::dot(derivative, derivative), slopeness));
             value += n; 
             
             p = (p + shift) * lacunarity;
             frequency *= lacunarity;
-            amplitude = pow(amplitude * gain, octaveFactor);
+            amplitude = (float)pow(amplitude * gain, octaveFactor);
             shift = rotate * shift;
             time += timeShift;
         }
         
-        value.x = value.x * 0.5 + 0.5;
+        value.x = value.x * 0.5f + 0.5f;
         return value;
     }
 
-    vec3 fbmd(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float slopeness, float octaveFactor, float seed) 
+    vec3 fbmd(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float slopeness, float octaveFactor, int seed) 
     {
         return fbmd(pos, scale, octaves, vec2(shift), timeShift, gain, vec2(lacunarity), slopeness, octaveFactor, seed);
     }
 
-    vec3 fbmd(vec2 pos, vec2 scale, int octaves, vec2 shift, float timeShift, float gain, float lacunarity, float slopeness, float octaveFactor, float seed) 
+    vec3 fbmd(vec2 pos, vec2 scale, int octaves, vec2 shift, float timeShift, float gain, float lacunarity, float slopeness, float octaveFactor, int seed) 
     {
         return fbmd(pos, scale, octaves, shift, timeShift, gain, vec2(lacunarity), slopeness, octaveFactor, seed);
     }
@@ -107,7 +107,7 @@ namespace Noise {
     // @param negative If true use a negative range for the noise values, will result in more contrast, range: [false, true]
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return x = value of the noise, range: [-1, inf], yz = derivative of the noise, range: [-1, 1]
-    /*vec3 fbmdPerlin(vec2 pos, vec2 scale, int octaves, vec2 shift, mat2 transform, float gain, vec2 lacunarity, float slopeness, float octaveFactor, bool negative, float seed) 
+    /*vec3 fbmdPerlin(vec2 pos, vec2 scale, int octaves, vec2 shift, mat2 transform, float gain, vec2 lacunarity, float slopeness, float octaveFactor, bool negative, int seed) 
     {
         // fbm implementation based on Inigo Quilez
         float amplitude = gain;
@@ -134,7 +134,7 @@ namespace Noise {
 
         return value;
     }
-    vec3 fbmdPerlin(vec2 pos, vec2 scale, int octaves, vec2 shift, float axialShift, float gain, vec2 lacunarity, float slopeness, float octaveFactor, bool negative, float seed) 
+    vec3 fbmdPerlin(vec2 pos, vec2 scale, int octaves, vec2 shift, float axialShift, float gain, vec2 lacunarity, float slopeness, float octaveFactor, bool negative, int seed) 
     {
         vec2 cosSin = vec2(cos(axialShift), sin(axialShift));
         mat2 transform = mat2(cosSin.x, cosSin.y, -cosSin.y, cosSin.x) * mat2(0.8, -0.6, 0.6, 0.8);
@@ -154,7 +154,7 @@ namespace Noise {
     // @param octaveFactor The octave intensity factor, the lower the more pronounced the lower octaves will be, range: [-1, 1], default: 0.0
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return value of the noise, range: [0, inf]
-    float fbmPerlin(vec2 pos, vec2 scale, int octaves, float shift, float axialShift, float gain, float lacunarity, uint mode, float factor, float offset, float octaveFactor, float seed) 
+    float fbmPerlin(vec2 pos, vec2 scale, int octaves, float shift, float axialShift, float gain, float lacunarity, uint mode, float factor, float offset, float octaveFactor, int seed) 
     {
         float amplitude = gain;
         vec2 frequency = vec2::floor(scale);
@@ -214,35 +214,35 @@ namespace Noise {
     // @param interpolate Interpolate factor between the multiplication mode and normal mode, default: 0.0
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return value of the noise, range: [0, inf]
-    vec4 fbmVoronoi(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float octaveFactor, float jitter, float interpolate, float seed) 
+    vec4 fbmVoronoi(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float octaveFactor, float jitter, float interpolate, int seed) 
     {
         float amplitude = gain;
         float time = timeShift;
         vec2 frequency = scale;
-        vec2 offset = vec2(shift, 0.0);
+        vec2 offset = vec2(shift, 0.0f);
         vec2 p = pos * frequency;
-        octaveFactor = 1.0 + octaveFactor * 0.12;
+        octaveFactor = 1.0f + octaveFactor * 0.12f;
         
-        vec2 sinCos = vec2(sin(shift), cos(shift));
+        vec2 sinCos = vec2((float)sin(shift), (float)cos(shift));
         mat2 rotate = mat2(sinCos.y, sinCos.x, sinCos.x, sinCos.y);
         
-        float n = 1.0;
-        vec4 value = vec4(0.0);
+        float n = 1.0f;
+        vec4 value = vec4(0.0f);
         for (int i = 0; i < octaves; i++) 
         {
             vec3 v = voronoi(p / frequency, frequency, jitter, time, seed);
-            v.x = v.x * 2.0 - 1.0;
+            v.x = v.x * 2.0f - 1.0f;
             n *= v.x;
             vec3 value0 = hash3D(vec2(v.y, v.z));
             value += vec4(mix(v.x, n, interpolate), value0.x, value0.y, value0.z) * amplitude;
             
             p = p * lacunarity + offset * float(1 + i);
             frequency *= lacunarity;
-            amplitude = pow(amplitude * gain, octaveFactor);
+            amplitude = (float)pow(amplitude * gain, octaveFactor);
             time += timeShift;
             offset = rotate * offset;
         }
-        value.x = value.x * 0.5 + 0.5;
+        value.x = value.x * 0.5f + 0.5f;
         return value;
     }
 
@@ -258,19 +258,19 @@ namespace Noise {
     // @param octaveFactor The octave intensity factor, the lower the more pronounced the lower octaves will be, range: [-1, 1], default: 0.0
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return value of the noise, range: [0, inf]
-    float fbmGridt(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, vec3 translate, float warpStrength, float octaveFactor, float seed) 
+    float fbmGridt(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, vec3 translate, float warpStrength, float octaveFactor, int seed) 
     {
         float amplitude = gain;
         float time = timeShift;
         vec2 frequency = scale;
-        vec2 offset = vec2(shift, 0.0);
+        vec2 offset = vec2(shift, 0.0f);
         vec2 p = pos * frequency;
-        octaveFactor = 1.0 + octaveFactor * 0.12;
+        octaveFactor = 1.0f + octaveFactor * 0.12f;
         
-        vec2 sinCos = vec2(sin(shift), cos(shift));
+        vec2 sinCos = vec2((float)sin(shift), (float)cos(shift));
         mat2 rotate = mat2(sinCos.y, sinCos.x, sinCos.x, sinCos.y);
 
-        float value = 0.0;
+        float value = 0.0f;
         for (int i = 0; i < octaves; i++) 
         {
             vec2 pi = p / frequency + value * warpStrength;
@@ -281,22 +281,22 @@ namespace Noise {
             mn.x = mn.x * mn.z;
             mn.y = mn.y * mn.w;
 
-            float n = pow(std::abs(mn.x * mn.y), 0.25) * 2.0 - 1.0;
+            float n = (float)pow(std::abs(mn.x * mn.y), 0.25) * 2.0f - 1.0f;
             value += amplitude * n;
             
             p = p * lacunarity + offset * float(1 + i);
             frequency *= lacunarity;
-            amplitude = pow(amplitude * gain, octaveFactor);
+            amplitude = (float)pow(amplitude * gain, octaveFactor);
             time += timeShift;
             offset = rotate * offset;
         }
-        value = value * 0.5 + 0.5;
+        value = value * 0.5f + 0.5f;
         return value * value;
     }
 
-    float fbmGrid(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float warpStrength, float octaveFactor, float seed) 
+    float fbmGrid(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float warpStrength, float octaveFactor, int seed) 
     {
-        vec3 translate = (hash3D(vec2(seed)) * 2.0 - 1.0) * vec3(scale.x, scale.y, scale.x);
+        vec3 translate = (hash3D(vec2(seed)) * 2.0f - 1.0f) * vec3(scale.x, scale.y, scale.x);
         return fbmGridt(pos, scale, octaves, shift, timeShift, gain, lacunarity, translate, warpStrength, octaveFactor, seed);
     }
 
@@ -313,33 +313,33 @@ namespace Noise {
     // @param width Width and softness of the metaballs, range: [0, 1], default: {0.1, 0.01}
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return value of the noise, range: [0, inf]
-    float fbmMetaballs(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float octaveFactor, float jitter, float interpolate, vec2 width, float seed) 
+    float fbmMetaballs(vec2 pos, vec2 scale, int octaves, float shift, float timeShift, float gain, float lacunarity, float octaveFactor, float jitter, float interpolate, vec2 width, int seed) 
     {
         float amplitude = gain;
         float time = timeShift;
         vec2 frequency = scale;
-        vec2 offset = vec2(shift, 0.0);
+        vec2 offset = vec2(shift, 0.0f);
         vec2 p = pos * frequency;
-        octaveFactor = 1.0 + octaveFactor * 0.12;
+        octaveFactor = 1.0f + octaveFactor * 0.12f;
         
-        vec2 sinCos = vec2(sin(shift), cos(shift));
+        vec2 sinCos = vec2((float)sin(shift), (float)cos(shift));
         mat2 rotate = mat2(sinCos.y, sinCos.x, sinCos.x, sinCos.y);
         
-        float n = 1.0;
-        float value = 0.0;
+        float n = 1.0f;
+        float value = 0.0f;
         for (int i = 0; i < octaves; i++) 
         {
-            float cn = metaballswp(p / frequency, frequency, jitter, time, width.x, width.y, seed) * 2.0 - 1.0;
+            float cn = metaballswp(p / frequency, frequency, jitter, time, width.x, width.y, seed) * 2.0f - 1.0f;
             n *= cn;
             value += amplitude * mix(n, std::abs(n), interpolate);
             
             p = p * lacunarity + offset * float(1 + i);
             frequency *= lacunarity;
-            amplitude = pow(amplitude * gain, octaveFactor);
+            amplitude = (float)pow(amplitude * gain, octaveFactor);
             time += timeShift;
             offset = rotate * offset;
         }
-        return value * 0.5 + 0.5;
+        return value * 0.5f + 0.5f;
     }
 
     // FBM implementation using value noise which returns multiple values.
@@ -349,14 +349,14 @@ namespace Noise {
     // @param phase The phase for rotating the hash, range: [0, inf], default: 0.0
     // @param seed Seed to randomize result, range: [0, inf], default: 0.0
     // @return value of the noise, range: [0, inf]
-    vec4 fbmMulti(vec2 pos, vec2 scale, float lacunarity, int octaves, float phase, float seed) 
+    vec4 fbmMulti(vec2 pos, vec2 scale, float lacunarity, int octaves, float phase, int seed) 
     {    
-        vec4 seeds = vec4(0.0, 1031.0, 537.0, 23.0) + seed;
-        float f = 2.0 / lacunarity;
+        vec4 seeds = vec4(0.0f, 1031.0f, 537.0f, 23.0f) + seed;
+        float f = 2.0f / lacunarity;
         
-        vec4 value = vec4(0.0);
-        float w = 1.0;
-        float acc = 0.0;
+        vec4 value = vec4(0.0f);
+        float w = 1.0f;
+        float acc = 0.0f;
         for (int i = 0; i < octaves; i++) 
         {
             vec2 ns = vec2(scale / w);
@@ -364,9 +364,9 @@ namespace Noise {
             vec2 n0 = multiNoise(vec4(pos.x, pos.y, pos.x, pos.y), vec4(ns.x, ns.y, ns.x, ns.y), phase, vec2(seeds.z, seeds.w));
             n.z = n0.x;
             n.w = n0.y;
-            value += (n * 0.5 + 0.5) * w;
+            value += (n * 0.5f + 0.5f) * w;
             acc += w;
-            w *= 0.5 * f;
+            w *= 0.5f * f;
         }
         return value / acc;
     }

@@ -13,10 +13,10 @@ namespace Gum
 
     }
 
-    std::string ArgumentParser::offsetGen(int strLength)
+    std::string ArgumentParser::offsetGen(size_t strLength)
     {
         std::string ret;
-        for(int i = 0; i < iDescriptionOffset - strLength; i++)
+        for(size_t i = 0; i < iDescriptionOffset - strLength; i++)
             ret += " ";
 
         return ret;
@@ -41,7 +41,7 @@ namespace Gum
     void ArgumentParser::usage()
     {
         std::string helpStr = usagePrefix + "\n";
-        for(unsigned int j = 0; j < vArguments.size(); j++)
+        for(size_t j = 0; j < vArguments.size(); j++)
         {
             Argument &arg = vArguments[j];
             helpStr += "    " + arg.switchNameShort + ", " + arg.switchFullName + offsetGen(arg.switchFullName.length()) + arg.description + "\n";

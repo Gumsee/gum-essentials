@@ -176,10 +176,10 @@ namespace Gum
         for(size_t i = 0; i < size(); i++)
         {
             if(at(i) == toremove)
-                indices.push_back(i);
+                indices.push_back((int)i);
         }
         for(int i : indices)
-            erase(i, 1);
+            erase((unsigned int)i, 1);
     }
 
     void Unicode::replace(const std::string& toreplace, const std::string& replacement)

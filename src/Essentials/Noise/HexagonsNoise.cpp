@@ -8,14 +8,14 @@ namespace Noise {
     float sdfHexagon(vec2 pos, float radius, bool isVertical)
     {
         // 60 degrees, tan of 30 degrees and one over angle
-        const vec3 kAngles = vec3(1.047198, 0.954929249292, 0.523599);
+        const vec3 kAngles = vec3(1.047198f, 0.954929f, 0.523599f);
         // rotate 90 degrees
         pos = isVertical ? pos : vec2(-pos.y, -pos.x);
         
-        vec2 temp = vec2(radius, atan2(pos.y, pos.x)) * vec2(kAngles.z, kAngles.y) + vec2(0.0, 0.5);
-        float angle = kAngles.x * floor(temp.y);
+        vec2 temp = vec2(radius, atan2(pos.y, pos.x)) * vec2(kAngles.z, kAngles.y) + vec2(0.0f, 0.5f);
+        float angle = kAngles.x * (float)floor(temp.y);
         vec2 rotation = vec2(sin(angle), cos(angle));
-        pos = vec2(rotation.y, rotation.x) * pos.x * vec2(1.0, -1.0) + rotation * pos.y;
+        pos = vec2(rotation.y, rotation.x) * pos.x * vec2(1.0f, -1.0f) + rotation * pos.y;
 
         float he = temp.x; 
         vec2 offset = vec2(radius, clamp(pos.y, -he, he));
@@ -28,7 +28,7 @@ namespace Noise {
     // @return xy = horizontal or vertical radius, zw = diagonal radius, range: [0, 1]
     vec4 tileHexagonsRadii(vec2 scale, bool isVertical)
     {
-        vec2 tileSize = vec2(0.3333333f) / scale;
+        vec2 tileSize = vec2(0.333333f) / scale;
         // the horizontal and diagonal radii
         vec4 radii = isVertical ? vec4(tileSize.y, tileSize.y, tileSize.y, tileSize.x) : vec4(tileSize.x, tileSize.x, tileSize.x, tileSize.y);
         return radii * vec4(1.0, 0.0, 0.5, 1.5);
@@ -40,24 +40,24 @@ namespace Noise {
     // @return xy = normalized UV, zw = center position in UV space, range: [0, 1]
     vec4 tileHexagons(vec2 pos, vec2 scale, bool isVertical)
     {
-        const float kSqrtThree = 1.73205080757;
-        const float kHalfSqrtThree = 0.866025403785;
-        const float kInvSqrtThree = 0.57735026919;
-        vec4 hexScale = vec4(1.0, kSqrtThree, 1.0, kInvSqrtThree);
+        const float kSqrtThree     = 1.7320508f;
+        const float kHalfSqrtThree = 0.8660254f;
+        const float kInvSqrtThree  = 0.5773502f;
+        vec4 hexScale = vec4(1.0f, kSqrtThree, 1.0f, kInvSqrtThree);
         hexScale = isVertical ? hexScale : vec4(hexScale.y, hexScale.x, hexScale.w, hexScale.z);
-        vec4 r = vec4(1.0, kHalfSqrtThree, 0.5, kInvSqrtThree);
+        vec4 r = vec4(1.0f, kHalfSqrtThree, 0.5f, kInvSqrtThree);
         r = isVertical ? r : vec4(r.y, r.x, r.w, r.z);
         
         pos *= scale * vec2(hexScale.x, hexScale.y);
-        vec4 center = vec4::floor(vec4(pos.x, pos.y, pos.x, pos.y) * vec4(hexScale.z, hexScale.w, hexScale.z, hexScale.w) + vec4(0.0, 0.0, -r.z, -r.w)) + 0.5f;
-        vec4 uv = vec4(pos.x, pos.y, pos.x, pos.y) - center * vec4(hexScale.x, hexScale.y, hexScale.x, hexScale.y) + vec4(0.0, 0.0, -0.5 * hexScale.x, -0.5 * hexScale.y);
+        vec4 center = vec4::floor(vec4(pos.x, pos.y, pos.x, pos.y) * vec4(hexScale.z, hexScale.w, hexScale.z, hexScale.w) + vec4(0.0f, 0.0f, -r.z, -r.w)) + 0.5f;
+        vec4 uv = vec4(pos.x, pos.y, pos.x, pos.y) - center * vec4(hexScale.x, hexScale.y, hexScale.x, hexScale.y) + vec4(0.0f, 0.0f, -0.5f * hexScale.x, -0.5f * hexScale.y);
         // dot product
         vec4 temp = uv * uv;
         temp.x = temp.x + temp.y;
         temp.y = temp.z + temp.w;
-        vec4 uvCenter = temp.x < temp.y ? vec4(uv.x, uv.y, center.x, center.y) : vec4(uv.z, uv.w, center.z, center.w + 0.5);
+        vec4 uvCenter = temp.x < temp.y ? vec4(uv.x, uv.y, center.x, center.y) : vec4(uv.z, uv.w, center.z, center.w + 0.5f);
         // normalize UV range and transform center position to UV space
-        return uvCenter * vec4(r.x, r.y, 1.0 / scale.x, 1.0 / scale.y) + vec4(0.5, 0.5, 0.0, 0.0);
+        return uvCenter * vec4(r.x, r.y, 1.0f / scale.x, 1.0f / scale.y) + vec4(0.5f, 0.5f, 0.0f, 0.0f);
     }
 
     // 2D Hexagonal grid tiling.
@@ -66,41 +66,41 @@ namespace Noise {
     // @return xy = normalized UV, zw = center position in UV space, range: [0, 1], edgeDistance = distonce from the edge
     vec4 tileHexagons(vec2 pos, float& edgeDistance, vec2 scale, bool isVertical)
     {
-        const float kSqrtThree = 1.73205080757;
-        const float kHalfSqrtThree = 0.866025403785;
-        const float kInvSqrtThree = 0.57735026919;
-        vec4 hexScale = vec4(1.0, kSqrtThree, 1.0, kInvSqrtThree);
+        const float kSqrtThree     = 1.7320508f;
+        const float kHalfSqrtThree = 0.8660254f;
+        const float kInvSqrtThree  = 0.5773502f;
+        vec4 hexScale = vec4(1.0f, kSqrtThree, 1.0f, kInvSqrtThree);
         hexScale = isVertical ? hexScale : vec4(hexScale.y, hexScale.x, hexScale.w, hexScale.z);
-        vec4 r = vec4(1.0, kHalfSqrtThree, 0.5, kInvSqrtThree);
+        vec4 r = vec4(1.0f, kHalfSqrtThree, 0.5f, kInvSqrtThree);
         r = isVertical ? r : vec4(r.y, r.x, r.w, r.z);
         
         vec2 invScale = vec2(1.0f) / scale;
         vec2 p = pos * scale * vec2(hexScale.x, hexScale.y);
-        vec4 center = vec4::floor(vec4(p.x, p.y, p.x, p.y) * vec4(hexScale.z, hexScale.w, hexScale.z, hexScale.w) + vec4(0.0, 0.0, -r.z, -r.w)) + 0.5;
-        vec4 uv = vec4(p.x, p.y, p.x, p.y) - center * vec4(hexScale.x, hexScale.y, hexScale.x, hexScale.y) + vec4(0.0, 0.0, -0.5 * hexScale.x, -0.5 * hexScale.y);
+        vec4 center = vec4::floor(vec4(p.x, p.y, p.x, p.y) * vec4(hexScale.z, hexScale.w, hexScale.z, hexScale.w) + vec4(0.0f, 0.0f, -r.z, -r.w)) + 0.5f;
+        vec4 uv = vec4(p.x, p.y, p.x, p.y) - center * vec4(hexScale.x, hexScale.y, hexScale.x, hexScale.y) + vec4(0.0f, 0.0f, -0.5f * hexScale.x, -0.5f * hexScale.y);
         // dot product
         vec4 temp = uv * uv;
         temp.x = temp.x + temp.y;
         temp.y = temp.z + temp.w;
-        vec4 uvCenter = temp.x < temp.y ? vec4(uv.x, uv.y, center.x, center.y) : vec4(uv.z, uv.w, center.z, center.w + 0.5);
+        vec4 uvCenter = temp.x < temp.y ? vec4(uv.x, uv.y, center.x, center.y) : vec4(uv.z, uv.w, center.z, center.w + 0.5f);
         // normalize UV range and transform center position to UV space
-        uvCenter = uvCenter * vec4(r.x, r.y, invScale.x, invScale.y) + vec4(0.5, 0.5, 0.0, 0.0);
+        uvCenter = uvCenter * vec4(r.x, r.y, invScale.x, invScale.y) + vec4(0.5f, 0.5f, 0.0f, 0.0f);
         
         {
             // 60 degrees, tan of 30 degrees and one over angle
-            const vec3 kAngles = vec3(1.047198, 0.954929249292, 0.523599);
+            const vec3 kAngles = vec3(1.047198f, 0.954929f, 0.523599f);
             
             float size = isVertical ? invScale.x : invScale.y;
             p = (pos - vec2(uvCenter.z, uvCenter.w)) * scale * vec2(hexScale.x, hexScale.y) * size;
             // rotate 90 degrees
             p = isVertical ? p: vec2(-p.y, -p.x);
             float radius = size * 0.5f;
-            vec2 tt = vec2(radius, atan2(p.y, p.x)) * vec2(kAngles.z, kAngles.y) + vec2(0.0, 0.5);;
+            vec2 tt = vec2(radius, atan2(p.y, p.x)) * vec2(kAngles.z, kAngles.y) + vec2(0.0f, 0.5f);;
             temp.x = tt.x;
             temp.y = tt.y;
-            float angle = kAngles.x * floor(temp.y);
+            float angle = kAngles.x * (float)floor(temp.y);
             vec2 rotation = vec2(sin(angle), cos(angle));
-            p = vec2(rotation.y, rotation.x) * p.x * vec2(1.0, -1.0) + rotation * p.y;
+            p = vec2(rotation.y, rotation.x) * p.x * vec2(1.0f, -1.0f) + rotation * p.y;
 
             vec2 offset = vec2(radius, clamp(p.y, -temp.x, temp.x));
             edgeDistance = (p - offset).length() / radius;
@@ -117,16 +117,16 @@ namespace Noise {
     // @return Value of the noise, range: [0, 1]
     float noiseHexagons(vec2 pos, vec2 scale, float size, vec2 jitter, bool isVertical, bool useCenter)
     {
-        const float kSqrtThree = 1.73205080757;
-        const float kHalfSqrtThree = 0.866025403785;
-        const float kInvSqrtThree = 0.57735026919;
+        const float kSqrtThree     = 1.7320508f;
+        const float kHalfSqrtThree = 0.8660254f;
+        const float kInvSqrtThree  = 0.5773502f;
         
         vec2 invScale = vec2(1.0f) / scale;
         vec2 center;
         {
-            vec4 hexScale = vec4(1.0, kSqrtThree, 1.0, kInvSqrtThree);
+            vec4 hexScale = vec4(1.0f, kSqrtThree, 1.0f, kInvSqrtThree);
             hexScale = isVertical ? hexScale : vec4(hexScale.y, hexScale.x, hexScale.w, hexScale.z);
-            vec4 r = vec4(1.0, kHalfSqrtThree, 0.5, kInvSqrtThree);
+            vec4 r = vec4(1.0f, kHalfSqrtThree, 0.5f, kInvSqrtThree);
             r = isVertical ? r : vec4(r.y, r.x, r.w, r.z);
         
             vec2 p = pos * scale * vec2(hexScale.x, hexScale.y);
@@ -136,7 +136,7 @@ namespace Noise {
             vec4 temp = uv * uv;
             temp.x = temp.x + temp.y;
             temp.y = temp.z + temp.w;
-            center = temp.x < temp.y ? vec2(c.x, c.y) : vec2(c.z, c.w) + 0.5;
+            center = temp.x < temp.y ? vec2(c.x, c.y) : vec2(c.z, c.w) + 0.5f;
             // normalize UV range and transform center position to UV space
             center = center * invScale;
         }
@@ -145,16 +145,16 @@ namespace Noise {
         vec4 radii = isVertical ? vec4(invScale.y, invScale.y, invScale.x, invScale.y) * vec4(0.0, 0.33333333, 0.5, 0.1666666666) : vec4(invScale.x, invScale.x, invScale.x, invScale.y) * vec4(0.33333333, 0.0, 0.1666666666, 0.5);
         float radius = isVertical ? min(radii.y, radii.z) : min(radii.x, radii.w);
 
-        jitter *= vec2(0.5, 0.5) * radius;
+        jitter *= vec2(0.5f, 0.5f) * radius;
         vec4 p0 = vec4(center.x, center.y, center.x, center.y) - radii;
         vec4 p1 = vec4(center.x, center.y, center.x, center.y) + radii;
         vec4 hash0, hash1;
-        multiHash2D(vec4::fract(p0) * 8192.0, vec4::fract(p1) * 8192.0, hash0, hash1);
+        multiHash2D(vec4::fract(p0) * 8192.0f, vec4::fract(p1) * 8192.0f, hash0, hash1);
         vec4 temp = hash0;
         hash0 = vec4(temp.x, temp.y, hash1.x, hash1.y);
-        hash0 = vec4(hash0.x, hash0.z, hash0.y, hash0.w) * 2.0 - 1.0;
+        hash0 = vec4(hash0.x, hash0.z, hash0.y, hash0.w) * 2.0f - 1.0f;
         hash1 = vec4(temp.z, temp.w, hash1.z, hash1.w);
-        hash1 = vec4(hash1.x, hash1.z, hash1.y, hash1.w) * 2.0 - 1.0;
+        hash1 = vec4(hash1.x, hash1.z, hash1.y, hash1.w) * 2.0f - 1.0f;
         
         vec4 dc;
         temp = vec4(pos.x, pos.y, pos.x, pos.y) - p0 + hash0 * vec4(jitter.x, jitter.y, jitter.x, jitter.y);
@@ -171,13 +171,13 @@ namespace Noise {
         dc.x = dc0.x;
         dc.y = dc0.y;
         
-        p0 = vec4(center.x, center.y, center.x, center.y) + vec4(radii.z, radii.w, radii.z, radii.w) * vec4(-1.0, 1.0, 1.0, -1.0);
-        multiHash2D(vec4::fract(p0) * 8192.0, vec4::fract(vec4(center.x, center.y, center.x, center.y)) * 8192.0, hash0, hash1);
+        p0 = vec4(center.x, center.y, center.x, center.y) + vec4(radii.z, radii.w, radii.z, radii.w) * vec4(-1.0f, 1.0f, 1.0f, -1.0f);
+        multiHash2D(vec4::fract(p0) * 8192.0f, vec4::fract(vec4(center.x, center.y, center.x, center.y)) * 8192.0f, hash0, hash1);
         temp = hash0;
         hash0 = vec4(temp.x, temp.y, hash1.x, hash1.y);
-        hash0 = vec4(hash0.x, hash0.z, hash0.y, hash0.w) * 2.0 - 1.0;
+        hash0 = vec4(hash0.x, hash0.z, hash0.y, hash0.w) * 2.0f - 1.0f;
         hash1 = vec4(temp.z, temp.w, hash1.z, hash1.w);
-        hash1 = vec4(hash1.x, hash1.z, hash1.y, hash1.w) * 2.0 - 1.0;
+        hash1 = vec4(hash1.x, hash1.z, hash1.y, hash1.w) * 2.0f - 1.0f;
         
         temp = vec4(pos.x, pos.y, pos.x, pos.y) - p0 + hash0 * vec4(jitter.x, jitter.y, jitter.x, jitter.y);
         temp *= temp;
@@ -191,13 +191,13 @@ namespace Noise {
         float d = min(dc.x, dc.y);
         if(useCenter)
         {
-            temp.x = pos.x - center.x + hash1.x * jitter.x * 0.5;
-            temp.y = pos.y - center.y + hash1.y * jitter.y * 0.5;
+            temp.x = pos.x - center.x + hash1.x * jitter.x * 0.5f;
+            temp.y = pos.y - center.y + hash1.y * jitter.y * 0.5f;
             d = min(d, vec2::dot(vec2(temp.x, temp.y), vec2(temp.x, temp.y)));
         }
         radius *= size;
         
-        d = sqrt(d) - radius;
+        d = (float)sqrt(d) - radius;
         return max<float>({noiseInterpolate(-d / radius), 0.0f});
     }
 
