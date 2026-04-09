@@ -7,6 +7,9 @@ template<typename T>
 class crate : public std::vector<T>
 {
 public:
+    ~crate()
+    {
+    }
     using std::vector<T>::vector;
     //crate<T>::at = delete;
 

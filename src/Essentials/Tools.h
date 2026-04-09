@@ -48,7 +48,7 @@ namespace Tools
     template<typename T, unsigned int N>
     static tvec<T,N> StringToVec(std::string str, tvec<T,N> def = tvec<T,N>())
     {
-      tvec<T,N> vec;
+      tvec<T,N> vec = def;
       crate<std::string> numsStr = splitStr(str, ',');
       for(unsigned int i = 0; i < Gum::Maths::min(numsStr.size(), (size_t)N); i++)
         vec[i] = StringToNum<T>(strExtractNumbers(numsStr[i]), def[i]);
