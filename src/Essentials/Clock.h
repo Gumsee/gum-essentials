@@ -2,16 +2,16 @@
 #include <functional>
 #include <chrono>
 
-template<typename T = std::chrono::high_resolution_clock>
-class Clock
+template<typename T>
+class tClock
 {
 private:
   std::function<void()> func;
   unsigned int n;
-  T::time_point begin, intervalBegin;
+  typename T::time_point begin, intervalBegin;
 
 public:
-  Clock()
+  tClock()
   {
     func = nullptr;
     begin = intervalBegin = T::now();
@@ -48,3 +48,7 @@ public:
     return std::chrono::duration_cast<std::chrono::milliseconds>(T::now() - begin).count();
   }
 };
+
+typedef tClock<std::chrono::high_resolution_clock> Clock;
+typedef tClock<std::chrono::steady_clock> SteadyClock;
+typedef tClock<std::chrono::system_clock> SystemClock;

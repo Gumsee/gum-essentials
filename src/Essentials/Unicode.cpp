@@ -13,7 +13,7 @@ namespace Gum
     Unicode::Unicode() { }
     Unicode::Unicode(const char* utf8) : Unicode(std::string(utf8)) { }
 
-    Unicode::Unicode(const char32_t* codepoints) : Unicode(std::u32string(codepoints)) {}
+    Unicode::Unicode(const char32_t* codepoints, const size_t& length) : Unicode(std::u32string(codepoints, length)) {}
 
     Unicode::Unicode(std::string utf8)
     {
