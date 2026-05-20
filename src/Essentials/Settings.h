@@ -9,6 +9,7 @@ namespace Settings
 		MAXIMAL_INSTANCES,
 		WIREFRAMED,
 		SHADOW_SIZE,
+		SHADOW_DISTANCE_FACTOR,
 		MAXIMUMFALLDISTANCE,
 		WORLD_SIZE,
 		SHOWDEBUGINFO,
@@ -16,8 +17,8 @@ namespace Settings
 		NUM_ACTIVE_LIGHTS,
 		REFLECTION_SIZE,
 	};
-	extern std::map<int, int> Setting;
+	extern std::map<int, float> Setting;
 
-	extern void setSetting(int SettingName, int Value);
-	extern int getSetting(int SettingName);
+	extern void setSetting(int SettingName, float Value);
+	extern float getSetting(int SettingName);
 }

@@ -2,10 +2,11 @@
 
 namespace Settings
 {
-	std::map<int, int> Setting = {
+	std::map<int, float> Setting = {
         {Names::RENDERDISTANCE, 500},
         {Names::MAXIMAL_INSTANCES, 10000},
         {Names::SHADOW_SIZE, 4096},
+        {Names::SHADOW_DISTANCE_FACTOR, 1},
         {Names::MAXIMUMFALLDISTANCE, -1000},
         {Names::WIREFRAMED, 0},
         {Names::WORLD_SIZE, 50000},
@@ -14,6 +15,6 @@ namespace Settings
         {Names::REFLECTION_SIZE, 512},
     };
 
-	int getSetting(int SettingName) 			{ return Setting[SettingName]; }
-	void setSetting(int SettingName, int Value) { Setting[SettingName] = Value; }
+	float getSetting(int SettingName) 			{ return Setting[SettingName]; }
+	void setSetting(int SettingName, float Value) { Setting[SettingName] = Value; }
 }
